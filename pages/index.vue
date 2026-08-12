@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, Mail, ArrowUpRight, Github, Linkedin, Instagram, Sparkles, ArrowDown } from 'lucide-vue-next'
+import { ArrowRight, Mail, ArrowUpRight, Github, Linkedin, Instagram, Sparkles, Rocket, Braces, Code2, Zap, Asterisk, Plus, Terminal, GitBranch } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 
 useSeoMeta({
@@ -37,6 +37,23 @@ const socials = computed(() => {
     { label: 'Mail', icon: Mail, href: `mailto:${site.value?.email ?? ''}` }
   ]
 })
+
+const heroOrnaments = [
+  { icon: Braces, pos: 'left-[5%] top-[20%]', size: 30, color: '#8B5CF6', delay: 300 },
+  { icon: Code2, pos: 'right-[7%] top-[16%]', size: 26, color: '#3B82F6', delay: 500 },
+  { icon: Zap, pos: 'left-[9%] bottom-[24%]', size: 24, color: '#F59E0B', delay: 700 },
+  { icon: Asterisk, pos: 'right-[13%] bottom-[30%]', size: 28, color: '#22C55E', delay: 900 },
+  { icon: Plus, pos: 'left-[42%] top-[12%]', size: 20, color: '#8B5CF6', delay: 1100 },
+  { icon: Terminal, pos: 'right-[2%] bottom-[40%]', size: 22, color: '#3B82F6', delay: 1300 },
+  { icon: Sparkles, pos: 'left-[32%] bottom-[14%]', size: 22, color: '#EC4899', delay: 1500 },
+  { icon: GitBranch, pos: 'left-[2%] top-[55%]', size: 22, color: '#14B8A6', delay: 1700 }
+]
+
+const avatarButtons = computed(() => [
+  { to: '/projects', href: null, icon: Rocket, style: 'gradient', pos: '-left-3 top-8 md:-left-6', label: 'Lihat project', delay: 400 },
+  { to: '/contact', href: null, icon: Mail, style: 'outline', pos: '-left-4 bottom-10 md:-left-7', label: 'Hubungi saya', delay: 550 },
+  { to: null, href: site.value?.socials?.github ?? 'https://github.com', icon: Github, style: 'outline', pos: '-right-3 bottom-14 md:-right-6', label: 'GitHub', delay: 700 }
+])
 </script>
 
 <template>
@@ -57,6 +74,18 @@ const socials = computed(() => {
         style="mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)"
         aria-hidden="true"
       />
+
+      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div
+          v-for="(o, i) in heroOrnaments"
+          :key="i"
+          class="entrance-ornament absolute opacity-20"
+          :class="o.pos"
+          :style="{ color: o.color, animationDelay: o.delay + 'ms' }"
+        >
+          <component :is="o.icon" :size="o.size" :stroke-width="1.5" class="animate-float" />
+        </div>
+      </div>
 
       <div class="container-site flex flex-col items-center gap-14 py-16 lg:flex-row lg:gap-20">
         <Reveal class="max-w-2xl text-center lg:flex-1 lg:text-left">
@@ -135,6 +164,26 @@ const socials = computed(() => {
                 <p class="text-[11px] text-text-muted">Let's build something great</p>
               </div>
             </div>
+
+            <div
+              v-for="b in avatarButtons"
+              :key="b.label"
+              class="entrance-pop absolute z-10"
+              :class="b.pos"
+              :style="{ animationDelay: b.delay + 'ms' }"
+            >
+              <component
+                :is="b.href ? 'a' : 'NuxtLink'"
+                v-bind="b.href ? { href: b.href, target: '_blank', rel: 'noopener noreferrer' } : { to: b.to }"
+                class="animate-float flex h-12 w-12 items-center justify-center rounded-full shadow-card transition-all duration-300"
+                :class="b.style === 'gradient'
+                  ? 'bg-gradient-brand text-white hover:shadow-btn-glow'
+                  : 'border border-border bg-card text-text-secondary hover:border-primary/60 hover:text-primary hover:shadow-btn-glow'"
+                :aria-label="b.label"
+              >
+                <component :is="b.icon" :size="20" :stroke-width="1.75" />
+              </component>
+            </div>
           </div>
         </Reveal>
       </div>
@@ -165,10 +214,7 @@ const socials = computed(() => {
             >
               <span
                 class="marquee-glyph"
-                :style="{
-                  color: techFor(name)?.color ?? '#8B5CF6',
-                  backgroundColor: (techFor(name)?.color ?? '#8B5CF6') + '1F'
-                }"
+                :style="{ '--glyph-color': techFor(name)?.color ?? '#8B5CF6' }"
                 aria-hidden="true"
               >
                 {{ techFor(name)?.glyph ?? name.slice(0, 2).toUpperCase() }}
@@ -254,8 +300,43 @@ const socials = computed(() => {
   animation: spin-slow 28s linear infinite;
 }
 
+@keyframes entrance-ornament {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.entrance-ornament {
+  animation: entrance-ornament 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes entrance-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.entrance-pop {
+  animation: entrance-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-spin-slow {
+  .animate-spin-slow,
+  .entrance-ornament,
+  .entrance-pop {
     animation: none;
   }
 }
@@ -284,15 +365,19 @@ const socials = computed(() => {
 
 .marquee-glyph {
   @apply flex h-8 w-8 items-center justify-center rounded-lg border border-border/70 text-[10px] font-bold;
+  color: var(--glyph-color);
+  background-color: color-mix(in srgb, var(--glyph-color) 14%, transparent);
 }
 
 .marquee-name {
   @apply whitespace-nowrap;
 }
 
-/* Warna ikon menyesuaikan mode terang agar tetap kontras */
+/* Mode terang: gelapkan warna dan beri latar kontras agar tulisan ikon tetap terbaca */
 html:not(.dark) .marquee-glyph {
-  filter: brightness(0.62) saturate(1.05);
+  color: color-mix(in srgb, var(--glyph-color) 55%, #1e293b);
+  background-color: color-mix(in srgb, var(--glyph-color) 16%, #ffffff);
+  border-color: rgb(var(--color-border));
 }
 
 @keyframes marquee {
