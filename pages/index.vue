@@ -202,9 +202,12 @@ const socials = computed(() => {
         </NuxtLink>
       </Reveal>
 
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Reveal v-for="(p, i) in featuredProjects" :key="p.slug" :delay="(i % 3) * 80">
-          <ProjectCard :project="p" />
+      <div class="mt-12 grid gap-6 lg:grid-cols-2 lg:grid-rows-2 lg:auto-rows-fr">
+        <Reveal v-if="featuredProjects[0]" class="lg:row-span-2">
+          <FeaturedProjectCard :project="featuredProjects[0]" :index="0" variant="large" />
+        </Reveal>
+        <Reveal v-for="(p, i) in featuredProjects.slice(1)" :key="p.slug" :delay="i * 100">
+          <FeaturedProjectCard :project="p" :index="i + 1" />
         </Reveal>
       </div>
     </section>
