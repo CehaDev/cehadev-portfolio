@@ -4,12 +4,12 @@ import {
   Search, LayoutDashboard, MessageSquare, ShieldCheck, Users, FolderCheck, Activity,
   Bug, Code2, ClipboardList, PenTool, Rocket, Bell
 } from 'lucide-vue-next'
-import { projects, mageransDetail } from '~/composables/useProjects'
 import { techIcons } from '~/composables/useSkills'
 
 const route = useRoute()
-const project = computed(() => projects.find((p) => p.slug === route.params.slug))
-const detail = mageransDetail
+
+const { data: projects } = await useProjectsContent()
+const project = computed(() => (projects.value ?? []).find((p) => p.slug === route.params.slug))
 
 useSeoMeta({
   title: () => `${project.value?.title ?? 'Project'} | CehaDev`,
@@ -20,8 +20,20 @@ if (!project.value) {
   throw createError({ statusCode: 404, statusMessage: 'Project tidak ditemukan', fatal: true })
 }
 
-const tabs = ['Overview', 'Fitur', 'Teknologi', 'Proses', 'Tantangan', 'Hasil', 'Galeri'] as const
-const activeTab = ref<(typeof tabs)[number]>('Overview')
+const detail = computed(() => project.value?.detail as Record<string, unknown> | undefined)
+
+const tabDefs = [
+  { key: 'Overview', has: () => true },
+  { key: 'Fitur', has: () => Boolean(detail.value?.mainFeatures) },
+  { key: 'Teknologi', has: () => Boolean(detail.value?.techStack) },
+  { key: 'Proses', has: () => Boolean(detail.value?.process) },
+  { key: 'Tantangan', has: () => Boolean(detail.value?.challenges) },
+  { key: 'Hasil', has: () => Boolean(detail.value?.results) },
+  { key: 'Galeri', has: () => Boolean(detail.value?.gallery) }
+] as const
+
+const tabs = computed(() => tabDefs.filter((t) => t.has()).map((t) => t.key))
+const activeTab = ref<(typeof tabDefs)[number]['key']>('Overview')
 
 const metaItems = computed(() => [
   { icon: Monitor, label: 'Peran', value: project.value?.role },
@@ -36,20 +48,10 @@ const featureIcons = {
   Code2, ClipboardList, PenTool, Rocket, Bug
 }
 
-const challenges = [
-  { title: 'Sinkronisasi data real-time', desc: 'Memastikan pesan dan update status tim tampil hampir instan di semua perangkat menggunakan WebSocket dan optimasi payload.' },
-  { title: 'Performa pada data besar', desc: 'Mengatasi kelambatan saat dataset besar dengan pagination, virtual scrolling, dan indeks database yang tepat.' },
-  { title: 'Keamanan autentikasi', desc: 'Menerapkan JWT dengan refresh token, proteksi CSRF, dan enkripsi data sensitif untuk menjaga keamanan akun.' },
-  { title: 'Skalabilitas & maintenance', desc: 'Arsitektur modular dengan code splitting dan dokumentasi yang jelas agar mudah dikembangkan tim lain.' }
-]
-
-const gallery = [
-  { label: 'Dashboard', seed: 1 },
-  { label: 'Kanban Board', seed: 2 },
-  { label: 'Chat Real-time', seed: 3 },
-  { label: 'Detail Project', seed: 4 },
-  { label: 'Halaman Auth', seed: 5 }
-]
+const gallery = computed(() => {
+  const g = detail.value?.gallery as Array<{ label: string; seed: number }> | undefined
+  return g?.length ? g : [{ label: project.value?.title ?? 'Preview', seed: 1 }]
+})
 </script>
 
 <template>
@@ -62,7 +64,7 @@ const gallery = [
     <!-- HEADER -->
     <section class="mt-8 grid gap-10 lg:grid-cols-[1fr_420px]">
       <div>
-        <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400">
+        <span v-if="project.featured" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400">
           <Star :size="12" :stroke-width="2" class="fill-amber-400" />
           Featured Project
         </span>
@@ -138,10 +140,18 @@ const gallery = [
         <div v-if="activeTab === 'Overview'" id="panel-Overview" role="tabpanel">
           <div class="grid gap-10 lg:grid-cols-[1fr_1fr]">
             <div class="space-y-4 text-[15px] leading-relaxed text-text-secondary">
-              <p v-for="(para, i) in detail.overview.split('\n\n')" :key="i">{{ para }}</p>
+              <template v-if="(detail?.overview as string | undefined)">
+                <p v-for="(para, i) in (detail!.overview as string).split('\n\n')" :key="i">{{ para }}</p>
+              </template>
+              <p v-else>{{ project.description }}</p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <Reveal v-for="(f, i) in detail.featureHighlights" :key="f.title" class="card p-5" :delay="i * 60">
+            <div v-if="(detail?.featureHighlights as unknown[] | undefined)?.length" class="grid grid-cols-2 gap-4">
+              <Reveal
+                v-for="(f, i) in (detail!.featureHighlights as Array<{ icon: string; color: string; title: string; desc: string }>)"
+                :key="f.title"
+                class="card p-5"
+                :delay="i * 60"
+              >
                 <span class="flex h-10 w-10 items-center justify-center rounded-xl" :style="{ backgroundColor: f.color + '22', color: f.color }" aria-hidden="true">
                   <component :is="featureIcons[f.icon as keyof typeof featureIcons]" :size="20" :stroke-width="1.5" />
                 </span>
@@ -155,7 +165,12 @@ const gallery = [
         <!-- FITUR -->
         <div v-else-if="activeTab === 'Fitur'" id="panel-Fitur" role="tabpanel">
           <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <Reveal v-for="(f, i) in detail.mainFeatures" :key="f.title" class="card p-6" :delay="(i % 3) * 60">
+            <Reveal
+              v-for="(f, i) in (detail!.mainFeatures as Array<{ icon: string; color: string; title: string; desc: string }>)"
+              :key="f.title"
+              class="card p-6"
+              :delay="(i % 3) * 60"
+            >
               <span class="flex h-11 w-11 items-center justify-center rounded-xl" :style="{ backgroundColor: f.color + '22', color: f.color }" aria-hidden="true">
                 <component :is="featureIcons[f.icon as keyof typeof featureIcons]" :size="22" :stroke-width="1.5" />
               </span>
@@ -169,7 +184,7 @@ const gallery = [
         <div v-else-if="activeTab === 'Teknologi'" id="panel-Teknologi" role="tabpanel">
           <div class="flex flex-wrap gap-3">
             <div
-              v-for="t in detail.techStack"
+              v-for="t in (detail!.techStack as string[])"
               :key="t"
               class="flex items-center gap-2.5 rounded-card border border-border bg-card px-4 py-3 transition-colors hover:border-primary/40"
             >
@@ -184,7 +199,12 @@ const gallery = [
         <!-- PROSES -->
         <div v-else-if="activeTab === 'Proses'" id="panel-Proses" role="tabpanel">
           <ol class="grid gap-6 md:grid-cols-5">
-            <Reveal v-for="(p, i) in detail.process" :key="p.num" class="relative" :delay="i * 70">
+            <Reveal
+              v-for="(p, i) in (detail!.process as Array<{ num: string; icon: string; title: string; desc: string }>)"
+              :key="p.num"
+              class="relative"
+              :delay="i * 70"
+            >
               <div class="flex flex-col items-center text-center">
                 <span class="relative flex h-14 w-14 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary" aria-hidden="true">
                   <component :is="featureIcons[p.icon as keyof typeof featureIcons]" :size="22" :stroke-width="1.5" />
@@ -200,7 +220,12 @@ const gallery = [
         <!-- TANTANGAN -->
         <div v-else-if="activeTab === 'Tantangan'" id="panel-Tantangan" role="tabpanel">
           <div class="grid gap-5 md:grid-cols-2">
-            <Reveal v-for="(c, i) in challenges" :key="c.title" class="card p-6" :delay="(i % 2) * 60">
+            <Reveal
+              v-for="(c, i) in (detail!.challenges as Array<{ title: string; desc: string }>)"
+              :key="c.title"
+              class="card p-6"
+              :delay="(i % 2) * 60"
+            >
               <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
                 <Bug :size="20" :stroke-width="1.5" />
               </span>
@@ -213,7 +238,12 @@ const gallery = [
         <!-- HASIL -->
         <div v-else-if="activeTab === 'Hasil'" id="panel-Hasil" role="tabpanel">
           <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <Reveal v-for="(r, i) in detail.results" :key="r.label" class="card p-6 text-center" :delay="i * 70">
+            <Reveal
+              v-for="(r, i) in (detail!.results as Array<{ icon: string; value: string; label: string }>)"
+              :key="r.label"
+              class="card p-6 text-center"
+              :delay="i * 70"
+            >
               <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
                 <component :is="featureIcons[r.icon as keyof typeof featureIcons]" :size="20" :stroke-width="1.5" />
               </span>
@@ -226,7 +256,12 @@ const gallery = [
         <!-- GALERI -->
         <div v-else id="panel-Galeri" role="tabpanel">
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Reveal v-for="(g, i) in gallery" :key="g.label" :class="i === 0 ? 'sm:col-span-2 lg:row-span-2' : ''" :delay="(i % 3) * 60">
+            <Reveal
+              v-for="(g, i) in gallery"
+              :key="g.label"
+              :class="i === 0 ? 'sm:col-span-2 lg:row-span-2' : ''"
+              :delay="(i % 3) * 60"
+            >
               <ProjectThumb :seed="g.seed" :label="g.label" :height="i === 0 ? 'h-full min-h-56' : 'h-44'" />
             </Reveal>
           </div>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Github, Menu, Moon, Sun, Download, X } from 'lucide-vue-next'
-import { siteData, navLinks } from '~/composables/useSiteData'
+import { navLinks } from '~/composables/useSiteData'
 
 const route = useRoute()
 const mobileOpen = ref(false)
+const { data: site } = await useSiteSettings()
 
 function isActive(link: { to: string; label: string }) {
   if (link.to === '/') return route.path === '/'
@@ -47,7 +48,7 @@ function closeMobile() {
 
       <div class="flex items-center gap-3">
         <a
-          :href="siteData.github"
+          :href="site?.socials?.github ?? 'https://github.com'"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="GitHub"
@@ -63,10 +64,10 @@ function closeMobile() {
         >
           <Sun :size="18" :stroke-width="1.5" />
         </button>
-        <NuxtLink to="/" class="btn-primary hidden !px-5 !py-2.5 md:inline-flex" @click="closeMobile">
+        <a :href="site?.cvUrl ?? '/'" class="btn-primary hidden !px-5 !py-2.5 md:inline-flex" @click="closeMobile">
           <Download :size="16" :stroke-width="2" />
           Download CV
-        </NuxtLink>
+        </a>
         <button
           type="button"
           class="flex items-center justify-center rounded-lg border border-border p-2.5 text-text lg:hidden"
@@ -100,10 +101,10 @@ function closeMobile() {
             </NuxtLink>
           </li>
           <li class="pt-4">
-            <NuxtLink to="/" class="btn-primary w-full" @click="closeMobile">
+            <a :href="site?.cvUrl ?? '/'" class="btn-primary w-full" @click="closeMobile">
               <Download :size="16" />
               Download CV
-            </NuxtLink>
+            </a>
           </li>
         </ul>
       </div>

@@ -1,0 +1,14 @@
+{
+  "slug": "nutech-api",
+  "title": "NuTech API",
+  "tagline": "REST API cepat dan aman untuk aplikasi mobile & web.",
+  "description": "Backend REST API dengan autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang mudah dikembangkan.",
+  "tags": ["Node.js", "TypeScript", "MySQL"],
+  "tech": ["node", "typescript", "mysql", "git"],
+  "category": "Backend",
+  "year": "2024",
+  "role": "Backend Developer",
+  "duration": "2 Bulan",
+  "liveUrl": "https://nutech-api.example.com",
+  "githubUrl": "https://github.com/cehadev/nutech-api"
+}

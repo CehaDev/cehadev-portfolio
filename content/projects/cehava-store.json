@@ -1,0 +1,15 @@
+{
+  "slug": "cehava-store",
+  "title": "Cehava Store",
+  "tagline": "Toko online modern dengan manajemen produk dan checkout yang mulus.",
+  "description": "Aplikasi e-commerce dengan katalog produk, keranjang belanja, pembayaran, dan dashboard admin untuk mengelola toko.",
+  "tags": ["Nuxt.js", "Vue.js", "Tailwind CSS", "Node.js"],
+  "tech": ["nuxt", "vue", "tailwind", "node", "mysql"],
+  "category": "E-Commerce",
+  "year": "2025",
+  "role": "Full-Stack Developer",
+  "duration": "3 Bulan",
+  "featured": true,
+  "liveUrl": "https://cehava-store.example.com",
+  "githubUrl": "https://github.com/cehadev/cehava-store"
+}

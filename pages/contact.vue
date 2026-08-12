@@ -6,17 +6,19 @@ useSeoMeta({
   description: 'Hubungi CehaDev untuk kolaborasi, project freelance, atau sekadar menyapa. Respons cepat dan terbuka untuk peluang kerja sama.'
 })
 
+const { data: site } = await useSiteSettings()
+
 const valueProps = [
   { icon: Zap, title: 'Fast Response', desc: 'Saya membalas pesan dalam 1–2 jam kerja.' },
   { icon: Briefcase, title: 'Open to Opportunities', desc: 'Terbuka untuk freelance, kolaborasi, dan full-time.' },
   { icon: Sparkles, title: "Let's Build Something", desc: 'Mari wujudkan ide Anda menjadi produk nyata.' }
 ]
 
-const contacts = [
-  { icon: Mail, label: 'Email', value: 'hello@cehadev.id', copy: true },
-  { icon: Phone, label: 'Phone', value: '+62 812-3456-7890', copy: true },
-  { icon: MapPin, label: 'Location', value: 'Jakarta, Indonesia', copy: true }
-]
+const contacts = computed(() => [
+  { icon: Mail, label: 'Email', value: site.value?.email ?? '', copy: true },
+  { icon: Phone, label: 'Phone', value: site.value?.phone ?? '', copy: true },
+  { icon: MapPin, label: 'Location', value: site.value?.location ?? '', copy: true }
+])
 
 const copied = ref(false)
 
@@ -127,11 +129,11 @@ const floatIcons = [
             </li>
           </ul>
         </div>
-        <FaqAccordion />
+        <FaqAccordion :faqs="site?.faqs ?? []" />
       </Reveal>
 
       <Reveal :delay="200">
-        <DarkMap />
+        <DarkMap :location="site?.location ?? 'Jakarta, Indonesia'" />
       </Reveal>
     </section>
   </div>

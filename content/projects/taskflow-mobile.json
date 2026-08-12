@@ -1,0 +1,14 @@
+{
+  "slug": "taskflow-mobile",
+  "title": "TaskFlow Mobile",
+  "tagline": "Aplikasi manajemen tugas harian yang ringan dan cepat.",
+  "description": "Aplikasi mobile-first untuk mengelola tugas harian dengan notifikasi, tag prioritas, dan sinkronisasi cloud.",
+  "tags": ["Vue.js", "Node.js", "Tailwind CSS"],
+  "tech": ["vue", "node", "tailwind", "mysql"],
+  "category": "Mobile App",
+  "year": "2024",
+  "role": "Full-Stack Developer",
+  "duration": "3 Bulan",
+  "liveUrl": "https://taskflow.example.com",
+  "githubUrl": "https://github.com/cehadev/taskflow"
+}

@@ -1,24 +1,12 @@
 <script setup lang="ts">
 import { ChevronDown, MessageCircleQuestion, ArrowRight } from 'lucide-vue-next'
 
-const faqs = [
-  {
-    q: 'Apakah Anda menerima project freelance?',
-    a: 'Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak.'
-  },
-  {
-    q: 'Teknologi apa yang Anda kuasai?',
-    a: 'Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD.'
-  },
-  {
-    q: 'Bagaimana proses kerja sama berlangsung?',
-    a: 'Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap.'
-  },
-  {
-    q: 'Berapa lama waktu pengerjaan project?',
-    a: 'Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan.'
-  }
-]
+interface Faq {
+  q: string
+  a: string
+}
+
+const props = defineProps<{ faqs: Faq[] }>()
 
 const open = ref<number | null>(0)
 

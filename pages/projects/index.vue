@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { projects } from '~/composables/useProjects'
-
 useSeoMeta({
   title: 'Projects | CehaDev',
   description: 'Kumpulan project yang pernah dikerjakan CehaDev — dari web app, e-commerce, dashboard, hingga backend API.'
 })
 
-const categories = ['All', ...new Set(projects.map((p) => p.category))]
+const { data: projects } = await useProjectsContent()
+
+const categories = computed(() => ['All', ...new Set((projects.value ?? []).map((p) => p.category))])
 const activeCategory = ref('All')
 
 const filtered = computed(() =>
-  activeCategory.value === 'All' ? projects : projects.filter((p) => p.category === activeCategory.value)
+  activeCategory.value === 'All' ? projects.value ?? [] : (projects.value ?? []).filter((p) => p.category === activeCategory.value)
 )
 </script>
 

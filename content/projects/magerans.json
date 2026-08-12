@@ -1,0 +1,58 @@
+{
+  "slug": "magerans",
+  "title": "Magerans",
+  "tagline": "Platform kolaborasi project & manajemen kerja tim secara real-time.",
+  "description": "Platform kolaborasi yang membantu tim mengelola project, berkomunikasi real-time, dan menyelesaikan pekerjaan lebih efisien dalam satu tempat.",
+  "tags": ["Nuxt.js", "Vue.js", "Tailwind CSS", "TypeScript"],
+  "tech": ["nuxt", "vue", "tailwind", "typescript", "node", "mysql", "git", "linux"],
+  "category": "Web App",
+  "year": "2025",
+  "role": "Full-Stack Developer",
+  "duration": "4 Bulan",
+  "featured": true,
+  "liveUrl": "https://magerans.example.com",
+  "githubUrl": "https://github.com/cehadev/magerans",
+  "detail": {
+    "overview": "Magerans adalah platform kolaborasi yang dirancang untuk membantu tim kecil dan menengah bekerja bersama secara lebih terorganisir. Aplikasi ini menggabungkan manajemen project, komunikasi real-time, dan pelacakan tugas dalam satu dashboard yang intuitif dan responsif.\n\nDibangun dengan Nuxt 3 di sisi frontend dan Node.js di sisi backend, Magerans menghadirkan pengalaman yang cepat berkat SSR dan optimasi performa. Desainnya mengutamakan kejelasan, aksesibilitas, dan konsistensi di semua perangkat.",
+    "featureHighlights": [
+      { "icon": "Search", "color": "#38BDF8", "title": "Pencarian Cepat", "desc": "Temukan project dan tugas dengan pencarian instan." },
+      { "icon": "LayoutDashboard", "color": "#8B5CF6", "title": "Dashboard Intuitif", "desc": "Semua informasi penting dalam satu tampilan." },
+      { "icon": "MessageSquare", "color": "#22C55E", "title": "Kolaborasi Tim", "desc": "Diskusi dan komentar di setiap tugas." },
+      { "icon": "ShieldCheck", "color": "#F59E0B", "title": "Keamanan Terjamin", "desc": "Autentikasi aman dan proteksi data lengkap." }
+    ],
+    "mainFeatures": [
+      { "icon": "Search", "color": "#38BDF8", "title": "Pencarian Layanan", "desc": "Cari layanan dan project dengan cepat menggunakan pencarian cerdas dengan filter kategori." },
+      { "icon": "FolderKanban", "color": "#8B5CF6", "title": "Manajemen Project", "desc": "Kelola project dari perencanaan hingga selesai dengan kanban board yang fleksibel." },
+      { "icon": "MessageSquare", "color": "#22C55E", "title": "Chat Real-time", "desc": "Komunikasi tim real-time dengan pesan, reaksi, dan mention antar anggota." },
+      { "icon": "Star", "color": "#F59E0B", "title": "Sistem Review", "desc": "Berikan dan terima ulasan untuk menjaga kualitas hasil kerja." },
+      { "icon": "Bell", "color": "#F43F5E", "title": "Notifikasi", "desc": "Notifikasi otomatis untuk setiap update tugas, pesan, dan aktivitas tim." }
+    ],
+    "techStack": ["nuxt", "vue", "tailwind", "typescript", "node", "mysql", "git", "linux"],
+    "process": [
+      { "num": "01", "icon": "ClipboardList", "title": "Perencanaan", "desc": "Menentukan kebutuhan, scope, dan roadmap fitur." },
+      { "num": "02", "icon": "PenTool", "title": "Desain UI/UX", "desc": "Membuat wireframe hingga hi-fi mockup di Figma." },
+      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Implementasi frontend & backend dengan best practice." },
+      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Unit test, integration test, dan manual QA." },
+      { "num": "05", "icon": "Rocket", "title": "Deployment", "desc": "Deploy ke produksi dengan CI/CD dan monitoring." }
+    ],
+    "challenges": [
+      { "title": "Sinkronisasi data real-time", "desc": "Memastikan pesan dan update status tim tampil hampir instan di semua perangkat menggunakan WebSocket dan optimasi payload." },
+      { "title": "Performa pada data besar", "desc": "Mengatasi kelambatan saat dataset besar dengan pagination, virtual scrolling, dan indeks database yang tepat." },
+      { "title": "Keamanan autentikasi", "desc": "Menerapkan JWT dengan refresh token, proteksi CSRF, dan enkripsi data sensitif untuk menjaga keamanan akun." },
+      { "title": "Skalabilitas & maintenance", "desc": "Arsitektur modular dengan code splitting dan dokumentasi yang jelas agar mudah dikembangkan tim lain." }
+    ],
+    "results": [
+      { "icon": "Users", "value": "1.000+", "label": "Pengguna Terdaftar" },
+      { "icon": "FolderCheck", "value": "500+", "label": "Project Selesai" },
+      { "icon": "Star", "value": "4.8/5", "label": "Rating Rata-rata" },
+      { "icon": "Activity", "value": "99.9%", "label": "Uptime Aplikasi" }
+    ],
+    "gallery": [
+      { "label": "Dashboard", "seed": 1 },
+      { "label": "Kanban Board", "seed": 2 },
+      { "label": "Chat Real-time", "seed": 3 },
+      { "label": "Detail Project", "seed": 4 },
+      { "label": "Halaman Auth", "seed": 5 }
+    ]
+  }
+}
