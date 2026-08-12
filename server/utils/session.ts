@@ -1,0 +1,57 @@
+import { createHmac, timingSafeEqual } from 'node:crypto'
+import { getCookie, setCookie, deleteCookie, createError } from 'h3'
+
+export const SESSION_COOKIE = 'cehadev_admin_session'
+const SESSION_TTL = 7 * 24 * 60 * 60 // 7 hari
+
+function secret() {
+  return process.env.NUXT_ADMIN_SECRET || 'cehadev-admin-dev-secret'
+}
+
+function sign(str: string) {
+  return createHmac('sha256', secret()).update(str).digest('base64url')
+}
+
+export function issueSession() {
+  const payload = { exp: Date.now() + SESSION_TTL * 1000 }
+  const str = JSON.stringify(payload)
+  return `${Buffer.from(str).toString('base64url')}.${sign(str)}`
+}
+
+export function isSessionValid(token: string | undefined) {
+  if (!token) return false
+  const [b64, sig] = token.split('.')
+  if (!b64 || !sig) return false
+  const str = Buffer.from(b64, 'base64url').toString()
+  const expected = Buffer.from(sign(str))
+  const actual = Buffer.from(sig)
+  if (actual.length !== expected.length) return false
+  if (!timingSafeEqual(actual, expected)) return false
+  try {
+    const payload = JSON.parse(str)
+    return typeof payload.exp === 'number' && payload.exp > Date.now()
+  } catch {
+    return false
+  }
+}
+
+export function setAdminSession(event: Parameters<typeof setCookie>[0]) {
+  setCookie(event, SESSION_COOKIE, issueSession(), {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: SESSION_TTL
+  })
+}
+
+export function clearAdminSession(event: Parameters<typeof deleteCookie>[0]) {
+  deleteCookie(event, SESSION_COOKIE, { path: '/' })
+}
+
+export function requireAdmin(event: Parameters<typeof getCookie>[0]) {
+  const token = getCookie(event, SESSION_COOKIE)
+  if (!isSessionValid(token)) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+}
