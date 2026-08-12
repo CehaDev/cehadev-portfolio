@@ -27,7 +27,7 @@ export default defineNuxtConfig({
         { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Jakarta.' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/ceha.png' },
+        { rel: 'icon', type: 'image/png', href: '/ch.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
       ],
