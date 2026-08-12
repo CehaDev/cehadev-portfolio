@@ -106,7 +106,7 @@ const floatIcons = [
               </div>
               <button
                 type="button"
-                class="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/50 hover:text-white"
+                class="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/50 hover:text-text"
                 :aria-label="`Salin ${c.label}`"
                 @click="copyValue(c.value)"
               >

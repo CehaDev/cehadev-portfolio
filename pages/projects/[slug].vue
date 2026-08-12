@@ -56,7 +56,7 @@ const gallery = computed(() => {
 
 <template>
   <div v-if="project" class="container-site py-12 md:py-16">
-    <NuxtLink to="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-white">
+    <NuxtLink to="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-text">
       <ArrowLeft :size="16" :stroke-width="2" />
       Kembali ke Projects
     </NuxtLink>
@@ -123,7 +123,7 @@ const gallery = computed(() => {
           :aria-selected="activeTab === tab"
           :aria-controls="`panel-${tab}`"
           class="relative shrink-0 px-4 py-3 text-sm font-semibold transition-colors"
-          :class="activeTab === tab ? 'text-white' : 'text-text-muted hover:text-text-secondary'"
+          :class="activeTab === tab ? 'text-text' : 'text-text-muted hover:text-text-secondary'"
           @click="activeTab = tab"
         >
           {{ tab }}

@@ -13,15 +13,15 @@ export default <Partial<Config>>{
     extend: {
       colors: {
         bg: {
-          DEFAULT: '#0A0A0F',
-          alt: '#0B0B12'
+          DEFAULT: 'rgb(var(--color-bg) / <alpha-value>)',
+          alt: 'rgb(var(--color-bg-alt) / <alpha-value>)'
         },
         card: {
-          DEFAULT: '#13131C',
-          alt: '#161620'
+          DEFAULT: 'rgb(var(--color-card) / <alpha-value>)',
+          alt: 'rgb(var(--color-card-alt) / <alpha-value>)'
         },
         border: {
-          DEFAULT: '#262633',
+          DEFAULT: 'rgb(var(--color-border) / <alpha-value>)',
           soft: '#FFFFFF14'
         },
         primary: {
@@ -30,9 +30,9 @@ export default <Partial<Config>>{
           blue: '#3B82F6'
         },
         text: {
-          DEFAULT: '#F5F5F7',
-          secondary: '#A1A1AA',
-          muted: '#71717A'
+          DEFAULT: 'rgb(var(--color-text) / <alpha-value>)',
+          secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--color-text-muted) / <alpha-value>)'
         },
         success: '#22C55E'
       },

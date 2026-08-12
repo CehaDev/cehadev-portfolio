@@ -1,0 +1,66 @@
+{
+  "fullName": "CehaDev",
+  "title": "Web Developer & Tech Enthusiast",
+  "photo": "/ch.png",
+  "email": "hello@cehadev.id",
+  "phone": "+62 812-3456-7890",
+  "location": "Jakarta, Indonesia",
+  "website": "cehadev.id",
+  "linkedin": "https://linkedin.com/in/cehadev",
+  "github": "https://github.com/cehadev",
+  "summary": "Web developer bersemangat yang membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+  "experiences": [
+    {
+      "role": "Web Developer",
+      "company": "Freelance / Personal Projects",
+      "period": "2024 — Sekarang",
+      "description": "Membangun aplikasi web modern dari nol hingga produksi: landing page, dashboard, hingga e-commerce. Menangani frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js."
+    },
+    {
+      "role": "Junior Developer",
+      "company": "Tech Community & Open Source",
+      "period": "2023 — 2024",
+      "description": "Berkontribusi pada project open source, belajar best practice pengembangan web, dan berkolaborasi dengan developer lain dalam membangun tools digital."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Ilmu Komputer / Teknik Informatika",
+      "school": "Universitas di Jakarta",
+      "period": "2022 — Sekarang",
+      "description": "Fokus pada rekayasa perangkat lunak, struktur data, dan pengembangan aplikasi web."
+    }
+  ],
+  "skills": [
+    "Nuxt.js",
+    "Vue.js",
+    "Node.js",
+    "TypeScript",
+    "Tailwind CSS",
+    "JavaScript",
+    "Git",
+    "Docker"
+  ],
+  "languages": [
+    {
+      "name": "Indonesia",
+      "level": "Native"
+    },
+    {
+      "name": "English",
+      "level": "Professional"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Full-Stack Web Development",
+      "issuer": "Online Learning Platform",
+      "year": "2023"
+    },
+    {
+      "name": "JavaScript & TypeScript Fundamentals",
+      "issuer": "Online Learning Platform",
+      "year": "2022"
+    }
+  ]
+}

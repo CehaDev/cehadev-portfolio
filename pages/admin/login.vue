@@ -66,7 +66,7 @@ async function submit() {
             </button>
           </form>
 
-          <NuxtLink to="/" class="mt-6 flex items-center justify-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-white">
+          <NuxtLink to="/" class="mt-6 flex items-center justify-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text">
             <ArrowLeft :size="14" :stroke-width="2" />
             Kembali ke website
           </NuxtLink>

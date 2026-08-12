@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FolderKanban, Star, Tag, CalendarRange, Plus, ArrowRight, Layers } from 'lucide-vue-next'
+import { FolderKanban, Star, Tag, CalendarRange, Plus, ArrowRight, Layers, FileText } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -31,10 +31,16 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
         <h2 class="text-xl font-bold text-text">Selamat datang di Admin Panel</h2>
         <p class="mt-1 text-sm text-text-secondary">Kelola data project yang tampil di website portfolio Anda.</p>
       </div>
-      <NuxtLink to="/admin/projects/new" class="btn-primary !py-2.5">
-        <Plus :size="16" :stroke-width="2" />
-        Tambah Project
-      </NuxtLink>
+      <div class="flex flex-wrap items-center gap-3">
+        <NuxtLink to="/admin/cv" class="btn-outline !py-2.5">
+          <FileText :size="16" :stroke-width="2" />
+          Kelola CV
+        </NuxtLink>
+        <NuxtLink to="/admin/projects/new" class="btn-primary !py-2.5">
+          <Plus :size="16" :stroke-width="2" />
+          Tambah Project
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

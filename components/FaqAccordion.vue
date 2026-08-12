@@ -31,7 +31,7 @@ function toggle(i: number) {
       >
         <button
           type="button"
-          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-medium text-text transition-colors hover:text-white"
+          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-medium text-text transition-colors hover:text-primary"
           :aria-expanded="open === i"
           :aria-controls="`faq-panel-${i}`"
           @click="toggle(i)"

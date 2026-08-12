@@ -178,7 +178,7 @@ async function save() {
             :key="key"
             type="button"
             class="flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors"
-            :class="form.tech.includes(key) ? 'border-primary/60 bg-primary/15 text-white' : 'border-border bg-bg text-text-secondary hover:border-primary/40'"
+            :class="form.tech.includes(key) ? 'border-primary/60 bg-primary/15 text-primary' : 'border-border bg-bg text-text-secondary hover:border-primary/40'"
             @click="toggleTech(key)"
           >
             <span class="flex h-6 w-6 items-center justify-center rounded bg-bg-alt text-[9px] font-bold" :style="`color: ${techIcons[key].color}`" aria-hidden="true">

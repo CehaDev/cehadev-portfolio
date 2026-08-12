@@ -78,7 +78,7 @@ const floatingBoxes = [
         class="rounded-full border px-4 py-2 text-sm font-medium transition-colors"
         :class="activeCat === cat.id
           ? 'border-transparent bg-gradient-brand text-white shadow-btn-glow'
-          : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-white'"
+          : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
         @click="activeCat = cat.id"
       >
         {{ cat.label }}

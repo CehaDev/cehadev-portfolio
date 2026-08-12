@@ -26,7 +26,7 @@ async function onSaved(data: Record<string, unknown>) {
 <template>
   <div class="mx-auto max-w-3xl space-y-6">
     <div class="flex items-center gap-3">
-      <NuxtLink to="/admin/projects" class="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:border-primary/50 hover:text-white" aria-label="Kembali">
+      <NuxtLink to="/admin/projects" class="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:border-primary/50 hover:text-text" aria-label="Kembali">
         <ArrowLeft :size="16" :stroke-width="2" />
       </NuxtLink>
       <div>

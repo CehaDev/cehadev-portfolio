@@ -30,3 +30,6 @@ test-results
 
 # Local screenshots artifact
 .screenshots
+
+# User-uploaded assets (CV photo, dsb)
+public/uploads

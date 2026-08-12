@@ -80,7 +80,7 @@ async function remove(slug: string) {
               </td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-end gap-2">
-                  <NuxtLink :to="`/admin/projects/${p.slug}`" class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-primary/50 hover:text-white">
+                  <NuxtLink :to="`/admin/projects/${p.slug}`" class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-primary/50 hover:text-text">
                     <Pencil :size="13" :stroke-width="1.5" />
                     Edit
                   </NuxtLink>

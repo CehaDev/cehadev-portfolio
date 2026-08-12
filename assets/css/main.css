@@ -5,6 +5,28 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-bg: 247 248 250;
+    --color-bg-alt: 240 242 246;
+    --color-card: 255 255 255;
+    --color-card-alt: 244 246 250;
+    --color-border: 227 230 236;
+    --color-text: 15 23 42;
+    --color-text-secondary: 71 85 105;
+    --color-text-muted: 100 116 139;
+  }
+
+  html.dark {
+    --color-bg: 10 10 15;
+    --color-bg-alt: 11 11 18;
+    --color-card: 19 19 28;
+    --color-card-alt: 22 22 32;
+    --color-border: 38 38 51;
+    --color-text: 245 245 247;
+    --color-text-secondary: 161 161 170;
+    --color-text-muted: 113 113 122;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -30,14 +52,14 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #0B0B12;
+    background: rgb(var(--color-bg-alt));
   }
   ::-webkit-scrollbar-thumb {
-    background: #262633;
+    background: rgb(var(--color-border));
     border-radius: 8px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3a3a4d;
+    background: rgb(var(--color-text-muted));
   }
 }
 
@@ -66,7 +88,7 @@
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
   }
   .btn-outline {
-    @apply btn border border-border text-text bg-transparent hover:border-primary/60 hover:text-white;
+    @apply btn border border-border text-text bg-transparent hover:border-primary/60 hover:text-text;
   }
   .btn-outline:hover {
     transform: translateY(-2px);
@@ -80,7 +102,7 @@
     @apply w-full rounded-btn border border-border bg-bg px-4 py-3 text-sm text-text transition-colors focus:border-primary/70 focus:outline-none;
   }
   .input-field::placeholder {
-    color: #71717A;
+    color: rgb(var(--color-text-muted));
   }
 
   .chip {

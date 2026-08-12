@@ -39,7 +39,7 @@ const filtered = computed(() =>
         class="rounded-full border px-4 py-2 text-sm font-medium transition-colors"
         :class="activeCategory === cat
           ? 'border-transparent bg-gradient-brand text-white shadow-btn-glow'
-          : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-white'"
+          : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
         @click="activeCategory = cat"
       >
         {{ cat }}

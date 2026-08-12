@@ -49,7 +49,54 @@ const faqItem = z.object({
   a: z.string()
 })
 
+const cvExperience = z.object({
+  role: z.string(),
+  company: z.string(),
+  period: z.string(),
+  description: z.string()
+})
+
+const cvEducation = z.object({
+  degree: z.string(),
+  school: z.string(),
+  period: z.string(),
+  description: z.string().optional()
+})
+
+const cvLanguage = z.object({
+  name: z.string(),
+  level: z.string()
+})
+
+const cvCertification = z.object({
+  name: z.string(),
+  issuer: z.string(),
+  year: z.string()
+})
+
 export const collections = {
+  cv: defineCollection({
+    type: 'data',
+    source: 'cv.json',
+    schema: z.object({
+      fullName: z.string(),
+      title: z.string(),
+      photo: z.string().optional(),
+      email: z.string(),
+      phone: z.string(),
+      location: z.string(),
+      website: z.string(),
+      linkedin: z.string(),
+      github: z.string(),
+      summary: z.string(),
+      experiences: z.array(cvExperience),
+      education: z.array(cvEducation),
+      skills: z.array(z.string()),
+      languages: z.array(cvLanguage),
+      certifications: z.array(cvCertification)
+    })
+  }),
+
   site: defineCollection({
     type: 'data',
     source: 'site.json',

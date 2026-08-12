@@ -25,7 +25,7 @@ const props = defineProps<{ project: ProjectCardData }>()
     </NuxtLink>
     <div class="flex flex-1 flex-col gap-3 p-5 pt-2">
       <div class="flex items-start justify-between gap-3">
-        <NuxtLink :to="`/projects/${project.slug}`" class="text-lg font-semibold text-text transition-colors hover:text-white">
+        <NuxtLink :to="`/projects/${project.slug}`" class="text-lg font-semibold text-text transition-colors hover:text-primary">
           {{ project.title }}
         </NuxtLink>
         <a

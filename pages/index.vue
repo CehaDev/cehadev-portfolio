@@ -122,7 +122,7 @@ const decoDots = [
               :href="s.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-secondary transition-all hover:scale-105 hover:border-primary/60 hover:text-white"
+              class="flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-secondary transition-all hover:scale-105 hover:border-primary/60 hover:text-text"
               :aria-label="s.label"
             >
               <component :is="s.icon" :size="18" :stroke-width="1.5" />
@@ -158,7 +158,7 @@ const decoDots = [
             </NuxtLink>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between gap-2">
-                <NuxtLink :to="`/projects/${p.slug}`" class="truncate text-sm font-semibold text-text hover:text-white">
+                <NuxtLink :to="`/projects/${p.slug}`" class="truncate text-sm font-semibold text-text hover:text-primary">
                   {{ p.title }}
                 </NuxtLink>
                 <a :href="p.liveUrl" target="_blank" rel="noopener noreferrer" :aria-label="`Lihat demo ${p.title}`" class="text-text-muted hover:text-primary">

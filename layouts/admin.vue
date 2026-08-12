@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, LogOut, ArrowLeft } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, LogOut, ArrowLeft } from 'lucide-vue-next'
 
 const route = useRoute()
 
 const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
-  { label: 'Projects', to: '/admin/projects', icon: FolderKanban }
+  { label: 'Projects', to: '/admin/projects', icon: FolderKanban },
+  { label: 'CV', to: '/admin/cv', icon: FileText }
 ]
 
 async function logout() {
@@ -21,7 +22,7 @@ async function logout() {
         <img src="/ch.png" alt="CehaDev" class="h-9 w-9 rounded-lg object-cover" />
         <div class="leading-tight">
           <p class="text-base font-extrabold tracking-tight">
-            <span class="text-white">Ceha</span><span class="bg-gradient-brand bg-clip-text text-transparent">Dev</span>
+            <span class="text-text">Ceha</span><span class="bg-gradient-brand bg-clip-text text-transparent">Dev</span>
           </p>
           <p class="text-[11px] text-text-muted">Admin Panel</p>
         </div>
@@ -33,7 +34,7 @@ async function logout() {
           :key="item.to"
           :to="item.to"
           class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-          :class="route.path === item.to ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:bg-card hover:text-white'"
+          :class="route.path === item.to ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:bg-card hover:text-text'"
         >
           <component :is="item.icon" :size="17" :stroke-width="1.75" />
           {{ item.label }}
@@ -41,13 +42,13 @@ async function logout() {
       </nav>
 
       <div class="border-t border-border p-4">
-        <NuxtLink to="/" class="mb-2 flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-card hover:text-white">
+        <NuxtLink to="/" class="mb-2 flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-card hover:text-text">
           <ArrowLeft :size="16" :stroke-width="1.75" />
           Lihat Website
         </NuxtLink>
         <button
           type="button"
-          class="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-card hover:text-white"
+          class="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-card hover:text-text"
           @click="logout"
         >
           <LogOut :size="16" :stroke-width="1.75" />
