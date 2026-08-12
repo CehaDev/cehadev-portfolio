@@ -28,7 +28,7 @@ const stackNames = ['JavaScript', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'Node.js'
 <template>
   <div class="container-site py-16 md:py-20">
     <!-- HERO 2 KOLOM -->
-    <section class="grid items-center gap-12 lg:grid-cols-[55fr_45fr]">
+    <section class="grid min-h-[calc(100vh-76px)] items-center gap-12 lg:grid-cols-[55fr_45fr]">
       <Reveal>
         <span class="section-label"><span class="dot" aria-hidden="true" /> About Me</span>
         <h1 class="mt-3 text-3xl font-extrabold leading-tight tracking-tight md:text-5xl">

@@ -133,6 +133,7 @@ export const collections = {
     schema: z.object({
       homeSkills: z.array(techItem),
       technicalSkills: z.array(techItem),
+      marqueeTech: z.array(z.string()),
       skillsSummary: z.array(z.object({ label: z.string(), value: z.string(), icon: z.string() })),
       toolsList: z.array(z.string()),
       softSkills: z.array(z.string())

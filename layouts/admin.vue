@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, FileText, LogOut, ArrowLeft } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, Wrench, LogOut, ArrowLeft } from 'lucide-vue-next'
 
 const route = useRoute()
 
 const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
   { label: 'Projects', to: '/admin/projects', icon: FolderKanban },
+  { label: 'Skills', to: '/admin/skills', icon: Wrench },
   { label: 'CV', to: '/admin/cv', icon: FileText }
 ]
 

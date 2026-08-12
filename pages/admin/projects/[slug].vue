@@ -11,7 +11,7 @@ const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
 const { data: project } = await useAsyncData('admin-project-edit', () =>
-  $fetch(`/api/admin/projects/${slug.value}`)
+  useRequestFetch()(`/api/admin/projects/${slug.value}`)
 )
 
 useHead({ title: `Edit ${project.value?.title ?? slug.value} | Admin` })

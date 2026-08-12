@@ -15,7 +15,7 @@ const filtered = computed(() =>
 </script>
 
 <template>
-  <div class="container-site py-16 md:py-20">
+    <div class="container-site min-h-[calc(100vh-76px)] py-16 md:py-20">
     <div class="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div>
         <span class="section-label"><span class="dot" aria-hidden="true" /> Projects</span>

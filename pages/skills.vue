@@ -40,7 +40,7 @@ const floatingBoxes = [
 <template>
   <div class="container-site py-16 md:py-20">
     <!-- HERO -->
-    <section class="grid items-center gap-12 lg:grid-cols-[55fr_45fr]">
+    <section class="grid min-h-[calc(100vh-76px)] items-center gap-12 lg:grid-cols-[55fr_45fr]">
       <Reveal>
         <span class="section-label"><span class="dot" aria-hidden="true" /> Always learning and improving</span>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight md:text-5xl">

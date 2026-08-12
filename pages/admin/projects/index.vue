@@ -8,7 +8,7 @@ definePageMeta({
 })
 
 const { data: projects, refresh } = await useAsyncData('admin-projects-list', () =>
-  $fetch('/api/admin/projects')
+  useRequestFetch()('/api/admin/projects')
 )
 
 const deleting = ref<string | null>(null)
