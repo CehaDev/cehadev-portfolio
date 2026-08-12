@@ -1,0 +1,14 @@
+{
+  "slug": "portfoliokit",
+  "title": "PortfolioKit",
+  "tagline": "Starter kit portfolio developer dengan tema gelap modern.",
+  "description": "Template portfolio open-source yang bisa dikustomisasi penuh, dibangun dengan Nuxt dan Tailwind, siap deploy dalam hitungan menit.",
+  "tags": ["Nuxt.js", "Tailwind CSS", "TypeScript"],
+  "tech": ["nuxt", "tailwind", "typescript", "git"],
+  "category": "Open Source",
+  "year": "2025",
+  "role": "Creator",
+  "duration": "1 Bulan",
+  "liveUrl": "https://portfoliokit.example.com",
+  "githubUrl": "https://github.com/cehadev/portfoliokit"
+}

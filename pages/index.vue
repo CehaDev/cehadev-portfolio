@@ -1,21 +1,30 @@
 <script setup lang="ts">
 import { ArrowRight, Mail, Rocket, ExternalLink, Github, Linkedin, Instagram } from 'lucide-vue-next'
-import { homeSkills } from '~/composables/useSkills'
-import { projects } from '~/composables/useProjects'
 
 useSeoMeta({
   title: 'CehaDev — Web Developer Portfolio',
   description: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Jakarta. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
 })
 
-const featuredProjects = projects.filter((p) => p.featured).length >= 3 ? projects.filter((p) => p.featured) : projects.slice(0, 3)
+const { data: site } = await useSiteSettings()
+const { data: skills } = await useSkillsContent()
+const { data: projects } = await useProjectsContent()
 
-const socials = [
-  { label: 'GitHub', icon: Github, href: 'https://github.com/cehadev' },
-  { label: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/in/cehadev' },
-  { label: 'Instagram', icon: Instagram, href: 'https://instagram.com/cehadev' },
-  { label: 'Mail', icon: Mail, href: 'mailto:hello@cehadev.id' }
-]
+const featuredProjects = computed(() => {
+  const list = projects.value ?? []
+  const featured = list.filter((p) => p.featured)
+  return featured.length >= 3 ? featured : list.slice(0, 3)
+})
+
+const socials = computed(() => {
+  const s = site.value?.socials ?? {}
+  return [
+    { label: 'GitHub', icon: Github, href: s.github ?? 'https://github.com' },
+    { label: 'LinkedIn', icon: Linkedin, href: s.linkedin ?? 'https://linkedin.com' },
+    { label: 'Instagram', icon: Instagram, href: s.instagram ?? 'https://instagram.com' },
+    { label: 'Mail', icon: Mail, href: `mailto:${site.value?.email ?? ''}` }
+  ]
+})
 
 const decoDots = [
   { top: '8%', left: '12%', size: 5, color: '#8B5CF6' },
@@ -37,15 +46,15 @@ const decoDots = [
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
             <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
           </span>
-          Available for collaboration
+          {{ site?.heroBadge }}
         </span>
 
         <h1 class="mt-5 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-[52px]">
-          Hi, I'm <span class="bg-gradient-brand bg-clip-text text-transparent">CehaDev</span>
+          {{ site?.heroTitle1 }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ site?.heroTitleGradient }}</span>
         </h1>
-        <p class="mt-3 text-lg font-semibold text-text-secondary md:text-xl">Web Developer &amp; Tech Enthusiast</p>
+        <p class="mt-3 text-lg font-semibold text-text-secondary md:text-xl">{{ site?.heroSubtitle }}</p>
         <p class="mt-5 max-w-xl text-[15px] leading-relaxed text-text-secondary">
-          Saya membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.
+          {{ site?.heroDescription }}
         </p>
 
         <div class="mt-8 flex flex-wrap gap-4">
@@ -97,7 +106,7 @@ const decoDots = [
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> About Me</h2>
         </div>
         <p class="mt-4 text-[15px] leading-relaxed text-text-secondary">
-          Web developer yang antusias membangun aplikasi modern dengan kualitas tinggi. Menikmati proses dari ide, desain, hingga produksi.
+          {{ site?.aboutIntro?.[0] ?? 'Web developer yang antusias membangun aplikasi modern.' }}
         </p>
         <NuxtLink to="/about" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
           More About Me
@@ -126,7 +135,7 @@ const decoDots = [
       <Reveal class="card p-6" :delay="100">
         <h2 class="section-label"><span class="dot" aria-hidden="true" /> Skills</h2>
         <div class="mt-5 space-y-5">
-          <ProgressBar v-for="s in homeSkills" :key="s.name" :name="s.name" :level="s.level" size="sm" />
+          <ProgressBar v-for="s in skills?.homeSkills ?? []" :key="s.name" :name="s.name" :level="s.level" size="sm" />
         </div>
       </Reveal>
 

@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { MapPin, Navigation } from 'lucide-vue-next'
+
+const props = withDefaults(defineProps<{ location?: string }>(), {
+  location: 'Jakarta, Indonesia'
+})
 </script>
 
 <template>
@@ -31,13 +35,13 @@ import { MapPin, Navigation } from 'lucide-vue-next'
           <span class="absolute inset-0 animate-ping rounded-full bg-primary/50" />
         </span>
       </span>
-      <span class="absolute right-3 top-3 rounded-md bg-black/50 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">Jakarta, Indonesia</span>
+      <span class="absolute right-3 top-3 rounded-md bg-black/50 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">{{ location }}</span>
     </div>
 
     <div class="p-6">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="text-sm font-semibold text-text">Jakarta, Indonesia</p>
+          <p class="text-sm font-semibold text-text">{{ location }}</p>
           <p class="mt-1 text-xs text-text-muted">Open to remote work worldwide</p>
         </div>
         <span class="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[10px] font-medium text-success">

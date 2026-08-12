@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import { Code2, TerminalSquare, Globe2, Code2 as Code, Clock, FolderGit2, GraduationCap } from 'lucide-vue-next'
-import {
-  technicalSkills, skillCategories, skillsSummary, toolsList, softSkills
-} from '~/composables/useSkills'
+import { skillCategories } from '~/composables/useSkills'
 
 useSeoMeta({
   title: 'Skills | CehaDev',
   description: 'Keahlian dan teknologi yang dikuasai CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, dan berbagai tools pengembangan lainnya.'
 })
 
+const { data: skills } = await useSkillsContent()
+
 const activeCat = ref('all')
 
 const filteredSkills = computed(() => {
-  if (activeCat.value === 'all') return technicalSkills
+  const all = skills.value?.technicalSkills ?? []
+  if (activeCat.value === 'all') return all
   if (activeCat.value === 'frontend') {
-    return technicalSkills.filter((s) => ['JavaScript', 'CSS3', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'HTML5'].includes(s.name))
+    return all.filter((s) => ['JavaScript', 'CSS3', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'HTML5'].includes(s.name))
   }
   if (activeCat.value === 'backend') {
-    return technicalSkills.filter((s) => ['Node.js', 'PHP', 'MySQL'].includes(s.name))
+    return all.filter((s) => ['Node.js', 'PHP', 'MySQL'].includes(s.name))
   }
-  return technicalSkills.filter((s) => ['Git & GitHub'].includes(s.name))
+  return all.filter((s) => ['Git & GitHub'].includes(s.name))
 })
 
 const summaryIcons = {
@@ -106,7 +107,7 @@ const floatingBoxes = [
         <Reveal class="card p-6">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> Skills Summary</h2>
           <div class="mt-5 grid grid-cols-2 gap-4">
-            <div v-for="s in skillsSummary" :key="s.label" class="rounded-card border border-border bg-bg p-4">
+            <div v-for="s in skills?.skillsSummary ?? []" :key="s.label" class="rounded-card border border-border bg-bg p-4">
               <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
                 <component :is="summaryIcons[s.icon as keyof typeof summaryIcons]" :size="17" :stroke-width="1.5" />
               </span>
@@ -120,7 +121,7 @@ const floatingBoxes = [
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> Tools &amp; Others</h2>
           <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div
-              v-for="tool in toolsList"
+              v-for="tool in skills?.toolsList ?? []"
               :key="tool"
               class="flex items-center gap-2 rounded-lg border border-border bg-bg px-3 py-2.5 transition-colors hover:border-primary/40"
             >
@@ -136,7 +137,7 @@ const floatingBoxes = [
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> Soft Skills</h2>
           <div class="mt-5 flex flex-wrap gap-2">
             <span
-              v-for="soft in softSkills"
+              v-for="soft in skills?.softSkills ?? []"
               :key="soft"
               class="rounded-full border border-border bg-bg px-3.5 py-1.5 text-xs font-medium text-text-secondary"
             >

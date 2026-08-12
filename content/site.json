@@ -1,0 +1,55 @@
+{
+  "name": "CehaDev",
+  "role": "Web Developer & Tech Enthusiast",
+  "heroBadge": "Available for collaboration",
+  "heroTitle1": "Hi, I'm",
+  "heroTitleGradient": "CehaDev",
+  "heroSubtitle": "Web Developer & Tech Enthusiast",
+  "heroDescription": "Saya membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+  "aboutIntro": [
+    "Halo! Saya seorang web developer yang bersemangat dalam membangun aplikasi web yang cepat, modern, dan memberikan pengalaman terbaik bagi pengguna. Perjalanan saya dimulai dari rasa penasaran terhadap cara kerja sebuah website, yang kemudian berkembang menjadi profesi dan passion.",
+    "Saya percaya bahwa teknologi terbaik adalah yang menyelesaikan masalah nyata dengan cara yang sederhana. Kini saya fokus pada pengembangan frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js."
+  ],
+  "aboutChecklist": [
+    "Berpengalaman membangun aplikasi web modern dari nol hingga produksi.",
+    "Selalu mengikuti perkembangan teknologi dan best practice terbaru.",
+    "Menulis kode yang bersih, teruji, dan mudah dirawat oleh tim.",
+    "Komunikasi yang baik dengan tim, stakeholder, maupun klien."
+  ],
+  "quote": "Code is not just about how it works, but about",
+  "quoteHighlight": "how it's built.",
+  "stats": [
+    { "icon": "Clock", "label": "Years", "sub": "Learning & Building", "end": 2, "suffix": "+" },
+    { "icon": "FolderGit2", "label": "Projects", "sub": "Completed", "end": 10, "suffix": "+" },
+    { "icon": "Code2", "label": "Hours", "sub": "Coding", "end": 500, "suffix": "+" },
+    { "icon": "Target", "label": "Goal", "sub": "To be better every day", "end": 1, "suffix": "" }
+  ],
+  "email": "hello@cehadev.id",
+  "location": "Jakarta, Indonesia",
+  "website": "cehadev.id",
+  "phone": "+62 812-3456-7890",
+  "socials": {
+    "github": "https://github.com/cehadev",
+    "linkedin": "https://linkedin.com/in/cehadev",
+    "instagram": "https://instagram.com/cehadev"
+  },
+  "cvUrl": "/cv-cehadev.pdf",
+  "faqs": [
+    {
+      "q": "Apakah Anda menerima project freelance?",
+      "a": "Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak."
+    },
+    {
+      "q": "Teknologi apa yang Anda kuasai?",
+      "a": "Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD."
+    },
+    {
+      "q": "Bagaimana proses kerja sama berlangsung?",
+      "a": "Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap."
+    },
+    {
+      "q": "Berapa lama waktu pengerjaan project?",
+      "a": "Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan."
+    }
+  ]
+}

@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ExternalLink, ArrowRight } from 'lucide-vue-next'
-import type { Project } from '~/composables/useProjects'
 
-const props = defineProps<{ project: Project }>()
+interface ProjectCardData {
+  slug: string
+  title: string
+  year: string
+  description: string
+  tags: string[]
+  category: string
+  liveUrl: string
+}
+
+const props = defineProps<{ project: ProjectCardData }>()
 </script>
 
 <template>

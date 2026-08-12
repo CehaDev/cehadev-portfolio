@@ -1,0 +1,15 @@
+{
+  "slug": "devboard",
+  "title": "DevBoard",
+  "tagline": "Dashboard analitik developer dengan visualisasi data real-time.",
+  "description": "Dashboard analitik untuk memantau performa aplikasi, metrik pengguna, dan log sistem dengan grafik interaktif.",
+  "tags": ["Vue.js", "Node.js", "Tailwind CSS"],
+  "tech": ["vue", "node", "tailwind", "javascript"],
+  "category": "Dashboard",
+  "year": "2024",
+  "role": "Frontend Developer",
+  "duration": "2 Bulan",
+  "featured": true,
+  "liveUrl": "https://devboard.example.com",
+  "githubUrl": "https://github.com/cehadev/devboard"
+}

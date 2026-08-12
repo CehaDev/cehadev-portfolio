@@ -2,7 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
+  content: {
+    experimental: {
+      sqliteConnector: 'native'
+    }
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
