@@ -1,0 +1,32 @@
+# Nuxt
+.nuxt
+.output
+.data
+.cache
+dist
+
+# Node
+node_modules
+
+# Logs
+logs
+*.log
+
+# Env
+.env
+.env.*
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Test
+coverage
+.nyc_output
+playwright-report
+test-results
+
+# Local screenshots artifact
+.screenshots
