@@ -3,7 +3,8 @@ import { defineCollection, z } from '@nuxt/content'
 const techItem = z.object({
   name: z.string(),
   level: z.number(),
-  tech: z.string()
+  tech: z.string(),
+  category: z.string().optional()
 })
 
 const statSchema = z.object({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
+import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Database, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
@@ -8,6 +8,7 @@ useSeoMeta({
 })
 
 const { data: site } = await useSiteSettings()
+const { data: skills } = await useSkillsContent()
 
 const statIcons = {
   Clock,
@@ -23,38 +24,49 @@ const facts = computed(() => [
   { icon: Phone, label: 'Telepon', value: site.value?.phone }
 ])
 
-const stackNames = ['JavaScript', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'Node.js', 'TypeScript', 'Git & GitHub', 'Linux']
-
-const stackCategories: Record<string, string> = {
-  'JavaScript': 'Language',
-  'TypeScript': 'Language',
-  'Vue.js': 'Framework',
-  'Nuxt.js': 'Framework',
-  'Node.js': 'Runtime',
-  'Tailwind CSS': 'Styling',
-  'Git & GitHub': 'Tooling',
-  'Linux': 'OS'
-}
-
 const categoryIcons: Record<string, Component> = {
   Language: Braces,
   Framework: Boxes,
   Runtime: Terminal,
   Styling: Palette,
   Tooling: Wrench,
-  OS: Monitor
+  OS: Monitor,
+  Database,
+  Lainnya: Code2
 }
 
+const legacyCategory: Record<string, string> = {
+  javascript: 'Language',
+  typescript: 'Language',
+  php: 'Language',
+  html5: 'Language',
+  vue: 'Framework',
+  nuxt: 'Framework',
+  node: 'Runtime',
+  tailwind: 'Styling',
+  css3: 'Styling',
+  mysql: 'Database',
+  git: 'Tooling',
+  linux: 'OS'
+}
+
+const techSkills = computed(() =>
+  (skills.value?.technicalSkills ?? []).map((s) => ({
+    ...s,
+    category: s.category || legacyCategory[s.tech] || 'Lainnya'
+  }))
+)
+
 const stackGroups = computed(() => {
-  const groups: { category: string; items: string[] }[] = []
-  for (const name of stackNames) {
-    const category = stackCategories[name] ?? 'Lainnya'
+  const groups: { category: string; items: typeof techSkills.value }[] = []
+  for (const item of techSkills.value) {
+    const category = item.category || 'Lainnya'
     let group = groups.find((g) => g.category === category)
     if (!group) {
       group = { category, items: [] }
       groups.push(group)
     }
-    group.items.push(name)
+    group.items.push(item)
   }
   return groups.map((g) => ({ ...g, icon: categoryIcons[g.category] ?? Code2 }))
 })
@@ -259,31 +271,38 @@ function statIcon(icon: string) {
         <Reveal
           v-for="group in stackGroups"
           :key="group.category"
-          class="card flex flex-col p-5 transition-all duration-300 hover:border-primary/40"
+          class="card group/card relative flex flex-col overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card-hover"
         >
-          <div class="flex items-center gap-2.5">
-            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+          <div
+            class="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-300 opacity-0 group-hover/card:opacity-100"
+            aria-hidden="true"
+          />
+          <div class="relative flex items-center gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
               <component :is="group.icon" :size="18" :stroke-width="1.5" />
             </span>
-            <h3 class="text-sm font-bold text-text">{{ group.category }}</h3>
-            <span class="ml-auto rounded-md border border-border bg-bg px-2 py-0.5 font-mono text-[11px] text-text-muted">{{ group.items.length }}</span>
+            <h3 class="text-base font-bold text-text">{{ group.category }}</h3>
+            <span class="ml-auto rounded-full border border-border bg-bg px-2.5 py-0.5 font-mono text-[11px] text-text-muted">{{ group.items.length }}</span>
           </div>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span
-              v-for="name in group.items"
-              :key="name"
-              class="inline-flex items-center gap-2 rounded-lg border border-border bg-bg py-1.5 pl-1.5 pr-3 text-xs font-medium text-text-secondary transition-colors duration-300 hover:border-primary/40"
-            >
-              <span
-                class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-card text-[10px] font-bold stack-glyph"
-                :style="{ '--glyph-color': techColor(name) }"
-                :aria-label="name"
-              >
-                {{ findTechByName(name)?.glyph }}
-              </span>
-              {{ name }}
-            </span>
-          </div>
+
+          <ul class="relative mt-6 flex-1 space-y-4">
+            <li v-for="s in group.items" :key="s.name">
+              <div class="flex items-center gap-3">
+                <span
+                  class="stack-glyph flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-bg-alt text-[10px] font-bold"
+                  :style="{ '--glyph-color': techColor(s.name) }"
+                  :aria-label="s.name"
+                >
+                  {{ findTechByName(s.name)?.glyph ?? s.name.slice(0, 2).toUpperCase() }}
+                </span>
+                <span class="min-w-0 flex-1 truncate text-sm font-semibold text-text">{{ s.name }}</span>
+                <span class="font-mono text-xs font-bold text-text-secondary">{{ s.level }}<span class="text-text-muted">%</span></span>
+              </div>
+              <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-bg-alt" role="progressbar" :aria-label="`Tingkat ${s.name}`" :aria-valuenow="s.level" aria-valuemin="0" aria-valuemax="100">
+                <div class="skill-bar h-full rounded-full bg-gradient-brand" :style="{ width: `${s.level}%` }" />
+              </div>
+            </li>
+          </ul>
         </Reveal>
       </div>
     </section>
@@ -300,6 +319,20 @@ function statIcon(icon: string) {
 
 .stack-glyph {
   color: var(--glyph-color);
+}
+
+.skill-bar {
+  transform-origin: left;
+  animation: skillGrow 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes skillGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* Mode terang: gelapkan warna logo agar tetap terbaca di background putih */

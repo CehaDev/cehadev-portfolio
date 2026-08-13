@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Code2, TerminalSquare, Globe2, Code2 as Code, Clock, FolderGit2, GraduationCap } from 'lucide-vue-next'
-import { skillCategories } from '~/composables/useSkills'
+import { Code2, TerminalSquare, Globe2, Clock, FolderGit2, GraduationCap } from 'lucide-vue-next'
+import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
   title: 'Skills | CehaDev',
@@ -11,20 +11,38 @@ const { data: skills } = await useSkillsContent()
 
 const activeCat = ref('all')
 
-const filteredSkills = computed(() => {
-  const all = skills.value?.technicalSkills ?? []
-  if (activeCat.value === 'all') return all
-  if (activeCat.value === 'frontend') {
-    return all.filter((s) => ['JavaScript', 'CSS3', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'HTML5'].includes(s.name))
-  }
-  if (activeCat.value === 'backend') {
-    return all.filter((s) => ['Node.js', 'PHP', 'MySQL'].includes(s.name))
-  }
-  return all.filter((s) => ['Git & GitHub'].includes(s.name))
+const techSkills = computed(() => (skills.value?.technicalSkills ?? []))
+
+const categories = computed(() => {
+  const set = new Set(techSkills.value.map((s) => s.category).filter(Boolean))
+  return ['all', ...set] as string[]
 })
 
+const filteredSkills = computed(() => {
+  if (activeCat.value === 'all') return techSkills.value
+  return techSkills.value.filter((s) => s.category === activeCat.value)
+})
+
+const groups = computed(() => {
+  const map = new Map<string, typeof techSkills.value>()
+  for (const s of filteredSkills.value) {
+    const cat = s.category || 'Lainnya'
+    if (!map.has(cat)) map.set(cat, [])
+    map.get(cat)!.push(s)
+  }
+  return [...map.entries()]
+})
+
+function techFor(name: string) {
+  return findTechByName(name)
+}
+
+function techColor(name: string) {
+  return findTechByName(name)?.color ?? '#8B5CF6'
+}
+
 const summaryIcons = {
-  'Code2': Code,
+  'Code2': Code2,
   'Clock': Clock,
   'FolderGit2': FolderGit2,
   'GraduationCap': GraduationCap
@@ -42,7 +60,6 @@ const floatingBoxes = [
     <!-- HERO -->
     <section class="grid min-h-[calc(100vh-76px)] items-center gap-12 lg:grid-cols-[55fr_45fr]">
       <Reveal>
-        <span class="section-label"><span class="dot" aria-hidden="true" /> Always learning and improving</span>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight md:text-5xl">
           My <span class="bg-gradient-brand bg-clip-text text-transparent">Skills</span>
         </h1>
@@ -70,18 +87,18 @@ const floatingBoxes = [
     <!-- TABS KATEGORI -->
     <div class="mt-14 flex flex-wrap gap-2.5" role="tablist" aria-label="Filter kategori skill">
       <button
-        v-for="cat in skillCategories"
-        :key="cat.id"
+        v-for="cat in categories"
+        :key="cat"
         type="button"
         role="tab"
-        :aria-selected="activeCat === cat.id"
+        :aria-selected="activeCat === cat"
         class="rounded-full border px-4 py-2 text-sm font-medium transition-colors"
-        :class="activeCat === cat.id
+        :class="activeCat === cat
           ? 'border-transparent bg-gradient-brand text-white shadow-btn-glow'
           : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
-        @click="activeCat = cat.id"
+        @click="activeCat = cat"
       >
-        {{ cat.label }}
+        {{ cat === 'all' ? 'All Skills' : cat }}
       </button>
     </div>
 
@@ -91,9 +108,68 @@ const floatingBoxes = [
       <div class="space-y-6">
         <Reveal class="card p-7">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> Technical Skills</h2>
-          <div class="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-            <ProgressBar v-for="s in filteredSkills" :key="s.name" :name="s.name" :level="s.level" />
+
+          <div v-if="activeCat === 'all'" class="mt-6 space-y-8">
+            <div v-for="[cat, items] in groups" :key="cat">
+              <div class="mb-3 flex items-center gap-2">
+                <h3 class="text-sm font-bold text-text">{{ cat }}</h3>
+                <span class="rounded-full border border-border bg-bg px-2 py-0.5 font-mono text-[11px] text-text-muted">{{ items.length }}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                <div
+                  v-for="s in items"
+                  :key="s.name"
+                  class="skill-tile group"
+                  :style="{ '--tile-color': techColor(s.name) }"
+                >
+                  <span
+                    class="skill-tile-glyph"
+                    :style="{ color: techColor(s.name), backgroundColor: `${techColor(s.name)}1f` }"
+                    aria-hidden="true"
+                  >
+                    {{ techFor(s.name)?.glyph ?? s.name.slice(0, 2).toUpperCase() }}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold text-text">{{ s.name }}</p>
+                    <p class="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-text-muted">
+                      <span class="h-1 w-1 rounded-full" :style="{ backgroundColor: techColor(s.name) }" aria-hidden="true" />
+                      {{ s.level }}%
+                    </p>
+                  </div>
+                  <span class="ml-auto h-1.5 w-1.5 rounded-full transition-colors duration-300 group-hover:bg-primary" aria-hidden="true" />
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div v-else class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div
+              v-for="s in filteredSkills"
+              :key="s.name"
+              class="skill-tile group"
+              :style="{ '--tile-color': techColor(s.name) }"
+            >
+              <span
+                class="skill-tile-glyph"
+                :style="{ color: techColor(s.name), backgroundColor: `${techColor(s.name)}1f` }"
+                aria-hidden="true"
+              >
+                {{ techFor(s.name)?.glyph ?? s.name.slice(0, 2).toUpperCase() }}
+              </span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-text">{{ s.name }}</p>
+                <p class="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-text-muted">
+                  <span class="h-1 w-1 rounded-full" :style="{ backgroundColor: techColor(s.name) }" aria-hidden="true" />
+                  {{ s.level }}%
+                </p>
+              </div>
+              <span class="ml-auto h-1.5 w-1.5 rounded-full transition-colors duration-300 group-hover:bg-primary" aria-hidden="true" />
+            </div>
+          </div>
+
+          <p v-if="!filteredSkills.length" class="mt-6 rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-text-muted">
+            Belum ada skill pada kategori ini.
+          </p>
         </Reveal>
 
         <Reveal class="flex flex-col items-center justify-between gap-4 rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 to-blue/10 p-6 sm:flex-row" :delay="100">
@@ -149,3 +225,39 @@ const floatingBoxes = [
     </section>
   </div>
 </template>
+
+<style scoped>
+.skill-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgb(var(--color-border));
+  border-radius: var(--radius-card, 14px);
+  background: rgb(var(--color-card));
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.skill-tile:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--tile-color) 55%, rgb(var(--color-border)));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px color-mix(in srgb, var(--tile-color) 40%, transparent);
+}
+
+.skill-tile-glyph {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-size: 10px;
+  font-weight: 700;
+  transition: transform 0.3s ease;
+}
+
+.skill-tile:hover .skill-tile-glyph {
+  transform: scale(1.08) rotate(-4deg);
+}
+</style>
