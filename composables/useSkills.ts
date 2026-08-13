@@ -20,6 +20,15 @@ export const techIcons: Record<string, TechItem> = {
   linux: { name: 'Linux', color: '#FCC624', glyph: 'Linux' }
 }
 
+/**
+ * Cari data tech dari nama tampilan (mis. "Vue.js", "Nuxt.js", "Tailwind CSS",
+ * "Git & GitHub") atau dari key (mis. "vue", "nuxt").
+ */
+export function findTechByName(name: string): TechItem | undefined {
+  const key = name.toLowerCase().replace('&', '').trim()
+  return techIcons[key] ?? Object.values(techIcons).find((t) => t.name.toLowerCase() === name.toLowerCase())
+}
+
 export const homeSkills = [
   { name: 'JavaScript', level: 90, tech: 'javascript' },
   { name: 'Vue.js', level: 85, tech: 'vue' },

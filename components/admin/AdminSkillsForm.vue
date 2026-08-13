@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
 import { Plus, Trash2, LoaderCircle, Save, ArrowLeft, ArrowRight, Layers } from 'lucide-vue-next'
-import { techIcons } from '~/composables/useSkills'
+import { techIcons, findTechByName } from '~/composables/useSkills'
 
 const props = defineProps<{
   initial?: Record<string, any>
@@ -22,6 +23,10 @@ const knownTechs = computed(() =>
     .filter((name) => !form.marqueeTech.includes(name))
     .sort((a, b) => a.localeCompare(b))
 )
+
+function techFor(name: string) {
+  return findTechByName(name)
+}
 
 function addCustom() {
   const name = newTech.value.trim()
@@ -96,8 +101,8 @@ async function save() {
             :key="i"
             class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-3"
           >
-            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold" :style="`color: ${techIcons[name.toLowerCase().replace('&', '').trim()]?.color ?? '#8B5CF6'}; background-color: ${(techIcons[name.toLowerCase().replace('&', '').trim()]?.color ?? '#8B5CF6')}22`" aria-hidden="true">
-              {{ techIcons[name.toLowerCase().replace('&', '').trim()]?.glyph ?? name.slice(0, 2).toUpperCase() }}
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold" :style="`color: ${techFor(name)?.color ?? '#8B5CF6'}; background-color: ${(techFor(name)?.color ?? '#8B5CF6')}22`" aria-hidden="true">
+              {{ techFor(name)?.glyph ?? name.slice(0, 2).toUpperCase() }}
             </span>
             <span class="min-w-0 flex-1 text-sm font-medium text-text">{{ name }}</span>
             <div class="flex items-center gap-1.5">
@@ -142,8 +147,8 @@ async function save() {
               class="chip transition-colors hover:border-primary/50 hover:text-text"
               @click="addKnown(name)"
             >
-              <span class="flex h-5 w-5 items-center justify-center rounded text-[8px] font-bold" :style="`background-color: ${techIcons[name.toLowerCase().replace('&', '').trim()]?.color}22; color: ${techIcons[name.toLowerCase().replace('&', '').trim()]?.color}`" aria-hidden="true">
-                {{ techIcons[name.toLowerCase().replace('&', '').trim()]?.glyph }}
+              <span class="flex h-5 w-5 items-center justify-center rounded text-[8px] font-bold" :style="`background-color: ${techFor(name)?.color}22; color: ${techFor(name)?.color}`" aria-hidden="true">
+                {{ techFor(name)?.glyph }}
               </span>
               {{ name }}
             </button>

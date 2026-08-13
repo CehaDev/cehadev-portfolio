@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { techIcons } from '~/composables/useSkills'
+import { findTechByName } from '~/composables/useSkills'
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +10,7 @@ const props = withDefaults(
   { size: 'md' }
 )
 
-const tech = computed(() => techIcons[props.name.toLowerCase().replace('&', '').trim()])
+const tech = computed(() => findTechByName(props.name))
 const width = ref(0)
 const barEl = ref<HTMLElement | null>(null)
 

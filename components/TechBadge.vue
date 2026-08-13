@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { techIcons } from '~/composables/useSkills'
+import { findTechByName } from '~/composables/useSkills'
 
 const props = withDefaults(
   defineProps<{
@@ -9,7 +9,7 @@ const props = withDefaults(
   { showGlyph: true }
 )
 
-const tech = computed(() => techIcons[props.name.toLowerCase().replace('&', '').trim()])
+const tech = computed(() => findTechByName(props.name))
 </script>
 
 <template>

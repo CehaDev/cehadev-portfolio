@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
 import { LoaderCircle, Save } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 

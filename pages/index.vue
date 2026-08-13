@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowRight, Mail, ArrowUpRight, Github, Linkedin, Instagram, Sparkles, Rocket, Braces, Code2, Zap, Asterisk, Plus, Terminal, GitBranch } from 'lucide-vue-next'
-import { techIcons } from '~/composables/useSkills'
+import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
   title: 'CehaDev — Web Developer Portfolio',
@@ -25,15 +25,15 @@ const marqueeTech = computed(() => {
 const heroStats = computed(() => site.value?.stats?.slice(0, 4) ?? [])
 
 function techFor(name: string) {
-  return techIcons[name.toLowerCase().replace('&', '').trim()]
+  return findTechByName(name)
 }
 
 const socials = computed(() => {
-  const s = site.value?.socials ?? {}
+  const s = site.value?.socials ?? { github: '', linkedin: '', instagram: '' }
   return [
-    { label: 'GitHub', icon: Github, href: s.github ?? 'https://github.com' },
-    { label: 'LinkedIn', icon: Linkedin, href: s.linkedin ?? 'https://linkedin.com' },
-    { label: 'Instagram', icon: Instagram, href: s.instagram ?? 'https://instagram.com' },
+    { label: 'GitHub', icon: Github, href: s.github || 'https://github.com' },
+    { label: 'LinkedIn', icon: Linkedin, href: s.linkedin || 'https://linkedin.com' },
+    { label: 'Instagram', icon: Instagram, href: s.instagram || 'https://instagram.com' },
     { label: 'Mail', icon: Mail, href: `mailto:${site.value?.email ?? ''}` }
   ]
 })

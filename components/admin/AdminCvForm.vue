@@ -1,5 +1,45 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
 import { Plus, Trash2, LoaderCircle, Save, Upload, Briefcase, GraduationCap, Languages, Award } from 'lucide-vue-next'
+
+interface ExperienceItem {
+  role: string
+  company: string
+  period: string
+  description: string
+}
+interface EducationItem {
+  degree: string
+  school: string
+  period: string
+  description: string
+}
+interface LanguageItem {
+  name: string
+  level: string
+}
+interface CertificationItem {
+  name: string
+  issuer: string
+  year: string
+}
+interface CvFormState {
+  fullName: string
+  title: string
+  photo: string
+  email: string
+  phone: string
+  location: string
+  website: string
+  linkedin: string
+  github: string
+  summary: string
+  experiences: ExperienceItem[]
+  education: EducationItem[]
+  skills: string
+  languages: LanguageItem[]
+  certifications: CertificationItem[]
+}
 
 const props = defineProps<{
   initial?: Record<string, any>
@@ -7,7 +47,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ saved: [data: Record<string, unknown>] }>()
 
-const form = reactive({
+const form = reactive<CvFormState>({
   fullName: props.initial?.fullName ?? '',
   title: props.initial?.title ?? '',
   photo: props.initial?.photo ?? '',
@@ -18,11 +58,11 @@ const form = reactive({
   linkedin: props.initial?.linkedin ?? '',
   github: props.initial?.github ?? '',
   summary: props.initial?.summary ?? '',
-  experiences: [...(props.initial?.experiences ?? [])],
-  education: [...(props.initial?.education ?? [])],
+  experiences: props.initial?.experiences ?? [],
+  education: props.initial?.education ?? [],
   skills: (props.initial?.skills ?? []).join(', '),
-  languages: [...(props.initial?.languages ?? [])],
-  certifications: [...(props.initial?.certifications ?? [])]
+  languages: props.initial?.languages ?? [],
+  certifications: props.initial?.certifications ?? []
 })
 
 const error = ref('')
@@ -54,16 +94,16 @@ function onPhotoChange(event: Event) {
   input.value = ''
 }
 
-function emptyExperience() {
+function emptyExperience(): ExperienceItem {
   return { role: '', company: '', period: '', description: '' }
 }
-function emptyEducation() {
+function emptyEducation(): EducationItem {
   return { degree: '', school: '', period: '', description: '' }
 }
-function emptyLanguage() {
+function emptyLanguage(): LanguageItem {
   return { name: '', level: '' }
 }
-function emptyCertification() {
+function emptyCertification(): CertificationItem {
   return { name: '', issuer: '', year: '' }
 }
 

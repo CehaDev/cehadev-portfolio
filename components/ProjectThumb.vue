@@ -7,7 +7,7 @@ const props = withDefaults(
     height?: string
   }>(),
   {
-    gradient: ['#8B5CF6', '#3B82F6'],
+    gradient: ['#8B5CF6', '#3B82F6'] as [string, string],
     seed: 0,
     height: 'h-44'
   }

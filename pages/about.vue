@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Quote, MapPin, Mail, Globe, CheckCircle2, Code2, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
-import { techIcons } from '~/composables/useSkills'
+import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
+import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
   title: 'About | CehaDev',
@@ -19,7 +19,8 @@ const statIcons = {
 const facts = computed(() => [
   { icon: MapPin, label: 'Lokasi', value: site.value?.location },
   { icon: Mail, label: 'Email', value: site.value?.email },
-  { icon: Globe, label: 'Website', value: site.value?.website }
+  { icon: Globe, label: 'Website', value: site.value?.website },
+  { icon: Phone, label: 'Telepon', value: site.value?.phone }
 ])
 
 const stackNames = ['JavaScript', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'Node.js', 'TypeScript', 'Git & GitHub', 'Linux']
@@ -44,7 +45,7 @@ const stats = computed(() => {
 })
 
 function techColor(name: string) {
-  return techIcons[name.toLowerCase().replace('&', '').trim()]?.color ?? '#8B5CF6'
+  return findTechByName(name)?.color ?? '#8B5CF6'
 }
 
 function statIcon(icon: string) {
@@ -99,12 +100,6 @@ function statIcon(icon: string) {
 
           <p class="mt-4 text-lg font-semibold text-text-secondary md:text-xl">{{ site?.role }}</p>
 
-          <div class="mx-auto mt-6 max-w-2xl space-y-4 text-[15px] leading-relaxed text-text-secondary">
-            <p v-for="(para, i) in site?.aboutIntro ?? []" :key="i">
-              {{ para }}
-            </p>
-          </div>
-
           <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
             <a :href="site?.cvUrl ? `${site.cvUrl}?download=1` : '/cv?download=1'" class="btn-primary">
               <Download :size="16" :stroke-width="2" />
@@ -142,41 +137,74 @@ function statIcon(icon: string) {
     </section>
 
     <!-- 01 · TENTANG SAYA -->
-    <section class="container-site pb-20 text-center">
-      <Reveal>
-        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">01 · Tentang Saya</p>
-        <h2 class="mt-2 text-2xl font-extrabold tracking-tight md:text-4xl">
-          Why I love <span class="bg-gradient-brand bg-clip-text text-transparent">building for the web</span>
-        </h2>
-      </Reveal>
+    <section class="container-site pb-20">
+      <div class="grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        <div>
+          <Reveal>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">01 · Tentang Saya</p>
+            <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-text md:text-4xl">
+              Why I love <span class="bg-gradient-brand bg-clip-text text-transparent">building for the web</span>
+            </h2>
+          </Reveal>
 
-      <div class="mx-auto mt-10 max-w-2xl space-y-4">
-        <Reveal
-          v-for="item in site?.aboutChecklist ?? []"
-          :key="item"
-          class="flex items-center gap-3.5 rounded-2xl border border-border bg-card p-5 text-left transition-all duration-300 hover:border-primary/40"
-        >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors duration-300"
-            aria-hidden="true"
-          >
-            <CheckCircle2 :size="16" :stroke-width="2" />
-          </span>
-          <p class="text-sm leading-relaxed text-text-secondary">{{ item }}</p>
-        </Reveal>
-      </div>
+          <Reveal class="mt-6 space-y-4 text-[15px] leading-relaxed text-text-secondary">
+            <p v-for="(para, i) in site?.aboutIntro ?? []" :key="i">{{ para }}</p>
+          </Reveal>
 
-      <div class="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-3">
-        <Reveal
-          v-for="f in facts"
-          :key="f.label"
-          class="card flex flex-col items-center p-6 text-center transition-all duration-300 hover:border-primary/40"
-        >
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
-            <component :is="f.icon" :size="20" :stroke-width="1.5" />
-          </span>
-          <p class="mt-3 text-xs text-text-muted">{{ f.label }}</p>
-          <p class="mt-0.5 text-sm font-semibold text-text">{{ f.value }}</p>
+          <ul class="mt-8 space-y-3">
+            <Reveal
+              v-for="item in site?.aboutChecklist ?? []"
+              :key="item"
+              class="group flex items-start gap-3.5 rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40"
+            >
+              <span
+                class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors duration-300 group-hover:bg-primary/25"
+                aria-hidden="true"
+              >
+                <CheckCircle2 :size="16" :stroke-width="2" />
+              </span>
+              <p class="text-sm leading-relaxed text-text-secondary">{{ item }}</p>
+            </Reveal>
+          </ul>
+        </div>
+
+        <Reveal class="lg:sticky lg:top-24">
+          <div class="card overflow-hidden">
+            <div class="relative flex flex-col items-center px-6 pb-6 pt-9 text-center">
+              <div
+                class="pointer-events-none absolute -top-14 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
+                aria-hidden="true"
+              />
+              <AvatarIllustration :size="116" variant="code" class="relative" />
+              <h3 class="mt-4 text-xl font-extrabold text-text">{{ site?.name }}</h3>
+              <p class="mt-1 text-sm text-text-secondary">{{ site?.role }}</p>
+              <span
+                class="mt-4 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-[11px] font-medium text-success"
+              >
+                <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+                </span>
+                {{ site?.heroBadge }}
+              </span>
+            </div>
+
+            <div class="border-t border-border bg-bg/60 px-5 py-3">
+              <div
+                v-for="f in facts"
+                :key="f.label"
+                class="flex items-center gap-3.5 rounded-xl px-3 py-2.5 transition-colors duration-300 hover:bg-card"
+              >
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+                  <component :is="f.icon" :size="18" :stroke-width="1.5" />
+                </span>
+                <div class="min-w-0">
+                  <p class="text-xs text-text-muted">{{ f.label }}</p>
+                  <p class="truncate text-sm font-semibold text-text">{{ f.value }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -215,7 +243,7 @@ function statIcon(icon: string) {
             class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-bg text-sm font-bold stack-glyph"
             :aria-label="name"
           >
-            {{ techIcons[name.toLowerCase().replace('&', '').trim()]?.glyph }}
+            {{ findTechByName(name)?.glyph }}
           </span>
           <span class="text-sm font-semibold text-text">{{ name }}</span>
           <span class="hidden text-xs text-text-muted sm:inline">{{ stackCategories[name] }}</span>
