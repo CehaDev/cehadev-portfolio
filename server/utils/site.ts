@@ -55,6 +55,16 @@ export function normalizeSite(body: Record<string, unknown>) {
     }
   }
 
+  const faqs = (v: unknown) => obj(v, ['q', 'a'])
+
+  const statCards = (v: unknown) =>
+    arr(v)
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return { icon: str(o.icon), label: str(o.label), value: str(o.value) }
+      })
+      .filter((i) => i.label)
+
   return {
     name: str(body.name),
     role: str(body.role),
@@ -74,6 +84,7 @@ export function normalizeSite(body: Record<string, unknown>) {
     phone: str(body.phone),
     socials: socials(body.socials),
     cvUrl: str(body.cvUrl),
-    faqs: obj(body.faqs, ['q', 'a'])
+    faqs: faqs(body.faqs),
+    projectStats: statCards(body.projectStats)
   }
 }

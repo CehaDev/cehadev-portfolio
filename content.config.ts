@@ -123,7 +123,14 @@ export const collections = {
         instagram: z.string()
       }),
       cvUrl: z.string(),
-      faqs: z.array(faqItem)
+      faqs: z.array(faqItem),
+      projectStats: z
+        .array(z.object({
+          icon: z.string(),
+          label: z.string(),
+          value: z.string()
+        }))
+        .optional()
     })
   }),
 

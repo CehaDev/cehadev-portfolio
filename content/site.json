@@ -58,6 +58,28 @@
     "instagram": "https://instagram.com/cehadev"
   },
   "cvUrl": "/cv",
+  "projectStats": [
+    {
+      "icon": "FolderKanban",
+      "label": "Project",
+      "value": "6"
+    },
+    {
+      "icon": "Tag",
+      "label": "Kategori",
+      "value": "6"
+    },
+    {
+      "icon": "CalendarRange",
+      "label": "Tahun",
+      "value": "2024 – 2025"
+    },
+    {
+      "icon": "Code2",
+      "label": "Tech",
+      "value": "8"
+    }
+  ],
   "faqs": [
     {
       "q": "Apakah Anda menerima project freelance?",

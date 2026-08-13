@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BarChart3 } from 'lucide-vue-next'
+import { BarChart3, FolderKanban, Tag, CalendarRange, Code2 } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
@@ -8,6 +8,7 @@ useSeoMeta({
 })
 
 const { data: projects } = await useProjectsContent()
+const { data: site } = await useSiteSettings()
 
 const categories = computed(() => ['All', ...new Set((projects.value ?? []).map((p) => p.category))])
 const activeCategory = ref('All')
@@ -47,6 +48,31 @@ const techStats = computed(() => {
     })
     .sort((a, b) => b.count - a.count)
 })
+
+const statIcons = {
+  FolderKanban,
+  Tag,
+  CalendarRange,
+  Code2
+}
+
+const statItems = computed(() => {
+  const config = (site.value?.projectStats as Array<{ icon?: string; label?: string; value?: string }> | undefined) ?? []
+  const defaults = [
+    { icon: 'FolderKanban', label: 'Project', value: String(totalProjects.value) },
+    { icon: 'Tag', label: 'Kategori', value: String(totalCategories.value) },
+    { icon: 'CalendarRange', label: 'Tahun', value: yearsRange.value },
+    { icon: 'Code2', label: 'Tech', value: String(techStats.value.length) }
+  ]
+  return defaults.map((d, i) => {
+    const c = config[i] as { icon?: string; label?: string; value?: string } | undefined
+    return {
+      icon: (c?.icon && statIcons[c.icon as keyof typeof statIcons]) || statIcons[d.icon as keyof typeof statIcons],
+      label: c?.label || d.label,
+      value: c?.value || d.value
+    }
+  })
+})
 </script>
 
 <template>
@@ -64,22 +90,13 @@ const techStats = computed(() => {
         Kumpulan project yang saya kerjakan — dari aplikasi web, e-commerce, dashboard, hingga backend API. Setiap project dibangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.
       </p>
 
-      <div class="mx-auto mt-8 flex max-w-lg divide-x divide-border overflow-hidden rounded-card border border-border bg-card shadow-card">
-        <div class="flex-1 px-3 py-4 text-center">
-          <p class="font-mono text-2xl font-extrabold text-text">{{ totalProjects }}</p>
-          <p class="mt-0.5 text-xs text-text-muted">Project</p>
-        </div>
-        <div class="flex-1 px-3 py-4 text-center">
-          <p class="font-mono text-2xl font-extrabold text-text">{{ totalCategories }}</p>
-          <p class="mt-0.5 text-xs text-text-muted">Kategori</p>
-        </div>
-        <div class="flex-1 px-3 py-4 text-center">
-          <p class="font-mono text-2xl font-extrabold text-text">{{ yearsRange }}</p>
-          <p class="mt-0.5 text-xs text-text-muted">Tahun</p>
-        </div>
-        <div class="flex-1 px-3 py-4 text-center">
-          <p class="font-mono text-2xl font-extrabold text-text">{{ techStats.length }}</p>
-          <p class="mt-0.5 text-xs text-text-muted">Tech</p>
+      <div class="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+        <div v-for="s in statItems" :key="s.label" class="rounded-card border border-border bg-card px-3 py-5 text-center shadow-card">
+          <span class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+            <component :is="s.icon" :size="16" :stroke-width="1.75" />
+          </span>
+          <p class="mt-2.5 font-mono text-xl font-extrabold leading-none text-text">{{ s.value }}</p>
+          <p class="mt-1.5 text-xs text-text-muted">{{ s.label }}</p>
         </div>
       </div>
     </div>

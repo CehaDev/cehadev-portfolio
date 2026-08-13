@@ -43,6 +43,7 @@ const form = reactive({
     linkedin: props.initial?.socials?.linkedin ?? '',
     instagram: props.initial?.socials?.instagram ?? ''
   },
+  projectStats: (props.initial?.projectStats ?? []).map((s: any) => ({ icon: s.icon ?? '', label: s.label ?? '', value: s.value ?? '' })),
   faqs: (props.initial?.faqs ?? []).map((f: any) => ({ q: f.q ?? '', a: f.a ?? '' }))
 })
 
@@ -108,6 +109,11 @@ function payload() {
       linkedin: form.socials.linkedin.trim(),
       instagram: form.socials.instagram.trim()
     },
+    projectStats: form.projectStats.map((s) => ({
+      icon: s.icon.trim(),
+      label: s.label.trim(),
+      value: s.value.trim()
+    })).filter((s) => s.label),
     faqs: form.faqs.map((f) => ({ q: f.q.trim(), a: f.a.trim() })).filter((f) => f.q)
   }
 }
@@ -292,6 +298,46 @@ async function save() {
           <label for="site-social-instagram" class="mb-1.5 block text-sm font-medium text-text">Instagram</label>
           <input id="site-social-instagram" v-model="form.socials.instagram" type="url" class="input-field" placeholder="https://instagram.com/..." />
         </div>
+      </div>
+    </div>
+
+    <div class="card p-7">
+      <h3 class="mb-5 text-base font-bold text-text">Statistik Halaman Project</h3>
+      <p class="mb-4 text-xs text-text-muted">
+        Mengatur 4 kartu statistik di halaman project. Ikon yang didukung: FolderKanban, Tag, CalendarRange, Code2. Kosongkan label untuk menonaktifkan kartu.
+      </p>
+      <div class="space-y-5">
+        <div v-for="(s, i) in form.projectStats" :key="i" class="rounded-lg border border-border bg-bg p-5">
+          <div class="mb-4 flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Kartu {{ i + 1 }}</span>
+            <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2.5 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10" @click="removeItem(form.projectStats, i)">
+              <Trash2 :size="12" :stroke-width="1.5" />
+              Hapus
+            </button>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label :for="`site-ps-icon-${i}`" class="mb-1.5 block text-sm font-medium text-text">Ikon</label>
+              <select :id="`site-ps-icon-${i}`" v-model="s.icon" class="input-field">
+                <option value="FolderKanban">FolderKanban</option>
+                <option value="Tag">Tag</option>
+                <option value="CalendarRange">CalendarRange</option>
+                <option value="Code2">Code2</option>
+              </select>
+            </div>
+            <div>
+              <label :for="`site-ps-label-${i}`" class="mb-1.5 block text-sm font-medium text-text">Label</label>
+              <input :id="`site-ps-label-${i}`" v-model="s.label" type="text" class="input-field" placeholder="Project" />
+            </div>
+            <div>
+              <label :for="`site-ps-value-${i}`" class="mb-1.5 block text-sm font-medium text-text">Nilai</label>
+              <input :id="`site-ps-value-${i}`" v-model="s.value" type="text" class="input-field" placeholder="6" />
+            </div>
+          </div>
+        </div>
+        <p v-if="!form.projectStats.length" class="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-text-muted">
+          Belum ada kartu statistik. Jika kosong, nilai otomatis dihitung dari data project.
+        </p>
       </div>
     </div>
 
