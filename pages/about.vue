@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
+import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
 useSeoMeta({
@@ -35,6 +35,29 @@ const stackCategories: Record<string, string> = {
   'Git & GitHub': 'Tooling',
   'Linux': 'OS'
 }
+
+const categoryIcons: Record<string, Component> = {
+  Language: Braces,
+  Framework: Boxes,
+  Runtime: Terminal,
+  Styling: Palette,
+  Tooling: Wrench,
+  OS: Monitor
+}
+
+const stackGroups = computed(() => {
+  const groups: { category: string; items: string[] }[] = []
+  for (const name of stackNames) {
+    const category = stackCategories[name] ?? 'Lainnya'
+    let group = groups.find((g) => g.category === category)
+    if (!group) {
+      group = { category, items: [] }
+      groups.push(group)
+    }
+    group.items.push(name)
+  }
+  return groups.map((g) => ({ ...g, icon: categoryIcons[g.category] ?? Code2 }))
+})
 
 const stats = computed(() => {
   const list = site.value?.stats ?? []
@@ -232,23 +255,37 @@ function statIcon(icon: string) {
         </h2>
       </Reveal>
 
-      <Reveal class="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
-        <span
-          v-for="name in stackNames"
-          :key="name"
-          class="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card py-2 pl-2.5 pr-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-card-hover"
-          :style="{ '--glyph-color': techColor(name) }"
+      <div class="mx-auto mt-12 grid max-w-5xl gap-5 text-left sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal
+          v-for="group in stackGroups"
+          :key="group.category"
+          class="card flex flex-col p-5 transition-all duration-300 hover:border-primary/40"
         >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-bg text-sm font-bold stack-glyph"
-            :aria-label="name"
-          >
-            {{ findTechByName(name)?.glyph }}
-          </span>
-          <span class="text-sm font-semibold text-text">{{ name }}</span>
-          <span class="hidden text-xs text-text-muted sm:inline">{{ stackCategories[name] }}</span>
-        </span>
-      </Reveal>
+          <div class="flex items-center gap-2.5">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+              <component :is="group.icon" :size="18" :stroke-width="1.5" />
+            </span>
+            <h3 class="text-sm font-bold text-text">{{ group.category }}</h3>
+            <span class="ml-auto rounded-md border border-border bg-bg px-2 py-0.5 font-mono text-[11px] text-text-muted">{{ group.items.length }}</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span
+              v-for="name in group.items"
+              :key="name"
+              class="inline-flex items-center gap-2 rounded-lg border border-border bg-bg py-1.5 pl-1.5 pr-3 text-xs font-medium text-text-secondary transition-colors duration-300 hover:border-primary/40"
+            >
+              <span
+                class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-card text-[10px] font-bold stack-glyph"
+                :style="{ '--glyph-color': techColor(name) }"
+                :aria-label="name"
+              >
+                {{ findTechByName(name)?.glyph }}
+              </span>
+              {{ name }}
+            </span>
+          </div>
+        </Reveal>
+      </div>
     </section>
   </div>
 </template>
