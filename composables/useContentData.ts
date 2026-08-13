@@ -11,5 +11,8 @@ export function useSkillsContent() {
 }
 
 export function useProjectsContent() {
-  return useAsyncData('projects-content', () => queryCollection('projects').all())
+  return useAsyncData('projects-content', async () => {
+    const all = await queryCollection('projects').all()
+    return all.filter((p) => !(p as unknown as { archived?: boolean }).archived)
+  })
 }

@@ -162,6 +162,7 @@ export const collections = {
       role: z.string(),
       duration: z.string(),
       featured: z.boolean().optional(),
+      archived: z.boolean().optional(),
       liveUrl: z.string(),
       githubUrl: z.string(),
       detail: z

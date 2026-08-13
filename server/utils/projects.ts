@@ -62,6 +62,7 @@ export function normalizeProject(body: Record<string, unknown>) {
     role: str(body.role),
     duration: str(body.duration),
     featured: bool(body.featured),
+    archived: bool(body.archived),
     liveUrl: str(body.liveUrl),
     githubUrl: str(body.githubUrl),
     ...(body.detail && typeof body.detail === 'object' ? { detail: body.detail } : {})

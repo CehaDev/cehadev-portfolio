@@ -63,6 +63,7 @@ const form = reactive({
   liveUrl: props.initial?.liveUrl ?? '',
   githubUrl: props.initial?.githubUrl ?? '',
   featured: props.initial?.featured ?? false,
+  archived: props.initial?.archived ?? false,
   tags: (props.initial?.tags ?? []).join(', '),
   tech: [...(props.initial?.tech ?? [])]
 })
@@ -146,6 +147,7 @@ function payload() {
     liveUrl: form.liveUrl.trim(),
     githubUrl: form.githubUrl.trim(),
     featured: form.featured,
+    archived: form.archived,
     tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
     tech: form.tech,
     ...(hasDetail ? { detail: detailPayload } : {})
@@ -258,6 +260,23 @@ async function save() {
             {{ form.featured ? 'Ya, featured' : 'Tidak' }}
             <span class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors" :class="form.featured ? 'bg-primary' : 'bg-border'">
               <span class="absolute h-3.5 w-3.5 rounded-full bg-white transition-all" :class="form.featured ? 'left-[18px]' : 'left-1'" />
+            </span>
+          </button>
+        </div>
+        <div>
+          <label for="pf-archived" class="mb-1.5 block text-sm font-medium text-text">Arsip</label>
+          <button
+            id="pf-archived"
+            type="button"
+            role="switch"
+            :aria-checked="form.archived"
+            class="flex h-11 w-full items-center justify-between rounded-btn border px-4 text-sm font-medium transition-colors"
+            :class="form.archived ? 'border-amber-400/50 bg-amber-400/10 text-amber-400' : 'border-border bg-bg text-text-secondary'"
+            @click="form.archived = !form.archived"
+          >
+            {{ form.archived ? 'Ya, diarsipkan' : 'Tidak' }}
+            <span class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors" :class="form.archived ? 'bg-amber-400' : 'bg-border'">
+              <span class="absolute h-3.5 w-3.5 rounded-full bg-white transition-all" :class="form.archived ? 'left-[18px]' : 'left-1'" />
             </span>
           </button>
         </div>
