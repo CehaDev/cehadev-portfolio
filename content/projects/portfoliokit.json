@@ -10,5 +10,47 @@
   "role": "Creator",
   "duration": "1 Bulan",
   "liveUrl": "https://portfoliokit.example.com",
-  "githubUrl": "https://github.com/cehadev/portfoliokit"
+  "githubUrl": "https://github.com/cehadev/portfoliokit",
+  "detail": {
+    "overview": "PortfolioKit adalah starter kit portfolio untuk developer yang mengutamakan kecepatan dan fleksibilitas. Dibangun dengan Nuxt 3 dan Tailwind CSS, template ini hadir dengan tema gelap modern, mode terang/gelap, dan struktur yang mudah dikustomisasi penuh.\n\nDirancang sebagai proyek open-source, PortfolioKit mendukung pengelolaan konten via file JSON dan dilengkapi komponen siap pakai seperti hero, kartu project, dan form kontak. Dalam hitungan menit, developer dapat men-deploy portfolio profesional.",
+    "featureHighlights": [
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Tema Gelap Modern", "desc": "Desain premium dengan dukungan mode terang & gelap." },
+      { "icon": "Code2", "color": "#8B5CF6", "title": "Kustomisasi Mudah", "desc": "Semua konten dikelola lewat file JSON." },
+      { "icon": "Rocket", "color": "#22C55E", "title": "Siap Deploy", "desc": "Optimasi SEO dan performa sejak awal." },
+      { "icon": "FolderGit2", "color": "#F59E0B", "title": "Open Source", "desc": "Kode terbuka, bebas dipakai dan dikembangkan." }
+    ],
+    "mainFeatures": [
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Komponen Lengkap", "desc": "Hero, kartu project, skill, galeri, dan form kontak siap pakai." },
+      { "icon": "Code2", "color": "#8B5CF6", "title": "Konten Berbasis File", "desc": "Ubah data tanpa menyentuh kode melalui collection JSON." },
+      { "icon": "Star", "color": "#F59E0B", "title": "Mode Terang/Gelap", "desc": "Tema yang responsif terhadap preferensi pengguna." },
+      { "icon": "Search", "color": "#22C55E", "title": "SEO Friendly", "desc": "Meta tags dinamis dan struktur semantic yang baik." },
+      { "icon": "Rocket", "color": "#F43F5E", "title": "Performa Tinggi", "desc": "SSR, code splitting, dan gambar teroptimasi otomatis." }
+    ],
+    "techStack": ["nuxt", "tailwind", "typescript", "git"],
+    "process": [
+      { "num": "01", "icon": "ClipboardList", "title": "Riset", "desc": "Menganalisis kebutuhan umum portfolio developer." },
+      { "num": "02", "icon": "PenTool", "title": "Desain Sistem", "desc": "Membangun design system dan komponen reusable." },
+      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Implementasi komponen, konten, dan integrasi SEO." },
+      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Menguji responsivitas, aksesibilitas, dan performa." },
+      { "num": "05", "icon": "Rocket", "title": "Publikasi", "desc": "Menerbitkan sebagai open-source dengan dokumentasi lengkap." }
+    ],
+    "challenges": [
+      { "title": "Keseimbangan fleksibilitas & kesederhanaan", "desc": "Menjaga template tetap mudah dipahami pemula tanpa membatasi pengguna lanjutan." },
+      { "title": "Konsistensi desain", "desc": "Memastikan semua komponen mengikuti design system yang sama di berbagai halaman." },
+      { "title": "Performa & SEO", "desc": "Mengoptimalkan skor Lighthouse tanpa mengorbankan fitur." }
+    ],
+    "results": [
+      { "icon": "FolderGit2", "value": "500+", "label": "Unduhan Starter Kit" },
+      { "icon": "Star", "value": "4.9/5", "label": "Rating Pengguna" },
+      { "icon": "Activity", "value": "100+", "label": "Perubahan Fitur" },
+      { "icon": "Users", "value": "300+", "label": "Developer Menggunakan" }
+    ],
+    "gallery": [
+      { "label": "Halaman Utama", "seed": 51 },
+      { "label": "Proyek", "seed": 52 },
+      { "label": "Skills", "seed": 53 },
+      { "label": "Kontak", "seed": 54 },
+      { "label": "CV", "seed": 55 }
+    ]
+  }
 }

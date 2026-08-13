@@ -19,10 +19,34 @@
   "quote": "Code is not just about how it works, but about",
   "quoteHighlight": "how it's built.",
   "stats": [
-    { "icon": "Clock", "label": "Years", "sub": "Learning & Building", "end": 2, "suffix": "+" },
-    { "icon": "FolderGit2", "label": "Projects", "sub": "Completed", "end": 10, "suffix": "+" },
-    { "icon": "Code2", "label": "Hours", "sub": "Coding", "end": 500, "suffix": "+" },
-    { "icon": "Target", "label": "Goal", "sub": "To be better every day", "end": 1, "suffix": "" }
+    {
+      "icon": "Clock",
+      "label": "Years",
+      "sub": "Learning & Building",
+      "end": 2,
+      "suffix": "+"
+    },
+    {
+      "icon": "FolderGit2",
+      "label": "Projects",
+      "sub": "Completed",
+      "end": 10,
+      "suffix": "+"
+    },
+    {
+      "icon": "Code2",
+      "label": "Hours",
+      "sub": "Coding",
+      "end": 500,
+      "suffix": "+"
+    },
+    {
+      "icon": "Target",
+      "label": "Goal",
+      "sub": "To be better every day",
+      "end": 1,
+      "suffix": ""
+    }
   ],
   "email": "hello@cehadev.id",
   "location": "Wirosari, Grobogan, Jawa Tengah",

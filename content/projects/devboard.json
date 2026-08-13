@@ -11,5 +11,47 @@
   "duration": "2 Bulan",
   "featured": true,
   "liveUrl": "https://devboard.example.com",
-  "githubUrl": "https://github.com/cehadev/devboard"
+  "githubUrl": "https://github.com/cehadev/devboard",
+  "detail": {
+    "overview": "DevBoard adalah dashboard analitik yang dirancang untuk developer dan tim dalam memantau performa aplikasi secara real-time. Data metrik pengguna, log sistem, dan penggunaan resource divisualisasikan dalam grafik yang interaktif dan mudah dipahami.\n\nDibangun dengan Vue 3 dan Node.js, DevBoard mengagregasi data dari berbagai sumber ke dalam satu tampilan terpadu. Desainnya mengutamakan keterbacaan data dan kecepatan respons saat menangani dataset yang besar.",
+    "featureHighlights": [
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Visualisasi Real-time", "desc": "Grafik dan metrik yang diperbarui secara langsung." },
+      { "icon": "Activity", "color": "#22C55E", "title": "Monitoring Performa", "desc": "Pantau CPU, memori, dan waktu respons aplikasi." },
+      { "icon": "Bell", "color": "#F59E0B", "title": "Alert Cerdas", "desc": "Notifikasi otomatis saat metrik melewati ambang batas." },
+      { "icon": "Users", "color": "#8B5CF6", "title": "Analisis Pengguna", "desc": "Wawasan perilaku pengguna dari data aktivitas harian." }
+    ],
+    "mainFeatures": [
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Dashboard Interaktif", "desc": "Widget yang bisa disusun ulang sesuai kebutuhan pemantauan." },
+      { "icon": "Activity", "color": "#22C55E", "title": "Metrik Real-time", "desc": "Streaming data performa dengan WebSocket untuk pembaruan instan." },
+      { "icon": "Bell", "color": "#F59E0B", "title": "Sistem Alert", "desc": "Pemberitahuan via email dan notifikasi saat terjadi anomali." },
+      { "icon": "Search", "color": "#8B5CF6", "title": "Pencarian Log", "desc": "Telusuri log sistem dengan filter waktu, level, dan layanan." },
+      { "icon": "FolderCheck", "color": "#F43F5E", "title": "Ekspor Laporan", "desc": "Unduh ringkasan metrik dalam format CSV atau PDF." }
+    ],
+    "techStack": ["vue", "node", "tailwind", "javascript"],
+    "process": [
+      { "num": "01", "icon": "ClipboardList", "title": "Perencanaan", "desc": "Menentukan metrik yang dipantau dan sumber datanya." },
+      { "num": "02", "icon": "PenTool", "title": "Desain UI/UX", "desc": "Merancang tata letak dashboard dan visualisasi data." },
+      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Membangun agregasi data, API, dan komponen grafik." },
+      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Menguji akurasi data dan respons terhadap dataset besar." },
+      { "num": "05", "icon": "Rocket", "title": "Deployment", "desc": "Deploy dan kalibrasi ambang batas alert di produksi." }
+    ],
+    "challenges": [
+      { "title": "Data besar & responsif", "desc": "Mengatasi kelambatan saat menampilkan ribuan titik data dengan agregasi dan virtual scrolling." },
+      { "title": "Pembaruan real-time", "desc": "Menjaga sinkronisasi grafik antar klien tanpa membebani server dengan throttling dan delta updates." },
+      { "title": "Akurasi metrik", "desc": "Memastikan konsistensi perhitungan metrik antara tampilan dan sumber data asli." }
+    ],
+    "results": [
+      { "icon": "Activity", "value": "12K+", "label": "Event Diproses / Hari" },
+      { "icon": "Rocket", "value": "< 1s", "label": "Latensi Refresh" },
+      { "icon": "Users", "value": "40+", "label": "Pengguna Tim" },
+      { "icon": "ShieldCheck", "value": "99.9%", "label": "Keandalan Sistem" }
+    ],
+    "gallery": [
+      { "label": "Dashboard", "seed": 31 },
+      { "label": "Grafik Metrik", "seed": 32 },
+      { "label": "Log Viewer", "seed": 33 },
+      { "label": "Pengaturan Alert", "seed": 34 },
+      { "label": "Laporan", "seed": 35 }
+    ]
+  }
 }

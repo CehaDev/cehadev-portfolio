@@ -89,11 +89,9 @@
     }
   ],
   "marqueeTech": [
-    "JavaScript",
     "Vue.js",
     "Nuxt.js",
     "Tailwind CSS",
-    "Node.js",
     "TypeScript",
     "Git & GitHub",
     "Linux"

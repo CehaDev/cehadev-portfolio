@@ -10,5 +10,47 @@
   "role": "Full-Stack Developer",
   "duration": "3 Bulan",
   "liveUrl": "https://taskflow.example.com",
-  "githubUrl": "https://github.com/cehadev/taskflow"
+  "githubUrl": "https://github.com/cehadev/taskflow",
+  "detail": {
+    "overview": "TaskFlow Mobile adalah aplikasi mobile-first untuk mengelola tugas harian dengan cara yang ringan dan cepat. Dilengkapi notifikasi, tag prioritas, dan sinkronisasi cloud sehingga pengguna tetap produktif di mana pun berada.\n\nDibangun dengan Vue 3 yang dipaket untuk perangkat mobile dan Node.js di sisi backend, TaskFlow Mobile mengutamakan pengalaman pengguna yang mulus dengan navigasi berbasis gesture dan penyimpanan lokal yang cepat.",
+    "featureHighlights": [
+      { "icon": "Bell", "color": "#F59E0B", "title": "Notifikasi Cerdas", "desc": "Pengingat otomatis untuk setiap tenggat tugas." },
+      { "icon": "Star", "color": "#38BDF8", "title": "Prioritas & Tag", "desc": "Atur tugas dengan label prioritas dan kategori." },
+      { "icon": "FolderCheck", "color": "#22C55E", "title": "Sinkronisasi Cloud", "desc": "Data aman dan sinkron di semua perangkat." },
+      { "icon": "Activity", "color": "#8B5CF6", "title": "Ringan & Cepat", "desc": "Ukuran aplikasi kecil dengan waktu muat singkat." }
+    ],
+    "mainFeatures": [
+      { "icon": "FolderCheck", "color": "#38BDF8", "title": "Manajemen Tugas", "desc": "Buat, atur, dan selesaikan tugas dengan tampilan daftar yang rapi." },
+      { "icon": "Bell", "color": "#F59E0B", "title": "Pengingat & Notifikasi", "desc": "Pengingat berbasis waktu dan lokasi untuk tenggat penting." },
+      { "icon": "Star", "color": "#8B5CF6", "title": "Prioritas & Tag", "desc": "Kategorikan tugas dengan warna prioritas dan tag khusus." },
+      { "icon": "FolderKanban", "color": "#22C55E", "title": "Sinkronisasi Cloud", "desc": "Backup otomatis dan sinkronisasi real-time antar perangkat." },
+      { "icon": "Search", "color": "#F43F5E", "title": "Pencarian Cepat", "desc": "Temukan tugas dalam hitungan detik dengan pencarian instan." }
+    ],
+    "techStack": ["vue", "node", "tailwind", "mysql"],
+    "process": [
+      { "num": "01", "icon": "ClipboardList", "title": "Perencanaan", "desc": "Menentukan alur pengguna dan fitur inti manajemen tugas." },
+      { "num": "02", "icon": "PenTool", "title": "Desain UI/UX", "desc": "Merancang antarmuka mobile yang nyaman digunakan satu tangan." },
+      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Membangun frontend mobile dan backend sinkronisasi." },
+      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Menguji notifikasi, sinkronisasi, dan performa di berbagai perangkat." },
+      { "num": "05", "icon": "Rocket", "title": "Rilis", "desc": "Publikasi dan pemantauan crash serta penggunaan aplikasi." }
+    ],
+    "challenges": [
+      { "title": "Sinkronisasi offline", "desc": "Memastikan tugas tetap bisa dikelola tanpa koneksi dan tersinkron saat kembali online." },
+      { "title": "Notifikasi tepat waktu", "desc": "Menangani perbedaan zona waktu dan ketepatan pengiriman pengingat." },
+      { "title": "Performa perangkat rendah", "desc": "Mengoptimalkan penggunaan memori agar tetap lancar di perangkat entry-level." }
+    ],
+    "results": [
+      { "icon": "Users", "value": "1.000+", "label": "Unduhan Aplikasi" },
+      { "icon": "Star", "value": "4.8/5", "label": "Rating Play Store" },
+      { "icon": "FolderCheck", "value": "10K+", "label": "Tugas Selesai" },
+      { "icon": "Activity", "value": "98%", "label": "Kepuasan Pengguna" }
+    ],
+    "gallery": [
+      { "label": "Daftar Tugas", "seed": 61 },
+      { "label": "Detail Tugas", "seed": 62 },
+      { "label": "Notifikasi", "seed": 63 },
+      { "label": "Statistik Harian", "seed": 64 },
+      { "label": "Pengaturan", "seed": 65 }
+    ]
+  }
 }

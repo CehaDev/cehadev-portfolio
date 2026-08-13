@@ -3,13 +3,66 @@
   "title": "Cehava Store",
   "tagline": "Toko online modern dengan manajemen produk dan checkout yang mulus.",
   "description": "Aplikasi e-commerce dengan katalog produk, keranjang belanja, pembayaran, dan dashboard admin untuk mengelola toko.",
-  "tags": ["Nuxt.js", "Vue.js", "Tailwind CSS", "Node.js"],
-  "tech": ["nuxt", "vue", "tailwind", "node", "mysql"],
+  "tags": [
+    "Nuxt.js",
+    "Vue.js",
+    "Tailwind CSS",
+    "Node.js"
+  ],
+  "tech": [
+    "nuxt",
+    "vue",
+    "tailwind",
+    "node",
+    "mysql"
+  ],
   "category": "E-Commerce",
   "year": "2025",
   "role": "Full-Stack Developer",
   "duration": "3 Bulan",
   "featured": true,
   "liveUrl": "https://cehava-store.example.com",
-  "githubUrl": "https://github.com/cehadev/cehava-store"
+  "githubUrl": "https://github.com/cehadev/cehava-store",
+  "detail": {
+    "overview": "Cehava Store adalah aplikasi e-commerce yang dirancang untuk memberikan pengalaman belanja yang mulus dari katalog hingga checkout. Admin dapat mengelola produk, stok, kategori, dan pesanan melalui dashboard yang lengkap namun tetap mudah digunakan.\n\nDibangun dengan Nuxt 3 di sisi frontend dan Node.js di sisi backend, Cehava Store menekankan kecepatan pemuatan halaman dan alur pembelian yang intuitif. Semua data produk dan transaksi tersimpan di MySQL dengan struktur yang teroptimasi.",
+    "featureHighlights": [
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Katalog Produk", "desc": "Kelola produk, stok, dan kategori dalam satu dashboard." },
+      { "icon": "ShieldCheck", "color": "#22C55E", "title": "Checkout Aman", "desc": "Alur pembayaran dengan validasi dan proteksi data lengkap." },
+      { "icon": "Search", "color": "#8B5CF6", "title": "Pencarian & Filter", "desc": "Temukan produk cepat dengan filter harga, kategori, dan rating." },
+      { "icon": "Activity", "color": "#F59E0B", "title": "Laporan Penjualan", "desc": "Pantau performa toko dengan grafik dan rekap transaksi." }
+    ],
+    "mainFeatures": [
+      { "icon": "FolderKanban", "color": "#38BDF8", "title": "Manajemen Produk", "desc": "Tambah, ubah, dan hapus produk lengkap dengan gambar, varian, dan harga." },
+      { "icon": "Search", "color": "#8B5CF6", "title": "Pencarian Cerdas", "desc": "Pencarian produk instan dengan filter kategori, harga, dan ketersediaan stok." },
+      { "icon": "FolderCheck", "color": "#22C55E", "title": "Keranjang Belanja", "desc": "Keranjang yang sinkron antar perangkat dengan perhitungan ongkir otomatis." },
+      { "icon": "ShieldCheck", "color": "#F59E0B", "title": "Pembayaran Aman", "desc": "Integrasi pembayaran dengan validasi transaksi dan status pesanan real-time." },
+      { "icon": "Bell", "color": "#F43F5E", "title": "Notifikasi Pesanan", "desc": "Notifikasi otomatis untuk pesanan baru, pembayaran, dan pengiriman." }
+    ],
+    "techStack": ["nuxt", "vue", "tailwind", "node", "mysql"],
+    "process": [
+      { "num": "01", "icon": "ClipboardList", "title": "Perencanaan", "desc": "Menentukan kebutuhan toko, alur belanja, dan struktur produk." },
+      { "num": "02", "icon": "PenTool", "title": "Desain UI/UX", "desc": "Wireframe dan mockup untuk katalog, keranjang, dan checkout." },
+      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Implementasi frontend, backend, dan integrasi pembayaran." },
+      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Uji alur pembelian dari katalog hingga konfirmasi pesanan." },
+      { "num": "05", "icon": "Rocket", "title": "Deployment", "desc": "Deploy ke produksi dengan monitoring transaksi dan performa." }
+    ],
+    "challenges": [
+      { "title": "Sinkronisasi keranjang", "desc": "Memastikan isi keranjang tetap konsisten saat user berpindah perangkat dengan penyimpanan cloud dan token yang valid." },
+      { "title": "Performa katalog besar", "desc": "Mengoptimalkan query produk dengan indeks, pagination, dan lazy-loading gambar." },
+      { "title": "Validasi transaksi", "desc": "Menjaga keakuratan status pesanan dengan state machine dan proteksi duplikasi pembayaran." }
+    ],
+    "results": [
+      { "icon": "Users", "value": "500+", "label": "Pengguna Aktif" },
+      { "icon": "FolderCheck", "value": "2.000+", "label": "Transaksi Selesai" },
+      { "icon": "Star", "value": "4.7/5", "label": "Rating Pelanggan" },
+      { "icon": "Activity", "value": "99.5%", "label": "Uptime Aplikasi" }
+    ],
+    "gallery": [
+      { "label": "Katalog Produk", "seed": 21 },
+      { "label": "Detail Produk", "seed": 22 },
+      { "label": "Keranjang", "seed": 23 },
+      { "label": "Dashboard Admin", "seed": 24 },
+      { "label": "Checkout", "seed": 25 }
+    ]
+  }
 }
