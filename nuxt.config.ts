@@ -21,10 +21,10 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'CehaDev Portfolio' },
         { property: 'og:title', content: 'CehaDev — Web Developer Portfolio' },
-        { property: 'og:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Jakarta.' },
+        { property: 'og:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' },
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:title', content: 'CehaDev — Web Developer Portfolio' },
-        { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Jakarta.' }
+        { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/ch.png' },
@@ -46,7 +46,7 @@ export default defineNuxtConfig({
             jobTitle: 'Web Developer & Tech Enthusiast',
             url: 'https://cehadev.id',
             email: 'hello@cehadev.id',
-            address: { '@type': 'PostalAddress', addressLocality: 'Jakarta', addressCountry: 'ID' },
+            address: { '@type': 'PostalAddress', addressLocality: 'Wirosari, Grobogan, Jawa Tengah', addressCountry: 'ID' },
             knowsAbout: ['Nuxt.js', 'Vue.js', 'Node.js', 'Tailwind CSS', 'JavaScript', 'TypeScript']
           })
         }

@@ -4,7 +4,7 @@
   "photo": "/ch.png",
   "email": "hello@cehadev.id",
   "phone": "+62 812-3456-7890",
-  "location": "Jakarta, Indonesia",
+  "location": "Wirosari, Grobogan, Jawa Tengah",
   "website": "cehadev.id",
   "linkedin": "https://linkedin.com/in/cehadev",
   "github": "https://github.com/cehadev",
@@ -26,7 +26,7 @@
   "education": [
     {
       "degree": "Ilmu Komputer / Teknik Informatika",
-      "school": "Universitas di Jakarta",
+      "school": "Universitas di Jawa Tengah",
       "period": "2022 — Sekarang",
       "description": "Fokus pada rekayasa perangkat lunak, struktur data, dan pengembangan aplikasi web."
     }

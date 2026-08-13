@@ -133,7 +133,7 @@ const floatIcons = [
       </Reveal>
 
       <Reveal :delay="200">
-        <DarkMap :location="site?.location ?? 'Jakarta, Indonesia'" />
+        <DarkMap :location="site?.location ?? 'Wirosari, Grobogan, Jawa Tengah'" />
       </Reveal>
     </section>
   </div>

@@ -176,7 +176,7 @@ async function save() {
         </div>
         <div>
           <label for="cv-location" class="mb-1.5 block text-sm font-medium text-text">Lokasi</label>
-          <input id="cv-location" v-model="form.location" type="text" class="input-field" placeholder="Jakarta, Indonesia" />
+          <input id="cv-location" v-model="form.location" type="text" class="input-field" placeholder="Wirosari, Grobogan, Jawa Tengah" />
         </div>
         <div>
           <label for="cv-website" class="mb-1.5 block text-sm font-medium text-text">Website</label>

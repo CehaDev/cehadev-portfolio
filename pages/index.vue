@@ -4,7 +4,7 @@ import { techIcons } from '~/composables/useSkills'
 
 useSeoMeta({
   title: 'CehaDev — Web Developer Portfolio',
-  description: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Jakarta. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
+  description: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
 })
 
 const { data: site } = await useSiteSettings()

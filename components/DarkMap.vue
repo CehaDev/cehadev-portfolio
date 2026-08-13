@@ -2,7 +2,7 @@
 import { MapPin, Navigation } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<{ location?: string }>(), {
-  location: 'Jakarta, Indonesia'
+  location: 'Wirosari, Grobogan, Jawa Tengah'
 })
 </script>
 
@@ -11,11 +11,11 @@ const props = withDefaults(defineProps<{ location?: string }>(), {
     <div
       class="relative h-44 overflow-hidden border-b border-border bg-bg-alt"
       role="img"
-      aria-label="Peta Jakarta dengan penanda lokasi"
+      aria-label="Peta Wirosari, Grobogan dengan penanda lokasi"
     >
       <div
         class="absolute inset-0"
-        style="background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 28px 28px"
+        style="background-image: linear-gradient(rgb(var(--color-border) / 0.55) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-border) / 0.55) 1px, transparent 1px); background-size: 28px 28px"
         aria-hidden="true"
       />
       <svg class="absolute inset-0 h-full w-full" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<{ location?: string }>(), {
           <span class="absolute inset-0 animate-ping rounded-full bg-primary/50" />
         </span>
       </span>
-      <span class="absolute right-3 top-3 rounded-md bg-black/50 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">{{ location }}</span>
+      <span class="absolute right-3 top-3 rounded-md border border-border bg-card/80 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">{{ location }}</span>
     </div>
 
     <div class="p-6">
@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{ location?: string }>(), {
         </span>
       </div>
       <a
-        href="https://maps.google.com/?q=Jakarta,Indonesia"
+        href="https://maps.google.com/?q=Wirosari%2C+Grobogan%2C+Jawa+Tengah"
         target="_blank"
         rel="noopener noreferrer"
         class="btn-outline mt-5 w-full !py-2.5"
