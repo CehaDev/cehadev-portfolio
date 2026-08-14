@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {
-  ArrowLeft, Star, ExternalLink, Github, Monitor, Calendar, Clock3, FolderKanban,
+  ArrowLeft, Star, ExternalLink, Github, Monitor, Calendar, Clock3, FolderKanban, Eye,
   Search, LayoutDashboard, MessageSquare, ShieldCheck, Users, FolderCheck, Activity,
   Bug, Code2, ClipboardList, PenTool, Rocket, Bell
 } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 
 const route = useRoute()
+const { viewsOf, formatCount } = useStats()
 
 const { data: projects } = await useProjectsContent()
 const project = computed(() => (projects.value ?? []).find((p) => p.slug === route.params.slug))
@@ -67,6 +68,10 @@ const gallery = computed(() => {
         <span v-if="project.featured" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400">
           <Star :size="12" :stroke-width="2" class="fill-amber-400" />
           Featured Project
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-text-secondary">
+          <Eye :size="12" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+          {{ formatCount(viewsOf(project.slug)) }} kali dilihat
         </span>
         <h1 class="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">{{ project.title }}</h1>
         <p class="mt-3 max-w-xl text-[15px] leading-relaxed text-text-secondary">{{ project.tagline }}</p>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight } from 'lucide-vue-next'
+import { ArrowUpRight, Eye } from 'lucide-vue-next'
 
 interface FeaturedProject {
   slug: string
@@ -22,6 +22,7 @@ const props = withDefaults(
 )
 
 const { tiltRef, glareRef, onMove, onLeave } = useTilt(6)
+const { viewsOf, formatCount } = useStats()
 </script>
 
 <template>
@@ -66,6 +67,10 @@ const { tiltRef, glareRef, onMove, onLeave } = useTilt(6)
           class="rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-sm"
         >
           {{ t }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1 text-[11px] font-medium text-white/80 backdrop-blur-sm">
+          <Eye :size="12" :stroke-width="1.75" aria-hidden="true" />
+          {{ formatCount(viewsOf(project.slug)) }} dilihat
         </span>
       </div>
     </div>

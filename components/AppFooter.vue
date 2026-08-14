@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ArrowUp, Heart, Mail, Phone, MapPin, Github, Linkedin, Instagram, ArrowRight, MessageCircle } from 'lucide-vue-next'
+import { ArrowUp, Heart, Mail, Phone, MapPin, Github, Linkedin, Instagram, ArrowRight, MessageCircle, Eye, Users } from 'lucide-vue-next'
 import { navLinks } from '~/composables/useSiteData'
 
 const route = useRoute()
 const { data: site } = await useSiteSettings()
 const { openChat } = useChatWidget()
+const { data: stats, sourceOf, formatCount } = useStats()
 const year = new Date().getFullYear()
 
 const isContact = computed(() => route.path.startsWith('/contact'))
@@ -74,6 +75,19 @@ const socials = computed(() => {
           <p class="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
             {{ site?.role ?? 'Web Developer & Tech Enthusiast' }} yang membangun produk digital modern, cepat, dan mudah digunakan.
           </p>
+          <div v-if="stats" class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
+              <Eye :size="13" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+              {{ formatCount(stats.total.views) }} kunjungan
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
+              <Users :size="13" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+              {{ formatCount(stats.total.visitors) }} pengunjung
+            </span>
+            <span v-if="sourceOf('Google') > 0" class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
+              {{ formatCount(sourceOf('Google')) }} dari Google
+            </span>
+          </div>
           <div class="mt-5 flex items-center gap-2.5">
             <a
               v-for="s in socials"

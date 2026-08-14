@@ -8,5 +8,6 @@
     </main>
     <AppFooter />
     <ChatWidget />
+    <VisitTracker />
   </div>
 </template>
