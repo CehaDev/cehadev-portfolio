@@ -8,14 +8,20 @@ useSeoMeta({ title: 'Login Admin | CehaDev', robots: 'noindex, nofollow' })
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const devOtp = useCookie<string | null>('cehadev_admin_devotp', { default: () => null, maxAge: 5 * 60, path: '/' })
 
 async function submit() {
   if (loading.value) return
   loading.value = true
   error.value = ''
   try {
-    await $fetch('/api/auth/login', { method: 'POST', body: { password: password.value } })
-    await navigateTo('/admin')
+    const res = await $fetch<{ ok: boolean; pending?: boolean; devCode?: string | null }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    devOtp.value = res.devCode ?? null
+    if (res.pending) {
+      await navigateTo('/admin/verify')
+    } else {
+      await navigateTo('/admin')
+    }
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     error.value = err.data?.statusMessage ?? 'Gagal masuk, coba lagi'
