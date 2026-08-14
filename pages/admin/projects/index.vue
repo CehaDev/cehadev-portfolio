@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Plus, Star, ExternalLink, Pencil, Trash2, LoaderCircle, Archive, ArchiveRestore } from 'lucide-vue-next'
+import { lsId } from '~/utils/localize'
 
 definePageMeta({
   layout: 'admin',
@@ -92,7 +93,7 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
                 <div class="flex items-center gap-3">
                   <img :src="`/ch.png`" alt="" class="hidden h-10 w-10 rounded-lg object-cover sm:block" />
                   <div class="min-w-0">
-                    <p class="font-semibold text-text">{{ p.title }}</p>
+                    <p class="font-semibold text-text">{{ lsId(p.title) }}</p>
                     <a :href="p.liveUrl" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-xs text-text-muted hover:text-primary">
                       {{ p.liveUrl }}
                       <ExternalLink :size="11" :stroke-width="1.5" />
@@ -100,7 +101,7 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
                   </div>
                 </div>
               </td>
-              <td class="px-5 py-4 text-text-secondary">{{ p.category }}</td>
+              <td class="px-5 py-4 text-text-secondary">{{ lsId(p.category) }}</td>
               <td class="px-5 py-4 text-text-secondary">{{ p.year }}</td>
               <td class="px-5 py-4">
                 <span v-if="p.featured" class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[10px] font-semibold text-amber-400">

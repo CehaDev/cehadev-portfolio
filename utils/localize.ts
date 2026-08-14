@@ -7,6 +7,15 @@ export function isLS(value: unknown): value is Record<string, unknown> {
   return Object.keys(o).every((k) => k === 'id' || k === 'en')
 }
 
+export function lsId(v: unknown): string {
+  if (typeof v === 'string') return v
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    const o = v as Record<string, unknown>
+    return typeof o.id === 'string' ? o.id : ''
+  }
+  return ''
+}
+
 export function localize<T>(value: T, lang: 'id' | 'en'): T {
   if (Array.isArray(value)) {
     return value.map((v) => localize(v, lang)) as T

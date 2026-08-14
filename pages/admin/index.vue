@@ -2,6 +2,7 @@
 import {
   Eye, Users, Mail, Plus, ArrowRight, Layers, Star, Inbox, FileText, FolderKanban, Activity, Globe, Sparkles
 } from 'lucide-vue-next'
+import { lsId } from '~/utils/localize'
 
 definePageMeta({
   layout: 'admin',
@@ -225,13 +226,13 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
           <li v-for="p in latest" :key="p.slug" class="flex items-center justify-between gap-4 py-3.5">
             <div class="min-w-0">
               <div class="flex items-center gap-2.5">
-                <p class="truncate text-sm font-semibold text-text">{{ p.title }}</p>
+                <p class="truncate text-sm font-semibold text-text">{{ lsId(p.title) }}</p>
                 <span v-if="p.featured" class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
                   <Star :size="10" :stroke-width="2" class="fill-amber-400" />
                   Featured
                 </span>
               </div>
-              <p class="mt-0.5 truncate text-xs text-text-muted">{{ p.category }} • {{ p.year }} • {{ p.slug }}</p>
+              <p class="mt-0.5 truncate text-xs text-text-muted">{{ lsId(p.category) }} • {{ p.year }} • {{ p.slug }}</p>
             </div>
             <NuxtLink :to="`/admin/projects/${p.slug}`" class="btn-outline shrink-0 !px-4 !py-2 text-xs">Edit</NuxtLink>
           </li>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft } from 'lucide-vue-next'
+import { lsId } from '~/utils/localize'
 
 definePageMeta({
   layout: 'admin',
@@ -14,7 +15,7 @@ const { data: project } = await useAsyncData('admin-project-edit', () =>
   useRequestFetch()(`/api/admin/projects/${slug.value}`)
 )
 
-useHead({ title: `Edit ${project.value?.title ?? slug.value} | Admin` })
+useHead({ title: `Edit ${lsId(project.value?.title) || slug.value} | Admin` })
 
 async function onSaved(data: Record<string, unknown>) {
   const newSlug = String(data.slug)
@@ -31,7 +32,7 @@ async function onSaved(data: Record<string, unknown>) {
       </NuxtLink>
       <div>
         <h2 class="text-xl font-bold text-text">Edit Project</h2>
-        <p class="mt-0.5 text-sm text-text-secondary">{{ project?.title ?? slug }}</p>
+        <p class="mt-0.5 text-sm text-text-secondary">{{ lsId(project?.title) || slug }}</p>
       </div>
     </div>
     <AdminProjectForm
