@@ -1,7 +1,6 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import QRCode from 'qrcode'
 import { getCookie, setCookie, deleteCookie } from 'h3'
 import { signToken } from './session'
 
@@ -67,14 +66,6 @@ export function verifyTotp(secretBase32: string, code: string, windowSteps = 1):
     if (totpAt(secretBase32, now + i) === code) return true
   }
   return false
-}
-
-export function otpauthUrl(secret: string, account = 'admin', issuer = 'CehaDev'): string {
-  return `otpauth://totp/${encodeURIComponent(`${issuer}:${account}`)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`
-}
-
-export async function qrDataUrl(secret: string): Promise<string> {
-  return QRCode.toDataURL(otpauthUrl(secret), { width: 240, margin: 1, errorCorrectionLevel: 'M' })
 }
 
 // ---- Penyimpanan konfigurasi (.data/totp.json) ----

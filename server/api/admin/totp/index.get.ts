@@ -7,8 +7,6 @@ export default defineEventHandler(async (event) => {
   return {
     enabled: Boolean(cfg.enabled),
     secret,
-    otpauthUrl: otpauthUrl(secret),
-    qrDataUrl: await qrDataUrl(secret),
     verifiedAt: cfg.verifiedAt ?? null
   }
 })

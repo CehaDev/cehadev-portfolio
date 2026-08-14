@@ -8,8 +8,6 @@ useSeoMeta({ title: 'Verifikasi 2FA | CehaDev', robots: 'noindex, nofollow' })
 interface SetupData {
   active: boolean
   secret?: string
-  otpauthUrl?: string
-  qrDataUrl?: string
 }
 
 const setup = ref<SetupData | null>(null)
@@ -78,32 +76,32 @@ async function copySecret() {
               {{
                 setup?.active
                   ? 'Masukkan kode 6 digit dari aplikasi Authenticator Anda.'
-                  : 'Aktifkan 2FA: scan kode QR dengan aplikasi Authenticator (Google Authenticator, Authy, dll).'
+                  : 'Aktifkan 2FA: ketik kunci rahasia di aplikasi Authenticator (Google Authenticator, Authy, dll).'
               }}
             </p>
           </div>
 
-          <div v-if="!setup?.active" class="mt-7 flex flex-col items-center rounded-2xl border border-border bg-bg p-5">
-            <template v-if="setup?.qrDataUrl">
-              <img :src="setup.qrDataUrl" alt="Kode QR TOTP" class="h-48 w-48 rounded-xl bg-white p-2" />
-              <div class="mt-4 w-full">
-                <p class="mb-1.5 text-center text-xs font-semibold uppercase tracking-wider text-text-muted">
-                  <KeyRound :size="11" :stroke-width="1.75" class="mr-1 inline" aria-hidden="true" />
-                  Kunci rahasia (ketik manual jika tidak bisa scan)
-                </p>
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 font-mono text-xs text-text-secondary transition-colors hover:border-primary/50"
-                  @click="copySecret"
-                >
-                  <span class="truncate">{{ setup.secret }}</span>
-                  <span class="shrink-0 text-[10px] font-semibold" :class="copied ? 'text-success' : 'text-primary'">{{ copied ? 'Tersalin ✓' : 'Salin' }}</span>
-                </button>
-              </div>
+          <div v-if="!setup?.active" class="mt-7 rounded-2xl border border-border bg-bg p-5">
+            <template v-if="setup?.secret">
+              <p class="mb-2 flex items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">
+                <KeyRound :size="11" :stroke-width="1.75" aria-hidden="true" />
+                Kunci rahasia — ketik manual di aplikasi Authenticator
+              </p>
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-2 rounded-lg border border-primary/40 bg-card px-4 py-3 font-mono text-base tracking-wide text-text transition-colors hover:border-primary"
+                @click="copySecret"
+              >
+                <span class="truncate">{{ setup.secret }}</span>
+                <span class="shrink-0 text-[10px] font-semibold" :class="copied ? 'text-success' : 'text-primary'">{{ copied ? 'Tersalin ✓' : 'Salin' }}</span>
+              </button>
+              <p class="mt-3 text-center text-xs leading-relaxed text-text-secondary">
+                Buka Google Authenticator / Authy → <strong class="text-text">+</strong> → ketik kunci ini, lalu masukkan kode 6 digit di bawah.
+              </p>
             </template>
-            <p v-else class="flex items-center gap-2 py-6 text-sm text-text-muted">
+            <p v-else class="flex items-center justify-center gap-2 py-6 text-sm text-text-muted">
               <LoaderCircle :size="16" class="animate-spin" aria-hidden="true" />
-              Menyiapkan kode QR...
+              Menyiapkan kunci rahasia...
             </p>
           </div>
 

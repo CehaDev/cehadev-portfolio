@@ -88,7 +88,7 @@ async function testConnection() {
 // --- Verifikasi 2 langkah (TOTP) ---
 
 const { data: totp, refresh: refreshTotp } = await useAsyncData('admin-totp', () =>
-  useRequestFetch()<{ enabled: boolean; secret: string; otpauthUrl: string; qrDataUrl: string; verifiedAt: string | null }>('/api/admin/totp')
+  useRequestFetch()<{ enabled: boolean; secret: string; verifiedAt: string | null }>('/api/admin/totp')
 )
 
 const copiedTotp = ref(false)
@@ -249,40 +249,43 @@ async function copyTotpSecret() {
         </span>
       </div>
 
-      <div class="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-start">
-        <div class="shrink-0 rounded-xl border border-border bg-white p-2">
-          <img v-if="totp?.qrDataUrl" :src="totp.qrDataUrl" alt="Kode QR TOTP" class="h-40 w-40" />
-          <div v-else class="flex h-40 w-40 items-center justify-center">
-            <LoaderCircle :size="20" class="animate-spin text-text-muted" aria-hidden="true" />
+      <div class="p-6">
+        <div class="flex items-center justify-between gap-4 rounded-xl border border-primary/25 bg-primary/5 px-5 py-4">
+          <div class="flex min-w-0 items-center gap-3">
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
+              <KeyRound :size="20" :stroke-width="1.5" />
+            </span>
+            <div class="min-w-0">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Kunci rahasia TOTP</p>
+              <code v-if="totp?.secret" class="block truncate font-mono text-base tracking-wide text-text">{{ totp.secret }}</code>
+              <p v-else class="flex items-center gap-2 text-sm text-text-muted">
+                <LoaderCircle :size="14" class="animate-spin" aria-hidden="true" />
+                Memuat...
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-primary"
+            @click="copyTotpSecret"
+          >
+            <Copy :size="13" :stroke-width="1.75" />
+            {{ copiedTotp ? 'Tersalin ✓' : 'Salin' }}
+          </button>
         </div>
 
-        <div class="min-w-0 flex-1">
-          <p class="text-sm font-semibold text-text">Kunci rahasia & QR</p>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Scan ulang QR ini (atau ketik kunci rahasia) di aplikasi <strong class="text-text">Google Authenticator</strong>, <strong class="text-text">Authy</strong>, atau aplikasi TOTP lain untuk perangkat baru.
-          </p>
+        <p class="mt-4 text-xs leading-relaxed text-text-secondary">
+          Ketik kunci rahasia di atas di aplikasi <strong class="text-text">Google Authenticator</strong>,
+          <strong class="text-text">Authy</strong>, atau aplikasi TOTP lain (tipe <strong class="text-text">time-based</strong>) untuk perangkat baru.
+        </p>
 
-          <div class="mt-3 flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2">
-            <code class="truncate font-mono text-xs text-text-secondary">{{ totp?.secret }}</code>
-            <button
-              type="button"
-              class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border px-2 py-1 text-[11px] font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-primary"
-              @click="copyTotpSecret"
-            >
-              <Copy :size="11" :stroke-width="1.75" />
-              {{ copiedTotp ? 'Tersalin ✓' : 'Salin' }}
-            </button>
-          </div>
-
-          <p v-if="verifiedDate" class="mt-3 text-[11px] text-text-muted">
-            <KeyRound :size="11" :stroke-width="1.75" class="mr-1 inline" aria-hidden="true" />
-            Aktif sejak {{ verifiedDate }}
-          </p>
-          <p v-else class="mt-3 text-[11px] text-amber-500">
-            Belum diaktifkan — kode akan diminta saat login berikutnya.
-          </p>
-        </div>
+        <p v-if="verifiedDate" class="mt-3 text-[11px] text-text-muted">
+          <KeyRound :size="11" :stroke-width="1.75" class="mr-1 inline" aria-hidden="true" />
+          Aktif sejak {{ verifiedDate }}
+        </p>
+        <p v-else class="mt-3 text-[11px] text-amber-500">
+          Belum diaktifkan — kode akan diminta saat login berikutnya.
+        </p>
       </div>
     </div>
   </div>

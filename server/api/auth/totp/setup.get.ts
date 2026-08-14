@@ -11,8 +11,6 @@ export default defineEventHandler(async (event) => {
   const secret = await ensureTotpSecret()
   return {
     active: false,
-    secret,
-    otpauthUrl: otpauthUrl(secret),
-    qrDataUrl: await qrDataUrl(secret)
+    secret
   }
 })
