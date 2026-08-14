@@ -8,14 +8,14 @@ function secret() {
   return process.env.NUXT_ADMIN_SECRET || 'cehadev-admin-dev-secret'
 }
 
-function sign(str: string) {
+export function signToken(str: string) {
   return createHmac('sha256', secret()).update(str).digest('base64url')
 }
 
 export function issueSession() {
   const payload = { exp: Date.now() + SESSION_TTL * 1000 }
   const str = JSON.stringify(payload)
-  return `${Buffer.from(str).toString('base64url')}.${sign(str)}`
+  return `${Buffer.from(str).toString('base64url')}.${signToken(str)}`
 }
 
 export function isSessionValid(token: string | undefined) {
@@ -23,7 +23,7 @@ export function isSessionValid(token: string | undefined) {
   const [b64, sig] = token.split('.')
   if (!b64 || !sig) return false
   const str = Buffer.from(b64, 'base64url').toString()
-  const expected = Buffer.from(sign(str))
+  const expected = Buffer.from(signToken(str))
   const actual = Buffer.from(sig)
   if (actual.length !== expected.length) return false
   if (!timingSafeEqual(actual, expected)) return false

@@ -14,8 +14,8 @@ async function submit() {
   loading.value = true
   error.value = ''
   try {
-    await $fetch('/api/auth/login', { method: 'POST', body: { password: password.value } })
-    await navigateTo('/admin')
+    const res = await $fetch<{ ok: boolean; pending?: boolean }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    await navigateTo(res.pending ? '/admin/verify' : '/admin')
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     error.value = err.data?.statusMessage ?? 'Gagal masuk, coba lagi'

@@ -9,6 +9,6 @@ export default defineEventHandler(async (event) => {
   if (!body.password || body.password !== expected) {
     throw createError({ statusCode: 401, statusMessage: 'Password salah' })
   }
-  setAdminSession(event)
-  return { ok: true }
+  issuePending(event)
+  return { ok: true, pending: true }
 })

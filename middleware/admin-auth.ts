@@ -1,12 +1,22 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path === '/admin/login') return
-
-  const requestFetch = useRequestFetch()
+  let me: { authenticated: boolean; pending: boolean } | null = null
   try {
-    const me = await requestFetch<{ authenticated: boolean }>('/api/auth/me')
-    if (me.authenticated) return
+    me = await useRequestFetch()<{ authenticated: boolean; pending: boolean }>('/api/auth/me')
   } catch {
-    /* session tidak valid */
+    /* sesi tidak valid */
   }
+
+  if (to.path === '/admin/login') {
+    if (me?.authenticated) return navigateTo('/admin')
+    return
+  }
+
+  if (to.path === '/admin/verify') {
+    if (me?.authenticated) return navigateTo('/admin')
+    if (me?.pending) return
+    return navigateTo('/admin/login')
+  }
+
+  if (me?.authenticated) return
   return navigateTo('/admin/login')
 })

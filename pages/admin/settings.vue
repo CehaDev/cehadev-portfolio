@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings2, Save, PlugZap, LoaderCircle, CheckCircle2, XCircle, KeyRound, Globe, AtSign, Lock, Send, ShieldCheck } from 'lucide-vue-next'
+import { Settings2, Save, PlugZap, LoaderCircle, CheckCircle2, XCircle, KeyRound, Globe, AtSign, Lock, Send, ShieldCheck, Copy } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -82,6 +82,36 @@ async function testConnection() {
     status.value = { ok: false, message: err.data?.statusMessage ?? 'Gagal menguji koneksi.' }
   } finally {
     testing.value = false
+  }
+}
+
+// --- Verifikasi 2 langkah (TOTP) ---
+
+const { data: totp, refresh: refreshTotp } = await useAsyncData('admin-totp', () =>
+  useRequestFetch()<{ enabled: boolean; secret: string; otpauthUrl: string; qrDataUrl: string; verifiedAt: string | null }>('/api/admin/totp')
+)
+
+const copiedTotp = ref(false)
+
+const verifiedDate = computed(() => {
+  if (!totp.value?.verifiedAt) return null
+  return new Date(totp.value.verifiedAt).toLocaleString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+})
+
+async function copyTotpSecret() {
+  if (!totp.value?.secret) return
+  try {
+    await navigator.clipboard.writeText(totp.value.secret)
+    copiedTotp.value = true
+    setTimeout(() => (copiedTotp.value = false), 2000)
+  } catch {
+    /* clipboard tidak tersedia */
   }
 }
 </script>
@@ -196,6 +226,62 @@ async function testConnection() {
             <PlugZap v-else :size="16" :stroke-width="1.75" />
             Uji Koneksi
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keamanan: Verifikasi 2 langkah -->
+    <div class="card">
+      <div class="flex items-center gap-3 border-b border-border px-6 py-5">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
+          <ShieldCheck :size="18" :stroke-width="1.5" />
+        </span>
+        <div>
+          <h2 class="text-base font-bold text-text">Keamanan — Verifikasi 2 Langkah</h2>
+          <p class="text-xs text-text-muted">Login admin membutuhkan kode dari aplikasi Authenticator (TOTP).</p>
+        </div>
+        <span
+          class="ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+          :class="totp?.enabled ? 'border border-success/30 bg-success/10 text-success' : 'border border-amber-400/30 bg-amber-400/10 text-amber-500'"
+        >
+          <span class="h-1.5 w-1.5 rounded-full" :class="totp?.enabled ? 'bg-success' : 'bg-amber-500'" aria-hidden="true" />
+          {{ totp?.enabled ? 'Aktif' : 'Belum aktif' }}
+        </span>
+      </div>
+
+      <div class="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-start">
+        <div class="shrink-0 rounded-xl border border-border bg-white p-2">
+          <img v-if="totp?.qrDataUrl" :src="totp.qrDataUrl" alt="Kode QR TOTP" class="h-40 w-40" />
+          <div v-else class="flex h-40 w-40 items-center justify-center">
+            <LoaderCircle :size="20" class="animate-spin text-text-muted" aria-hidden="true" />
+          </div>
+        </div>
+
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold text-text">Kunci rahasia & QR</p>
+          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
+            Scan ulang QR ini (atau ketik kunci rahasia) di aplikasi <strong class="text-text">Google Authenticator</strong>, <strong class="text-text">Authy</strong>, atau aplikasi TOTP lain untuk perangkat baru.
+          </p>
+
+          <div class="mt-3 flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2">
+            <code class="truncate font-mono text-xs text-text-secondary">{{ totp?.secret }}</code>
+            <button
+              type="button"
+              class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border px-2 py-1 text-[11px] font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-primary"
+              @click="copyTotpSecret"
+            >
+              <Copy :size="11" :stroke-width="1.75" />
+              {{ copiedTotp ? 'Tersalin ✓' : 'Salin' }}
+            </button>
+          </div>
+
+          <p v-if="verifiedDate" class="mt-3 text-[11px] text-text-muted">
+            <KeyRound :size="11" :stroke-width="1.75" class="mr-1 inline" aria-hidden="true" />
+            Aktif sejak {{ verifiedDate }}
+          </p>
+          <p v-else class="mt-3 text-[11px] text-amber-500">
+            Belum diaktifkan — kode akan diminta saat login berikutnya.
+          </p>
         </div>
       </div>
     </div>
