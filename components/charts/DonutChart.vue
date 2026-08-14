@@ -28,9 +28,9 @@ const segments = computed(() => {
 
 <template>
   <div class="flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
-    <div class="relative shrink-0" :style="{ width: `${size}px`, height: `${size}px` }">
+    <div class="relative shrink-0" :style="{ width: size + 'px', height: size + 'px' }">
       <svg :width="size" :height="size" class="block">
-        <g transform="rotate(-90)" :style="{ transformOrigin: `${size / 2}px ${size / 2}px` }">
+        <g :transform="'rotate(-90 ' + size / 2 + ' ' + size / 2 + ')'">
           <circle :cx="size / 2" :cy="size / 2" :r="r" fill="none" stroke="currentColor" class="text-bg-alt" :stroke-width="thickness" />
           <circle
             v-for="seg in segments"
@@ -41,8 +41,8 @@ const segments = computed(() => {
             fill="none"
             :stroke="seg.color"
             :stroke-width="thickness"
-            :stroke-dasharray="`${seg.len} ${C - seg.len}`"
-            :stroke-dashoffset="`${-seg.offset}`"
+            :stroke-dasharray="seg.len + ' ' + (C - seg.len)"
+            :stroke-dashoffset="String(-seg.offset)"
             stroke-linecap="butt"
             class="transition-all duration-700"
           />

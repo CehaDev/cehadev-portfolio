@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     }
   },
   css: ['~/assets/css/main.css'],
+  components: [{ path: '~/components', pathPrefix: false }],
   app: {
     head: {
       htmlAttrs: { lang: 'id' },

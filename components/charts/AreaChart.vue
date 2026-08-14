@@ -104,12 +104,12 @@ function fmtDate(d: string) {
 </script>
 
 <template>
-  <div ref="container" class="relative w-full select-none" :style="{ height: `${height}px` }">
+  <div ref="container" class="relative w-full select-none" :style="{ height: height + 'px' }">
     <svg v-if="width > 0" :width="width" :height="height" class="block overflow-visible">
       <defs>
         <linearGradient :id="gradId" x1="0" y1="0" x2="0" y2="1">
-          <stop :offset="0%" :stop-color="color" stop-opacity="0.3" />
-          <stop :offset="100%" :stop-color="color" stop-opacity="0.01" />
+          <stop offset="0%" :stop-color="color" stop-opacity="0.3" />
+          <stop offset="100%" :stop-color="color" stop-opacity="0.01" />
         </linearGradient>
       </defs>
 
@@ -118,7 +118,7 @@ function fmtDate(d: string) {
         <text :x="PAD_X + 2" :y="g.y - 5" font-size="10" fill="#8E95A9">{{ g.value }}</text>
       </g>
 
-      <path :d="areaPath" :fill="`url(#${gradId})`" />
+      <path :d="areaPath" :fill="'url(#' + gradId + ')'" />
       <path :d="linePath" fill="none" :stroke="color" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
       <path
         v-if="secondaryPath"
@@ -159,7 +159,7 @@ function fmtDate(d: string) {
     <div
       v-if="hover"
       class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-xl border border-border bg-card px-3 py-2 shadow-btn-glow"
-      :style="{ left: `${hover.x}px`, top: `${hover.y - 12}px` }"
+      :style="{ left: hover.x + 'px', top: hover.y - 12 + 'px' }"
     >
       <p class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{{ labels[hover.i] }}</p>
       <p class="mt-0.5 text-sm font-bold text-text">{{ values[hover.i] }} kunjungan</p>

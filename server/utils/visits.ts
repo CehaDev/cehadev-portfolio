@@ -95,7 +95,12 @@ export async function listVisits() {
 }
 
 function dayKey(d: Date) {
-  return d.toISOString().slice(0, 10)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
+function visitDay(v: Visit) {
+  return dayKey(new Date(v.at))
 }
 
 export function dailySeries(visits: Visit[], days: number) {
@@ -109,7 +114,7 @@ export function dailySeries(visits: Visit[], days: number) {
     byDay.set(key, { views: 0, visitors: new Set() })
   }
   for (const v of visits) {
-    const key = v.at.slice(0, 10)
+    const key = visitDay(v)
     const bucket = byDay.get(key)
     if (!bucket) continue
     bucket.views++
@@ -124,7 +129,7 @@ export function dailySeries(visits: Visit[], days: number) {
 export async function getAnalyticsOverview() {
   const visits = await listVisits()
   const sessions = new Set<string>()
-  const todayKey = new Date().toISOString().slice(0, 10)
+  const todayKey = dayKey(new Date())
   let todayViews = 0
   const todaySessions = new Set<string>()
 
@@ -135,7 +140,7 @@ export async function getAnalyticsOverview() {
 
   for (const v of visits) {
     if (v.session) sessions.add(v.session)
-    if (v.at.slice(0, 10) === todayKey) {
+    if (visitDay(v) === todayKey) {
       todayViews++
       if (v.session) todaySessions.add(v.session)
     }

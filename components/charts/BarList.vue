@@ -27,7 +27,7 @@ function pct(value: number) {
       <div class="h-2 overflow-hidden rounded-full bg-bg-alt">
         <div
           class="h-full rounded-full transition-all duration-700"
-          :style="{ width: `${pct(item.value)}%`, backgroundColor: color ?? palette[i % palette.length] }"
+          :style="{ width: pct(item.value) + '%', backgroundColor: color ?? palette[i % palette.length] }"
         />
       </div>
     </div>
