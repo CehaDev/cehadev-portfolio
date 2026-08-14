@@ -49,8 +49,7 @@ export function setAdminSession(event: Parameters<typeof setCookie>[0]) {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: SESSION_TTL
+    path: '/'
   })
 }
 
