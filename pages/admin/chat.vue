@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Send, CheckCircle2, Circle, Trash2, LoaderCircle, Inbox, MessageSquare, User } from 'lucide-vue-next'
+import { Send, CheckCircle2, Circle, Trash2, LoaderCircle, Inbox, MessageSquare, User, ArrowLeft } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -136,7 +136,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-[calc(100vh-76px-4rem)] flex-col">
+  <div class="flex h-[calc(100dvh-76px-2rem)] flex-col lg:h-[calc(100vh-76px-4rem)]">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-text">Percakapan Pengunjung</h2>
@@ -159,7 +159,10 @@ onMounted(() => {
 
     <div class="grid min-h-0 flex-1 gap-5 lg:grid-cols-[320px_1fr]">
       <!-- List percakapan -->
-      <div class="card flex min-h-0 flex-col overflow-hidden">
+      <div
+        class="card min-h-0 flex-col overflow-hidden"
+        :class="activeId ? 'hidden lg:flex' : 'flex'"
+      >
         <div class="border-b border-border px-5 py-4">
           <p class="flex items-center gap-2 text-sm font-bold text-text">
             <MessageSquare :size="16" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
@@ -215,6 +218,14 @@ onMounted(() => {
       <div v-if="thread" class="card flex min-h-0 flex-col overflow-hidden">
         <div class="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div class="flex min-w-0 items-center gap-3">
+            <button
+              type="button"
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:border-primary/50 hover:text-text lg:hidden"
+              aria-label="Kembali ke daftar percakapan"
+              @click="activeId = null; thread = null"
+            >
+              <ArrowLeft :size="16" :stroke-width="1.75" />
+            </button>
             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
               <User :size="17" :stroke-width="1.5" />
             </span>
@@ -288,7 +299,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-else class="card flex items-center justify-center">
+      <div v-else class="card hidden items-center justify-center lg:flex">
         <div class="flex flex-col items-center gap-3 text-center">
           <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-primary" aria-hidden="true">
             <MessageSquare :size="24" :stroke-width="1.5" />

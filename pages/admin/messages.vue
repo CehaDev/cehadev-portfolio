@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag, Send, CheckCircle2, XCircle, Settings2 } from 'lucide-vue-next'
+import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag, Send, CheckCircle2, XCircle, Settings2, ArrowLeft } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -129,7 +129,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-[calc(100vh-76px-4rem)] flex-col">
+  <div class="flex h-[calc(100dvh-76px-2rem)] flex-col lg:h-[calc(100vh-76px-4rem)]">
     <div class="mb-5">
       <h2 class="text-xl font-bold text-text">Pesan Masuk</h2>
       <p class="mt-1 text-sm text-text-secondary">
@@ -140,7 +140,10 @@ onMounted(() => {
 
     <div class="grid min-h-0 flex-1 gap-5 lg:grid-cols-[340px_1fr]">
       <!-- Daftar pesan -->
-      <div class="card flex min-h-0 flex-col overflow-hidden">
+      <div
+        class="card min-h-0 flex-col overflow-hidden"
+        :class="activeId ? 'hidden lg:flex' : 'flex'"
+      >
         <div class="border-b border-border px-5 py-4">
           <p class="flex items-center gap-2 text-sm font-bold text-text">
             <Inbox :size="16" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
@@ -197,6 +200,14 @@ onMounted(() => {
         <div class="flex items-start justify-between gap-3 border-b border-border px-6 py-5">
           <div class="min-w-0">
             <p class="flex items-center gap-2 text-sm font-bold text-text">
+              <button
+                type="button"
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:border-primary/50 hover:text-text lg:hidden"
+                aria-label="Kembali ke daftar pesan"
+                @click="activeId = null; detail = null"
+              >
+                <ArrowLeft :size="16" :stroke-width="1.75" />
+              </button>
               <Tag :size="15" :stroke-width="1.75" class="shrink-0 text-primary" aria-hidden="true" />
               <span class="truncate">{{ detail.subject }}</span>
             </p>
@@ -302,7 +313,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-else class="card flex items-center justify-center">
+      <div v-else class="card hidden items-center justify-center lg:flex">
         <div class="flex flex-col items-center gap-3 text-center">
           <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-primary" aria-hidden="true">
             <Mail :size="24" :stroke-width="1.5" />
