@@ -79,7 +79,7 @@ async function resend() {
               Verifikasi <span class="bg-gradient-brand bg-clip-text text-transparent">Akun</span>
             </h1>
             <p class="mt-2 text-sm text-text-secondary">
-              Kode verifikasi telah dikirim ke email Anda. Masukkan 6 digit kode untuk melanjutkan.
+              Kode verifikasi telah dikirim ke WhatsApp atau email Anda. Masukkan 6 digit kode untuk melanjutkan.
             </p>
           </div>
 
@@ -94,7 +94,7 @@ async function resend() {
             <p class="mt-1 text-text-secondary">
               Kode Anda: <span class="text-lg font-extrabold tracking-widest text-amber-300">{{ formattedDevOtp }}</span>
             </p>
-            <p class="mt-1 text-xs text-text-muted">Atur SMTP di Settings admin agar kode terkirim otomatis ke email.</p>
+            <p class="mt-1 text-xs text-text-muted">Atur SMTP/WhatsApp di Settings admin agar kode terkirim otomatis.</p>
           </div>
 
           <form class="mt-8 space-y-5" novalidate @submit.prevent="submit">

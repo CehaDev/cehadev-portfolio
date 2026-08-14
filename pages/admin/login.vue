@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ArrowLeft, Lock, LogIn, LoaderCircle } from 'lucide-vue-next'
+import { ArrowLeft, Lock, LogIn, LoaderCircle, Phone } from 'lucide-vue-next'
 
 definePageMeta({ layout: 'default' })
 
 useSeoMeta({ title: 'Login Admin | CehaDev', robots: 'noindex, nofollow' })
 
 const password = ref('')
+const wa = ref('')
 const error = ref('')
 const loading = ref(false)
 const devOtp = useCookie<string | null>('cehadev_admin_devotp', { default: () => null, maxAge: 5 * 60, path: '/' })
@@ -15,7 +16,7 @@ async function submit() {
   loading.value = true
   error.value = ''
   try {
-    const res = await $fetch<{ ok: boolean; pending?: boolean; devCode?: string | null }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    const res = await $fetch<{ ok: boolean; pending?: boolean; devCode?: string | null }>('/api/auth/login', { method: 'POST', body: { password: password.value, wa: wa.value } })
     devOtp.value = res.devCode ?? null
     if (res.pending) {
       await navigateTo('/admin/verify')
@@ -47,6 +48,25 @@ async function submit() {
 
           <form class="mt-8 space-y-5" novalidate @submit.prevent="submit">
             <div>
+              <label for="admin-wa" class="mb-1.5 block text-sm font-medium text-text">Nomor WhatsApp</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-text-muted" aria-hidden="true">
+                  <Phone :size="16" :stroke-width="1.5" />
+                </span>
+                <input
+                  id="admin-wa"
+                  v-model="wa"
+                  type="tel"
+                  inputmode="tel"
+                  class="input-field !pl-11"
+                  placeholder="Contoh: 08xxxxxxxxxx"
+                  autocomplete="tel"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
               <label for="admin-password" class="mb-1.5 block text-sm font-medium text-text">Password</label>
               <div class="relative">
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-text-muted" aria-hidden="true">
@@ -64,6 +84,8 @@ async function submit() {
               </div>
               <p v-if="error" class="mt-1.5 text-xs text-red-400" role="alert">{{ error }}</p>
             </div>
+
+            <p class="text-xs text-text-muted">Kode OTP akan dikirim ke nomor WhatsApp di atas.</p>
 
             <button type="submit" class="btn-primary w-full" :disabled="loading">
               <LoaderCircle v-if="loading" :size="16" class="animate-spin" />
