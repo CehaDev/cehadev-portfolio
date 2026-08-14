@@ -93,12 +93,5 @@ const socials = computed(() => {
         <DarkMap class="h-full" :location="site?.location ?? 'Wirosari, Grobogan, Jawa Tengah'" />
       </Reveal>
     </section>
-
-    <!-- FAQ -->
-    <section class="mt-6">
-      <Reveal class="mx-auto max-w-3xl">
-        <FaqAccordion :faqs="site?.faqs ?? []" />
-      </Reveal>
-    </section>
   </div>
 </template>
