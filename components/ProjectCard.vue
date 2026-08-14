@@ -12,10 +12,22 @@ interface ProjectCardData {
 }
 
 const props = defineProps<{ project: ProjectCardData }>()
+
+const { tiltRef, glareRef, onMove, onLeave } = useTilt(7)
 </script>
 
 <template>
-  <article class="card group flex flex-col overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+  <article
+    ref="tiltRef"
+    class="card group relative flex flex-col overflow-hidden p-0 transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover"
+    @mousemove="onMove"
+    @mouseleave="onLeave"
+  >
+    <span
+      ref="glareRef"
+      class="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      aria-hidden="true"
+    />
     <NuxtLink :to="`/projects/${project.slug}`" class="block p-4">
       <ProjectThumb
         :seed="project.title.length + project.year.length"

@@ -246,7 +246,7 @@ function statIcon(icon: string) {
 
     <!-- QUOTE -->
     <section class="container-site pb-20">
-      <Reveal class="mx-auto max-w-3xl text-center">
+      <Reveal class="mx-auto max-w-3xl text-center" direction="blur">
         <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary" aria-hidden="true">
           <Quote :size="22" :stroke-width="1.5" />
         </span>

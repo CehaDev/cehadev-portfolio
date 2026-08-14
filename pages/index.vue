@@ -138,7 +138,7 @@ const avatarButtons = computed(() => [
           </div>
         </Reveal>
 
-        <Reveal class="relative mx-auto" :delay="120">
+        <Reveal class="relative mx-auto" :delay="120" direction="scale">
           <div class="relative flex items-center justify-center">
             <span
               class="animate-spin-slow absolute h-[360px] w-[360px] rounded-full border border-dashed border-primary/25"
@@ -260,7 +260,7 @@ const avatarButtons = computed(() => [
 
     <!-- CTA -->
     <section class="container-site pb-24">
-      <Reveal class="relative overflow-hidden rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 via-primary/5 to-blue/10 px-8 py-16 text-center md:px-16 md:py-20">
+      <Reveal class="relative overflow-hidden rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 via-primary/5 to-blue/10 px-8 py-16 text-center md:px-16 md:py-20" direction="scale">
         <div class="absolute inset-0 bg-glow-circle opacity-40" style="mask-image: linear-gradient(to bottom, black, transparent)" aria-hidden="true" />
         <div class="relative">
           <h2 class="text-3xl font-extrabold tracking-tight text-text md:text-4xl">

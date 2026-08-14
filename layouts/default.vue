@@ -1,5 +1,7 @@
 <template>
-  <div id="top" class="flex min-h-screen flex-col">
+  <div id="top" class="relative flex min-h-screen flex-col">
+    <Spotlight />
+    <ScrollProgress />
     <AppNavbar />
     <main class="flex-1">
       <slot />

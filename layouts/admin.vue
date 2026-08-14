@@ -28,6 +28,7 @@ async function logout() {
 
 <template>
   <div class="flex min-h-screen bg-bg">
+    <ScrollProgress />
     <aside class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border bg-bg-alt">
       <NuxtLink to="/admin" class="flex h-[76px] items-center gap-2.5 border-b border-border px-6">
         <img src="/ch.png" alt="CehaDev" class="h-9 w-9 rounded-lg object-cover" />

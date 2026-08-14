@@ -63,25 +63,25 @@ const socials = computed(() => {
 
     <!-- INFO TILES -->
     <section class="mt-14">
-      <Reveal class="grid gap-6 sm:grid-cols-3">
-        <a
-          v-for="c in contacts"
-          :key="c.label"
-          :href="c.href"
-          :target="c.href.startsWith('http') ? '_blank' : null"
-          :rel="c.href.startsWith('http') ? 'noopener noreferrer' : null"
-          class="group card p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
-        >
-          <span
-            class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary transition-all duration-300 group-hover:bg-gradient-brand group-hover:text-white group-hover:shadow-btn-glow"
-            aria-hidden="true"
+      <div class="grid gap-6 sm:grid-cols-3">
+        <Reveal v-for="(c, i) in contacts" :key="c.label" :delay="i * 90">
+          <a
+            :href="c.href"
+            :target="c.href.startsWith('http') ? '_blank' : null"
+            :rel="c.href.startsWith('http') ? 'noopener noreferrer' : null"
+            class="group card flex h-full flex-col items-center p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
           >
-            <component :is="c.icon" :size="20" :stroke-width="1.5" />
-          </span>
-          <p class="mt-4 text-[11px] font-medium uppercase tracking-wider text-text-muted">{{ c.label }}</p>
-          <p class="mt-1 truncate text-sm font-semibold text-text transition-colors group-hover:text-primary">{{ c.value }}</p>
-        </a>
-      </Reveal>
+            <span
+              class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-gradient-brand group-hover:text-white group-hover:shadow-btn-glow"
+              aria-hidden="true"
+            >
+              <component :is="c.icon" :size="20" :stroke-width="1.5" />
+            </span>
+            <p class="mt-4 text-[11px] font-medium uppercase tracking-wider text-text-muted">{{ c.label }}</p>
+            <p class="mt-1 truncate text-sm font-semibold text-text transition-colors group-hover:text-primary">{{ c.value }}</p>
+          </a>
+        </Reveal>
+      </div>
     </section>
 
     <!-- FORM + MAP -->

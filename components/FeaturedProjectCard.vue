@@ -20,13 +20,23 @@ const props = withDefaults(
   }>(),
   { variant: 'small' }
 )
+
+const { tiltRef, glareRef, onMove, onLeave } = useTilt(6)
 </script>
 
 <template>
   <NuxtLink
+    ref="tiltRef"
     :to="`/projects/${project.slug}`"
-    class="group relative block h-full overflow-hidden rounded-card border border-border shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card-hover"
+    class="group relative block h-full overflow-hidden rounded-card border border-border shadow-card transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover"
+    @mousemove="onMove"
+    @mouseleave="onLeave"
   >
+    <span
+      ref="glareRef"
+      class="pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      aria-hidden="true"
+    />
     <ProjectThumb
       :seed="project.title.length + project.year.length"
       :label="project.category"
