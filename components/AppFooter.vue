@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ArrowUp, Heart, Mail, Phone, MapPin, Github, Linkedin, Instagram, ArrowRight } from 'lucide-vue-next'
+import { ArrowUp, Heart, Mail, Phone, MapPin, Github, Linkedin, Instagram, ArrowRight, MessageCircle } from 'lucide-vue-next'
 import { navLinks } from '~/composables/useSiteData'
 
 const route = useRoute()
 const { data: site } = await useSiteSettings()
+const { openChat } = useChatWidget()
 const year = new Date().getFullYear()
 
 const isContact = computed(() => route.path.startsWith('/contact'))
@@ -35,14 +36,32 @@ const socials = computed(() => {
             Ada pertanyaan<span class="bg-gradient-brand bg-clip-text text-transparent">?</span>
           </h2>
           <p class="mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
-            Temukan jawaban untuk pertanyaan yang paling sering ditanyakan sebelum menghubungi saya.
+            Pilih pertanyaan di bawah untuk mengirimnya langsung ke kolom chat, atau tulis pertanyaan Anda sendiri.
           </p>
-          <NuxtLink to="/contact" class="btn-outline mt-6 !py-2.5">
-            Masih ada pertanyaan?
-            <ArrowRight :size="15" :stroke-width="2" />
-          </NuxtLink>
+          <button type="button" class="btn-primary mt-6 !py-2.5" @click="openChat()">
+            Buka kolom chat
+            <MessageCircle :size="15" :stroke-width="2" />
+          </button>
         </div>
-        <FaqAccordion :faqs="site?.faqs ?? []" />
+        <ul class="space-y-2.5">
+          <li v-for="(f, i) in site?.faqs ?? []" :key="i">
+            <button
+              type="button"
+              class="group flex w-full items-center gap-3 rounded-card border border-border bg-card px-4 py-3.5 text-left transition-colors hover:border-primary/40 hover:bg-primary/5"
+              @click="openChat(f.q)"
+            >
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
+                <MessageCircle :size="15" :stroke-width="1.5" />
+              </span>
+              <span class="text-sm text-text-secondary transition-colors group-hover:text-text">{{ f.q }}</span>
+              <ArrowRight
+                :size="15"
+                :stroke-width="2"
+                class="ml-auto shrink-0 text-text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-primary"
+              />
+            </button>
+          </li>
+        </ul>
       </div>
 
       <!-- KOLOM -->

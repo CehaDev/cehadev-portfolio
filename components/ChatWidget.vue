@@ -3,7 +3,10 @@ import { MessageCircle, X, Send, Sparkles, User, AtSign } from 'lucide-vue-next'
 
 const STORAGE_KEY = 'cehadev-chat-session'
 
+const { trigger } = useChatWidget()
 const { data: site } = await useSiteSettings()
+
+const pendingTrigger = ref(false)
 
 const open = ref(false)
 const enabled = ref(true)
@@ -128,6 +131,24 @@ async function toggle() {
   }
 }
 
+async function applyTrigger() {
+  open.value = true
+  if (trigger.value.prefill) input.value = trigger.value.prefill
+  if (conversationId.value) await fetchThread()
+  else scrollToBottom()
+}
+
+watch(
+  () => trigger.value.nonce,
+  async () => {
+    if (!ready.value || !enabled.value) {
+      pendingTrigger.value = true
+      return
+    }
+    await applyTrigger()
+  }
+)
+
 onMounted(async () => {
   try {
     const cfg = await $fetch<{ enabled: boolean }>('/api/chat/config')
@@ -140,6 +161,10 @@ onMounted(async () => {
   ready.value = true
   refreshUnread()
   setInterval(refreshUnread, 15000)
+  if (pendingTrigger.value) {
+    pendingTrigger.value = false
+    await applyTrigger()
+  }
 })
 
 watch(messages, scrollToBottom)
