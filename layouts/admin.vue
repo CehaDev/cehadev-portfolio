@@ -14,23 +14,13 @@ const navItems = [
   { label: 'Settings', to: '/admin/settings', icon: Settings }
 ]
 
-const { data: chatUnread } = await useAsyncData('admin-chat-unread', () => $fetch<{ count: number }>('/api/admin/chat/unread'))
-const { data: messageUnread } = await useAsyncData('admin-message-unread', () => $fetch<{ count: number }>('/api/admin/messages/unread'))
+const notif = useAdminNotifications()
 
 function unreadFor(itemTo: string) {
-  if (itemTo === '/admin/chat') return chatUnread.value?.count ?? 0
-  if (itemTo === '/admin/messages') return messageUnread.value?.count ?? 0
+  if (itemTo === '/admin/chat') return notif.chatUnread
+  if (itemTo === '/admin/messages') return notif.messageUnread
   return 0
 }
-
-onMounted(() => {
-  setInterval(async () => {
-    const chat = await $fetch<{ count: number }>('/api/admin/chat/unread').catch(() => null)
-    if (chat) chatUnread.value = chat
-    const msgs = await $fetch<{ count: number }>('/api/admin/messages/unread').catch(() => null)
-    if (msgs) messageUnread.value = msgs
-  }, 15000)
-})
 
 async function logout() {
   await $fetch('/api/auth/logout', { method: 'POST' })
@@ -93,11 +83,12 @@ async function logout() {
         <div class="flex h-[76px] items-center justify-between px-8">
           <h1 class="text-lg font-bold text-text">{{ route.meta.adminTitle ?? 'Admin' }}</h1>
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success">
-              <span class="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
-              Online
-            </span>
-          </div>
+          <NotificationBell />
+          <span class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success">
+            <span class="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
+            Online
+          </span>
+        </div>
         </div>
       </header>
 
