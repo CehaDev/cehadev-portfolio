@@ -18,6 +18,7 @@ const confirmDelete = ref<string | null>(null)
 
 const activeProjects = computed(() => (projects.value ?? []).filter((p) => !p.archived))
 const archivedProjects = computed(() => (projects.value ?? []).filter((p) => p.archived))
+const currentProjects = computed(() => (tab.value === 'active' ? activeProjects.value : archivedProjects.value))
 
 async function runAction(slug: string, query?: string) {
   if (busy.value) return
@@ -76,7 +77,79 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
     </div>
 
     <div class="card overflow-hidden">
-      <div class="overflow-x-auto">
+      <!-- Mobile: kartu project -->
+      <ul class="divide-y divide-border/60 md:hidden">
+        <li v-for="p in currentProjects" :key="p.slug" class="p-4">
+          <div class="flex items-start gap-3">
+            <img :src="`/ch.png`" alt="" class="h-11 w-11 shrink-0 rounded-lg object-cover" />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold text-text">{{ lsId(p.title) }}</p>
+                  <p class="mt-0.5 truncate text-xs text-text-muted">{{ lsId(p.category) }} • {{ p.year }}</p>
+                </div>
+                <span
+                  v-if="p.featured"
+                  class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400"
+                >
+                  <Star :size="10" :stroke-width="2" class="fill-amber-400" />
+                  Featured
+                </span>
+                <span v-else class="shrink-0 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-text-muted">Tidak</span>
+              </div>
+              <a :href="p.liveUrl" target="_blank" rel="noopener noreferrer" class="mt-1 flex items-center gap-1 truncate text-xs text-text-muted hover:text-primary">
+                {{ p.liveUrl }}
+                <ExternalLink :size="11" :stroke-width="1.5" />
+              </a>
+              <div class="mt-3 flex flex-wrap items-center gap-2">
+                <template v-if="tab === 'active'">
+                  <NuxtLink :to="`/admin/projects/${p.slug}`" class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/50 hover:text-text">
+                    <Pencil :size="13" :stroke-width="1.5" />
+                    Edit
+                  </NuxtLink>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-amber-400/50 hover:text-amber-400"
+                    :disabled="busy === p.slug"
+                    @click="archive(p.slug)"
+                  >
+                    <LoaderCircle v-if="busy === p.slug" :size="13" class="animate-spin" />
+                    <Archive v-else :size="13" :stroke-width="1.5" />
+                    Arsipkan
+                  </button>
+                </template>
+                <template v-else>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-emerald-400/50 hover:text-emerald-400"
+                    :disabled="busy === p.slug"
+                    @click="restore(p.slug)"
+                  >
+                    <LoaderCircle v-if="busy === p.slug" :size="13" class="animate-spin" />
+                    <ArchiveRestore v-else :size="13" :stroke-width="1.5" />
+                    Pulihkan
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-red-500/30 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:border-red-500/60 hover:bg-red-500/10"
+                    @click="confirmDelete = p.slug"
+                  >
+                    <Trash2 :size="13" :stroke-width="1.5" />
+                    Hapus
+                  </button>
+                </template>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li v-if="!currentProjects.length" class="px-5 py-10 text-center text-sm text-text-muted">
+          <template v-if="tab === 'active'">Belum ada project. Klik "Tambah Project" untuk mulai.</template>
+          <template v-else>Tidak ada project yang diarsipkan.</template>
+        </li>
+      </ul>
+
+      <!-- Desktop: tabel -->
+      <div class="hidden overflow-x-auto md:block">
         <table class="w-full text-left text-sm">
           <thead>
             <tr class="border-b border-border bg-bg-alt text-xs uppercase tracking-wider text-text-muted">
@@ -88,7 +161,7 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
             </tr>
           </thead>
           <tbody class="divide-y divide-border/60">
-            <tr v-for="p in tab === 'active' ? activeProjects : archivedProjects" :key="p.slug" class="transition-colors hover:bg-card">
+            <tr v-for="p in currentProjects" :key="p.slug" class="transition-colors hover:bg-card">
               <td class="px-5 py-4">
                 <div class="flex items-center gap-3">
                   <img :src="`/ch.png`" alt="" class="hidden h-10 w-10 rounded-lg object-cover sm:block" />
