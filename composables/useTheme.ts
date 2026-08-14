@@ -2,21 +2,22 @@ const THEME_KEY = 'cehadev-theme'
 
 export type Theme = 'light' | 'dark'
 
-function resolveInitialTheme(): Theme {
-  if (import.meta.client) {
-    try {
-      const saved = localStorage.getItem(THEME_KEY)
-      if (saved === 'light' || saved === 'dark') return saved
-      if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light'
-    } catch {
-      /* localStorage tidak tersedia */
-    }
+function themeFromClass(): Theme {
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+}
+
+function themeFromStorage(): Theme {
+  try {
+    const saved = localStorage.getItem(THEME_KEY)
+    if (saved === 'light' || saved === 'dark') return saved
+  } catch {
+    /* localStorage tidak tersedia */
   }
-  return 'dark'
+  return themeFromClass()
 }
 
 export function useTheme() {
-  const theme = ref<Theme>(resolveInitialTheme())
+  const theme = ref<Theme>('dark')
 
   function apply(next: Theme) {
     theme.value = next
@@ -34,6 +35,12 @@ export function useTheme() {
 
   function toggle() {
     apply(theme.value === 'dark' ? 'light' : 'dark')
+  }
+
+  if (import.meta.client) {
+    onMounted(() => {
+      theme.value = themeFromStorage()
+    })
   }
 
   return { theme, toggle, apply }

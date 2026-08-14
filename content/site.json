@@ -126,19 +126,61 @@
       }
     }
   ],
-  "email": "hello@cehadev.id",
+  "email": "chdevteck@gmail.com",
   "location": {
     "id": "Wirosari, Grobogan, Jawa Tengah",
     "en": "Wirosari, Grobogan, Central Java"
   },
   "website": "cehadev.id",
-  "phone": "+62 812-3456-7890",
+  "phone": "+62 89631229600",
   "socials": {
     "github": "https://github.com/cehadev",
     "linkedin": "https://linkedin.com/in/cehadev",
-    "instagram": "https://instagram.com/cehadev"
+    "instagram": "https://www.instagram.com/ch_devteck"
   },
   "cvUrl": "/cv",
+  "faqs": [
+    {
+      "q": {
+        "id": "Apakah Anda menerima project freelance?",
+        "en": "Do you take freelance projects?"
+      },
+      "a": {
+        "id": "Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak.",
+        "en": "Yes, I'm open to freelance projects and collaborations. Response time is usually fast — feel free to send your requirements through the contact form."
+      }
+    },
+    {
+      "q": {
+        "id": "Teknologi apa yang Anda kuasai?",
+        "en": "What technologies do you work with?"
+      },
+      "a": {
+        "id": "Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD.",
+        "en": "I focus on the JavaScript ecosystem: Nuxt.js, Vue.js, Node.js, and Tailwind CSS. I'm also comfortable with tools like Docker, Git, and CI/CD."
+      }
+    },
+    {
+      "q": {
+        "id": "Bagaimana proses kerja sama berlangsung?",
+        "en": "How does the collaboration process work?"
+      },
+      "a": {
+        "id": "Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap.",
+        "en": "It starts with a requirements discussion, estimation, planning, development, and ends with testing and deployment. I keep communication clear at every stage."
+      }
+    },
+    {
+      "q": {
+        "id": "Berapa lama waktu pengerjaan project?",
+        "en": "How long does a project take?"
+      },
+      "a": {
+        "id": "Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan.",
+        "en": "It depends on complexity. Landing pages usually take 1–2 weeks, medium web apps 1–3 months. A detailed estimate is given after the requirements discussion."
+      }
+    }
+  ],
   "projectStats": [
     {
       "icon": "FolderKanban",
@@ -182,48 +224,6 @@
       "value": {
         "id": "8",
         "en": "8"
-      }
-    }
-  ],
-  "faqs": [
-    {
-      "q": {
-        "id": "Apakah Anda menerima project freelance?",
-        "en": "Do you take freelance projects?"
-      },
-      "a": {
-        "id": "Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak.",
-        "en": "Yes, I'm open to freelance projects and collaborations. Response time is usually fast — feel free to send your requirements through the contact form."
-      }
-    },
-    {
-      "q": {
-        "id": "Teknologi apa yang Anda kuasai?",
-        "en": "What technologies do you work with?"
-      },
-      "a": {
-        "id": "Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD.",
-        "en": "I focus on the JavaScript ecosystem: Nuxt.js, Vue.js, Node.js, and Tailwind CSS. I'm also comfortable with tools like Docker, Git, and CI/CD."
-      }
-    },
-    {
-      "q": {
-        "id": "Bagaimana proses kerja sama berlangsung?",
-        "en": "How does the collaboration process work?"
-      },
-      "a": {
-        "id": "Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap.",
-        "en": "It starts with a requirements discussion, estimation, planning, development, and ends with testing and deployment. I keep communication clear at every stage."
-      }
-    },
-    {
-      "q": {
-        "id": "Berapa lama waktu pengerjaan project?",
-        "en": "How long does a project take?"
-      },
-      "a": {
-        "id": "Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan.",
-        "en": "It depends on complexity. Landing pages usually take 1–2 weeks, medium web apps 1–3 months. A detailed estimate is given after the requirements discussion."
       }
     }
   ],
