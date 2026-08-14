@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -7,8 +7,18 @@ const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
   { label: 'Projects', to: '/admin/projects', icon: FolderKanban },
   { label: 'CV', to: '/admin/cv', icon: FileText },
+  { label: 'Chat', to: '/admin/chat', icon: MessageSquare },
   { label: 'Site', to: '/admin/site', icon: Settings2 }
 ]
+
+const { data: chatUnread } = await useAsyncData('admin-chat-unread', () => $fetch<{ count: number }>('/api/admin/chat/unread'))
+
+onMounted(() => {
+  setInterval(async () => {
+    const res = await $fetch<{ count: number }>('/api/admin/chat/unread').catch(() => null)
+    if (res) chatUnread.value = res
+  }, 15000)
+})
 
 async function logout() {
   await $fetch('/api/auth/logout', { method: 'POST' })
@@ -39,6 +49,13 @@ async function logout() {
         >
           <component :is="item.icon" :size="17" :stroke-width="1.75" />
           {{ item.label }}
+          <span
+            v-if="item.to === '/admin/chat' && chatUnread?.count > 0"
+            class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white"
+            aria-hidden="true"
+          >
+            {{ chatUnread.count > 9 ? '9+' : chatUnread.count }}
+          </span>
         </NuxtLink>
       </nav>
 
