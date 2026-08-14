@@ -14,7 +14,8 @@ async function submit() {
   loading.value = true
   error.value = ''
   try {
-    const res = await $fetch<{ ok: boolean; pending?: boolean }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    const res = await $fetch<{ ok: boolean; pending?: boolean; devCode?: string }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    if (res.devCode) sessionStorage.setItem('cehadev_dev_otp', res.devCode)
     await navigateTo(res.pending ? '/admin/verify' : '/admin')
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }

@@ -1,29 +1,50 @@
 <script setup lang="ts">
-import { ShieldCheck, LoaderCircle, ArrowLeft, ScanLine, CheckCircle2, KeyRound } from 'lucide-vue-next'
+import { MailCheck, LoaderCircle, ArrowLeft, RefreshCw, CheckCircle2 } from 'lucide-vue-next'
 
 definePageMeta({ layout: 'default', middleware: 'admin-auth' })
 
-useSeoMeta({ title: 'Verifikasi 2FA | CehaDev', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Verifikasi Kode | CehaDev', robots: 'noindex, nofollow' })
 
-interface SetupData {
-  active: boolean
-  secret?: string
-}
-
-const setup = ref<SetupData | null>(null)
 const code = ref('')
 const error = ref('')
 const busy = ref(false)
-const copied = ref(false)
+const resendBusy = ref(false)
+const cooldown = ref(0)
+const devCode = ref<string | null>(sessionStorage.getItem('cehadev_dev_otp'))
 
-onMounted(async () => {
+let timer: ReturnType<typeof setInterval> | null = null
+
+function startCooldown(seconds: number) {
+  cooldown.value = seconds
+  timer = setInterval(() => {
+    cooldown.value -= 1
+    if (cooldown.value <= 0 && timer) {
+      clearInterval(timer)
+      timer = null
+    }
+  }, 1000)
+}
+
+onMounted(() => {
+  startCooldown(30)
+})
+
+async function resend() {
+  if (resendBusy.value || cooldown.value > 0) return
+  resendBusy.value = true
+  error.value = ''
   try {
-    setup.value = await $fetch<SetupData>('/api/auth/totp/setup')
+    const res = await $fetch<{ ok: boolean; devCode?: string }>('/api/auth/otp/resend', { method: 'POST' })
+    if (res.devCode) sessionStorage.setItem('cehadev_dev_otp', res.devCode)
+    devCode.value = res.devCode ?? null
+    startCooldown(30)
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
-    error.value = err.data?.statusMessage ?? 'Sesi verifikasi tidak ditemukan'
+    error.value = err.data?.statusMessage ?? 'Gagal mengirim ulang kode.'
+  } finally {
+    resendBusy.value = false
   }
-})
+}
 
 const codeReady = computed(() => code.value.replace(/\s/g, '').length === 6)
 
@@ -32,11 +53,7 @@ async function submit() {
   busy.value = true
   error.value = ''
   try {
-    if (setup.value?.active) {
-      await $fetch('/api/auth/verify', { method: 'POST', body: { code: code.value } })
-    } else {
-      await $fetch('/api/auth/totp/activate', { method: 'POST', body: { code: code.value } })
-    }
+    await $fetch('/api/auth/verify', { method: 'POST', body: { code: code.value } })
     await navigateTo('/admin')
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
@@ -47,16 +64,9 @@ async function submit() {
   }
 }
 
-async function copySecret() {
-  if (!setup.value?.secret) return
-  try {
-    await navigator.clipboard.writeText(setup.value.secret)
-    copied.value = true
-    setTimeout(() => (copied.value = false), 2000)
-  } catch {
-    /* clipboard tidak tersedia */
-  }
-}
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
 </script>
 
 <template>
@@ -67,75 +77,57 @@ async function copySecret() {
         <div class="p-8 md:p-10">
           <div class="flex flex-col items-center text-center">
             <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-primary" aria-hidden="true">
-              <ShieldCheck :size="26" :stroke-width="1.5" />
+              <MailCheck :size="26" :stroke-width="1.5" />
             </span>
             <h1 class="mt-5 text-2xl font-extrabold tracking-tight text-text">
-              Verifikasi <span class="bg-gradient-brand bg-clip-text text-transparent">2 Faktor</span>
+              Kode <span class="bg-gradient-brand bg-clip-text text-transparent">Login</span>
             </h1>
             <p class="mt-2 text-sm text-text-secondary">
-              {{
-                setup?.active
-                  ? 'Masukkan kode 6 digit dari aplikasi Authenticator Anda.'
-                  : 'Aktifkan 2FA: ketik kunci rahasia di aplikasi Authenticator (Google Authenticator, Authy, dll).'
-              }}
+              Kode verifikasi 6 digit telah dikirim ke email Anda. Berlaku 10 menit.
             </p>
           </div>
 
-          <div v-if="!setup?.active" class="mt-7 rounded-2xl border border-border bg-bg p-5">
-            <template v-if="setup?.secret">
-              <p class="mb-2 flex items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">
-                <KeyRound :size="11" :stroke-width="1.75" aria-hidden="true" />
-                Kunci rahasia — ketik manual di aplikasi Authenticator
-              </p>
-              <button
-                type="button"
-                class="flex w-full items-center justify-between gap-2 rounded-lg border border-primary/40 bg-card px-4 py-3 font-mono text-base tracking-wide text-text transition-colors hover:border-primary"
-                @click="copySecret"
-              >
-                <span class="truncate">{{ setup.secret }}</span>
-                <span class="shrink-0 text-[10px] font-semibold" :class="copied ? 'text-success' : 'text-primary'">{{ copied ? 'Tersalin ✓' : 'Salin' }}</span>
-              </button>
-              <p class="mt-3 text-center text-xs leading-relaxed text-text-secondary">
-                Buka Google Authenticator / Authy → <strong class="text-text">+</strong> → ketik kunci ini, lalu masukkan kode 6 digit di bawah.
-              </p>
-            </template>
-            <p v-else class="flex items-center justify-center gap-2 py-6 text-sm text-text-muted">
-              <LoaderCircle :size="16" class="animate-spin" aria-hidden="true" />
-              Menyiapkan kunci rahasia...
-            </p>
+          <div v-if="devCode" class="mt-6 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-center text-sm font-mono font-semibold tracking-widest text-amber-500">
+            Mode pengembangan: kode = {{ devCode }}
           </div>
 
           <form class="mt-7 space-y-5" novalidate @submit.prevent="submit">
             <div>
               <label for="verify-code" class="mb-1.5 block text-sm font-medium text-text">Kode 6 digit</label>
-              <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-text-muted" aria-hidden="true">
-                  <ScanLine :size="16" :stroke-width="1.5" />
-                </span>
-                <input
-                  id="verify-code"
-                  v-model="code"
-                  type="text"
-                  inputmode="numeric"
-                  autocomplete="one-time-code"
-                  maxlength="6"
-                  class="input-field !pl-11 text-center font-mono text-lg tracking-[0.4em]"
-                  placeholder="••••••"
-                  :disabled="busy"
-                  @input="code = code.replace(/[^0-9]/g, '').slice(0, 6)"
-                />
-              </div>
+              <input
+                id="verify-code"
+                v-model="code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6"
+                class="input-field text-center font-mono text-lg tracking-[0.4em]"
+                placeholder="••••••"
+                :disabled="busy"
+                @input="code = code.replace(/[^0-9]/g, '').slice(0, 6)"
+              />
               <p v-if="error" class="mt-1.5 text-xs text-red-400" role="alert">{{ error }}</p>
             </div>
 
             <button type="submit" class="btn-primary w-full" :disabled="busy || !codeReady">
               <LoaderCircle v-if="busy" :size="16" class="animate-spin" />
               <CheckCircle2 v-else :size="16" :stroke-width="2" />
-              {{ setup?.active ? 'Verifikasi & Masuk' : 'Aktifkan & Masuk' }}
+              Verifikasi & Masuk
+            </button>
+
+            <button
+              type="button"
+              class="flex w-full items-center justify-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text disabled:opacity-50"
+              :disabled="resendBusy || cooldown > 0"
+              @click="resend"
+            >
+              <LoaderCircle v-if="resendBusy" :size="14" class="animate-spin" />
+              <RefreshCw v-else :size="14" :stroke-width="2" />
+              {{ cooldown > 0 ? `Kirim ulang kode (${cooldown}s)` : 'Kirim ulang kode' }}
             </button>
           </form>
 
-          <NuxtLink to="/admin/login" class="mt-6 flex items-center justify-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text">
+          <NuxtLink to="/admin/login" class="mt-2 flex items-center justify-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text">
             <ArrowLeft :size="14" :stroke-width="2" />
             Kembali ke login
           </NuxtLink>
