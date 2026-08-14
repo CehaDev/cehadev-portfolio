@@ -7,9 +7,9 @@ const props = withDefaults(defineProps<{ location?: string }>(), {
 </script>
 
 <template>
-  <div class="card overflow-hidden">
+  <div class="card flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-card-hover">
     <div
-      class="relative h-44 overflow-hidden border-b border-border bg-bg-alt"
+      class="relative h-44 shrink-0 overflow-hidden border-b border-border bg-bg-alt"
       role="img"
       aria-label="Peta Wirosari, Grobogan dengan penanda lokasi"
     >
@@ -35,10 +35,13 @@ const props = withDefaults(defineProps<{ location?: string }>(), {
           <span class="absolute inset-0 animate-ping rounded-full bg-primary/50" />
         </span>
       </span>
-      <span class="absolute right-3 top-3 rounded-md border border-border bg-card/80 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">{{ location }}</span>
+      <span class="absolute right-3 top-3 inline-flex max-w-[60%] items-center gap-1.5 rounded-md border border-border bg-card/80 px-2.5 py-1 text-[10px] font-medium text-text-secondary backdrop-blur-sm">
+        <MapPin :size="10" :stroke-width="2" class="shrink-0 text-primary" aria-hidden="true" />
+        <span class="truncate">{{ location }}</span>
+      </span>
     </div>
 
-    <div class="p-6">
+    <div class="mt-auto p-6">
       <div class="flex items-start justify-between gap-4">
         <div>
           <p class="text-sm font-semibold text-text">{{ location }}</p>

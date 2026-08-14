@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Send, Lock, LoaderCircle } from 'lucide-vue-next'
+import { Send, Lock, LoaderCircle, User, AtSign, Tag, MessageSquare } from 'lucide-vue-next'
 
 const form = reactive({ name: '', email: '', subject: '', message: '' })
 const errors = reactive<Record<string, string>>({})
@@ -24,63 +24,90 @@ async function submit() {
 </script>
 
 <template>
-  <div class="card p-6 md:p-7">
-    <h2 class="text-xl font-bold text-text">Send Me a Message</h2>
-    <p class="mt-1.5 text-sm text-text-secondary">Isi form di bawah ini dan saya akan segera membalasnya.</p>
+  <div class="card h-full p-6 md:p-8">
+    <div class="flex items-start gap-4">
+      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+        <Send :size="18" :stroke-width="1.75" />
+      </span>
+      <div>
+        <h2 class="text-lg font-bold text-text">Send Me a Message</h2>
+        <p class="mt-1 text-sm text-text-secondary">Isi form di bawah, saya akan segera membalasnya.</p>
+      </div>
+    </div>
 
-    <form class="mt-6 space-y-5" novalidate @submit.prevent="submit">
+    <form class="mt-7 space-y-5" novalidate @submit.prevent="submit">
       <div class="grid gap-5 sm:grid-cols-2">
         <div>
           <label for="cf-name" class="mb-1.5 block text-sm font-medium text-text">Your Name</label>
-          <input
-            id="cf-name"
-            v-model="form.name"
-            type="text"
-            :class="errors.name ? '!border-red-500/60' : ''"
-            class="input-field"
-            placeholder="Nama lengkap"
-            autocomplete="name"
-          />
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">
+              <User :size="15" :stroke-width="1.5" />
+            </span>
+            <input
+              id="cf-name"
+              v-model="form.name"
+              type="text"
+              :class="errors.name ? '!border-red-500/60' : ''"
+              class="input-field pl-10"
+              placeholder="Nama lengkap"
+              autocomplete="name"
+            />
+          </div>
           <p v-if="errors.name" class="mt-1 text-xs text-red-400">{{ errors.name }}</p>
         </div>
         <div>
           <label for="cf-email" class="mb-1.5 block text-sm font-medium text-text">Your Email</label>
-          <input
-            id="cf-email"
-            v-model="form.email"
-            type="email"
-            :class="errors.email ? '!border-red-500/60' : ''"
-            class="input-field"
-            placeholder="nama@email.com"
-            autocomplete="email"
-          />
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">
+              <AtSign :size="15" :stroke-width="1.5" />
+            </span>
+            <input
+              id="cf-email"
+              v-model="form.email"
+              type="email"
+              :class="errors.email ? '!border-red-500/60' : ''"
+              class="input-field pl-10"
+              placeholder="nama@email.com"
+              autocomplete="email"
+            />
+          </div>
           <p v-if="errors.email" class="mt-1 text-xs text-red-400">{{ errors.email }}</p>
         </div>
       </div>
 
       <div>
         <label for="cf-subject" class="mb-1.5 block text-sm font-medium text-text">Subject</label>
-        <input
-          id="cf-subject"
-          v-model="form.subject"
-          type="text"
-          :class="errors.subject ? '!border-red-500/60' : ''"
-          class="input-field"
-          placeholder="Tujuan pesan"
-        />
+        <div class="relative">
+          <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">
+            <Tag :size="15" :stroke-width="1.5" />
+          </span>
+          <input
+            id="cf-subject"
+            v-model="form.subject"
+            type="text"
+            :class="errors.subject ? '!border-red-500/60' : ''"
+            class="input-field pl-10"
+            placeholder="Tujuan pesan"
+          />
+        </div>
         <p v-if="errors.subject" class="mt-1 text-xs text-red-400">{{ errors.subject }}</p>
       </div>
 
       <div>
         <label for="cf-message" class="mb-1.5 block text-sm font-medium text-text">Your Message</label>
-        <textarea
-          id="cf-message"
-          v-model="form.message"
-          rows="5"
-          :class="errors.message ? '!border-red-500/60' : ''"
-          class="input-field resize-none"
-          placeholder="Tulis pesan Anda di sini..."
-        />
+        <div class="relative">
+          <span class="pointer-events-none absolute left-3.5 top-4 text-text-muted" aria-hidden="true">
+            <MessageSquare :size="15" :stroke-width="1.5" />
+          </span>
+          <textarea
+            id="cf-message"
+            v-model="form.message"
+            rows="5"
+            :class="errors.message ? '!border-red-500/60' : ''"
+            class="input-field resize-none pl-10"
+            placeholder="Tulis pesan Anda di sini..."
+          />
+        </div>
         <p v-if="errors.message" class="mt-1 text-xs text-red-400">{{ errors.message }}</p>
       </div>
 

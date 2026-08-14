@@ -16,18 +16,23 @@ function toggle(i: number) {
 </script>
 
 <template>
-  <div class="card p-6 md:p-7">
-    <h2 class="flex items-center gap-2.5 text-lg font-bold text-text">
-      <MessageCircleQuestion :size="20" :stroke-width="1.5" class="text-primary" aria-hidden="true" />
-      Frequently Asked Questions
-    </h2>
+  <div class="card p-6 md:p-8">
+    <div class="flex items-start gap-3.5">
+      <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
+        <MessageCircleQuestion :size="18" :stroke-width="1.5" />
+      </span>
+      <div>
+        <h2 class="text-lg font-bold text-text">Frequently Asked Questions</h2>
+        <p class="mt-0.5 text-sm text-text-secondary">Jawaban cepat untuk pertanyaan umum.</p>
+      </div>
+    </div>
 
     <div class="mt-5 space-y-3">
       <div
         v-for="(f, i) in faqs.slice(0, 3)"
         :key="i"
-        class="overflow-hidden rounded-lg border transition-colors"
-        :class="open === i ? 'border-primary/40' : 'border-border'"
+        class="overflow-hidden rounded-xl border transition-all duration-300"
+        :class="open === i ? 'border-primary/40 bg-card' : 'border-border bg-bg hover:border-primary/30'"
       >
         <button
           type="button"
@@ -37,12 +42,13 @@ function toggle(i: number) {
           @click="toggle(i)"
         >
           {{ f.q }}
-          <ChevronDown
-            :size="16"
-            class="shrink-0 text-primary transition-transform duration-200"
-            :class="open === i ? 'rotate-180' : ''"
+          <span
+            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200"
+            :class="open === i ? 'border-primary bg-primary text-white' : 'border-border text-text-secondary'"
             aria-hidden="true"
-          />
+          >
+            <ChevronDown :size="14" :class="open === i ? 'rotate-180' : ''" class="transition-transform duration-200" />
+          </span>
         </button>
         <div v-if="open === i" :id="`faq-panel-${i}`" class="border-t border-border px-4 py-3.5 text-sm leading-relaxed text-text-secondary">
           {{ f.a }}
