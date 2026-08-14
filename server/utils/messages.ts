@@ -125,12 +125,14 @@ export async function addMessageReply(id: string, text: string) {
 
   let status: 'sent' | 'failed' = 'failed'
   let error = ''
+  const cfg = await getMailConfig()
   try {
     await sendMail({
       to: msg.email,
+      bcc: cfg ? cfg.from : undefined,
       subject: `Re: ${msg.subject}`,
       text: clean,
-      html: `<p>Halo <strong>${msg.name}</strong>,</p>\n<p>${clean.replace(/\n/g, '<br />')}</p>\n<br />\n<p>Salam,<br />${'CehaDev'}</p>`
+      html: `<p>Halo <strong>${msg.name}</strong>,</p>\n<p>${clean.replace(/\n/g, '<br />')}</p>\n<br />\n<p>Salam,<br />${cfg ? cfg.fromName : 'CehaDev'}</p>`
     })
     status = 'sent'
   } catch (e) {

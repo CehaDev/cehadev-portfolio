@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag, Send, CheckCircle2, XCircle } from 'lucide-vue-next'
+import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag, Send, CheckCircle2, XCircle, Settings2 } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -28,6 +28,10 @@ interface InboxMessage {
 
 const { data: messages, refresh } = await useAsyncData('admin-messages', () =>
   useRequestFetch()<InboxMessage[]>('/api/admin/messages')
+)
+
+const { data: smtpReady } = await useAsyncData('admin-smtp-ready', () =>
+  useRequestFetch()<boolean>('/api/admin/settings/smtp').then((s) => Boolean(s.hasPass && s.host && s.user)).catch(() => false)
 )
 
 const activeId = ref<string | null>(null)
@@ -271,6 +275,12 @@ onMounted(() => {
           >
             {{ replyNotice }}
           </p>
+          <div v-if="!smtpReady" class="mb-3 flex items-center gap-2.5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-xs text-amber-500">
+            <Settings2 :size="14" :stroke-width="1.75" class="shrink-0" aria-hidden="true" />
+            <span>SMTP belum dikonfigurasi — balasan tidak akan terkirim via email. Atur di
+              <NuxtLink to="/admin/settings" class="font-semibold underline">Settings</NuxtLink>.
+            </span>
+          </div>
           <div class="flex items-end gap-2.5">
             <textarea
               v-model="replyText"

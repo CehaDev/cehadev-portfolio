@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare, Mail } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare, Mail, Settings } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -9,7 +9,8 @@ const navItems = [
   { label: 'CV', to: '/admin/cv', icon: FileText },
   { label: 'Chat', to: '/admin/chat', icon: MessageSquare },
   { label: 'Messages', to: '/admin/messages', icon: Mail },
-  { label: 'Site', to: '/admin/site', icon: Settings2 }
+  { label: 'Site', to: '/admin/site', icon: Settings2 },
+  { label: 'Settings', to: '/admin/settings', icon: Settings }
 ]
 
 const { data: chatUnread } = await useAsyncData('admin-chat-unread', () => $fetch<{ count: number }>('/api/admin/chat/unread'))
