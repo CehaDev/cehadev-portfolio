@@ -13,7 +13,7 @@ export function signToken(str: string) {
 }
 
 export function issueSession() {
-  const payload = { exp: Date.now() + SESSION_TTL * 1000 }
+  const payload = { iat: Date.now(), exp: Date.now() + SESSION_TTL * 1000 }
   const str = JSON.stringify(payload)
   return `${Buffer.from(str).toString('base64url')}.${signToken(str)}`
 }
@@ -29,7 +29,11 @@ export function isSessionValid(token: string | undefined) {
   if (!timingSafeEqual(actual, expected)) return false
   try {
     const payload = JSON.parse(str)
-    return typeof payload.exp === 'number' && payload.exp > Date.now()
+    return (
+      typeof payload.iat === 'number' &&
+      typeof payload.exp === 'number' &&
+      payload.exp > Date.now()
+    )
   } catch {
     return false
   }
