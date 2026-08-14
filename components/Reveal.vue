@@ -59,7 +59,7 @@ onMounted(() => {
   <component
     :is="as"
     ref="el"
-    class="transition-all duration-700 ease-out will-change-transform"
+    class="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform"
     :class="[visible ? 'translate-x-0 translate-y-0 scale-100 blur-0 opacity-100' : hiddenClass]"
     :style="{ transitionDelay: delay + 'ms' }"
   >

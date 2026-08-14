@@ -94,7 +94,7 @@
     width: 55%;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
     transform: translateX(-160%) skewX(-20deg);
-    transition: transform 0.7s ease;
+    transition: transform 1.1s ease;
     pointer-events: none;
   }
   .btn-primary:hover::before {
@@ -141,7 +141,7 @@
 /* Teks gradien beranimasi (shimmer) untuk semua heading gradient-brand */
 .bg-clip-text.text-transparent {
   background-size: 200% 200%;
-  animation: gradient-x 6s ease-in-out infinite;
+  animation: gradient-x 8s ease-in-out infinite;
 }
 
 @keyframes gradient-x {
@@ -157,7 +157,7 @@
 /* Page transition (NuxtPage) */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .page-enter-from,
 .page-leave-to {

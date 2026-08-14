@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FolderKanban, Star, Tag, CalendarRange, Plus, ArrowRight, Layers, FileText } from 'lucide-vue-next'
+import { FolderKanban, Star, Tag, CalendarRange, Plus, ArrowRight, Layers, FileText, Inbox, Mail } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
@@ -10,6 +10,31 @@ definePageMeta({
 const { data: projects, refresh } = await useAsyncData('admin-projects', () =>
   useRequestFetch()('/api/admin/projects')
 )
+
+interface InboxMessage {
+  id: string
+  name: string
+  email: string
+  subject: string
+  message: string
+  read: boolean
+  at: string
+}
+
+const { data: messages } = await useAsyncData('admin-dash-messages', () =>
+  useRequestFetch()<InboxMessage[]>('/api/admin/messages')
+)
+
+const unreadMessages = computed(() => messages.value?.filter((m) => !m.read) ?? [])
+const recentMessages = computed(() => (messages.value ?? []).slice(0, 4))
+
+function messageTime(at: string) {
+  const d = new Date(at)
+  const today = new Date()
+  return d.toDateString() === today.toDateString()
+    ? d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+    : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+}
 
 const stats = computed(() => {
   const list = projects.value ?? []
@@ -83,6 +108,59 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
           Belum ada project. Tambahkan project pertama Anda.
         </li>
       </ul>
+    </div>
+
+    <div class="card p-7">
+      <div class="flex items-center justify-between">
+        <h3 class="flex items-center gap-2 text-base font-bold text-text">
+          <Mail :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+          Pesan Masuk
+          <span
+            v-if="unreadMessages.length > 0"
+            class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white"
+            aria-hidden="true"
+          >
+            {{ unreadMessages.length > 9 ? '9+' : unreadMessages.length }}
+          </span>
+        </h3>
+        <NuxtLink to="/admin/messages" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
+          Buka Inbox
+          <ArrowRight :size="15" :stroke-width="2" />
+        </NuxtLink>
+      </div>
+
+      <ul v-if="recentMessages.length" class="mt-5 divide-y divide-border/60">
+        <li v-for="m in recentMessages" :key="m.id">
+          <NuxtLink
+            :to="`/admin/messages`"
+            class="flex items-center justify-between gap-4 py-3.5 transition-colors hover:bg-card"
+          >
+            <div class="flex min-w-0 items-center gap-3">
+              <span
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                :class="m.read ? 'bg-bg-alt text-text-muted' : 'bg-primary/15 text-primary'"
+                aria-hidden="true"
+              >
+                <Mail :size="15" :stroke-width="1.5" />
+              </span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-text">
+                  <span v-if="!m.read" class="mr-1.5 inline-block h-2 w-2 rounded-full bg-red-500 align-middle" aria-hidden="true" />
+                  {{ m.subject }}
+                </p>
+                <p class="mt-0.5 truncate text-xs text-text-muted">{{ m.name }} — {{ m.email }}</p>
+              </div>
+            </div>
+            <span class="shrink-0 text-[10px] text-text-muted">{{ messageTime(m.at) }}</span>
+          </NuxtLink>
+        </li>
+      </ul>
+      <div v-else class="mt-5 flex flex-col items-center gap-2 py-8 text-center">
+        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15 text-primary" aria-hidden="true">
+          <Inbox :size="18" :stroke-width="1.5" />
+        </span>
+        <p class="text-sm text-text-muted">Belum ada pesan masuk dari form kontak.</p>
+      </div>
     </div>
   </div>
 </template>

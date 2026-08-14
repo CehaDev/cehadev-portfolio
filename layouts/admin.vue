@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare, Mail } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -8,15 +8,25 @@ const navItems = [
   { label: 'Projects', to: '/admin/projects', icon: FolderKanban },
   { label: 'CV', to: '/admin/cv', icon: FileText },
   { label: 'Chat', to: '/admin/chat', icon: MessageSquare },
+  { label: 'Messages', to: '/admin/messages', icon: Mail },
   { label: 'Site', to: '/admin/site', icon: Settings2 }
 ]
 
 const { data: chatUnread } = await useAsyncData('admin-chat-unread', () => $fetch<{ count: number }>('/api/admin/chat/unread'))
+const { data: messageUnread } = await useAsyncData('admin-message-unread', () => $fetch<{ count: number }>('/api/admin/messages/unread'))
+
+function unreadFor(itemTo: string) {
+  if (itemTo === '/admin/chat') return chatUnread.value?.count ?? 0
+  if (itemTo === '/admin/messages') return messageUnread.value?.count ?? 0
+  return 0
+}
 
 onMounted(() => {
   setInterval(async () => {
-    const res = await $fetch<{ count: number }>('/api/admin/chat/unread').catch(() => null)
-    if (res) chatUnread.value = res
+    const chat = await $fetch<{ count: number }>('/api/admin/chat/unread').catch(() => null)
+    if (chat) chatUnread.value = chat
+    const msgs = await $fetch<{ count: number }>('/api/admin/messages/unread').catch(() => null)
+    if (msgs) messageUnread.value = msgs
   }, 15000)
 })
 
@@ -51,11 +61,11 @@ async function logout() {
           <component :is="item.icon" :size="17" :stroke-width="1.75" />
           {{ item.label }}
           <span
-            v-if="item.to === '/admin/chat' && chatUnread?.count > 0"
+            v-if="unreadFor(item.to) > 0"
             class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white"
             aria-hidden="true"
           >
-            {{ chatUnread.count > 9 ? '9+' : chatUnread.count }}
+            {{ unreadFor(item.to) > 9 ? '9+' : unreadFor(item.to) }}
           </span>
         </NuxtLink>
       </nav>

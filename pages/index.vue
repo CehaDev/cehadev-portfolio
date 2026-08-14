@@ -297,13 +297,13 @@ const avatarButtons = computed(() => [
 }
 
 .animate-spin-slow {
-  animation: spin-slow 28s linear infinite;
+  animation: spin-slow 40s linear infinite;
 }
 
 @keyframes entrance-ornament {
   0% {
     opacity: 0;
-    transform: translateY(14px) scale(0.6);
+    transform: translateY(20px) scale(0.6);
   }
   100% {
     opacity: 1;
@@ -312,7 +312,7 @@ const avatarButtons = computed(() => [
 }
 
 .entrance-ornament {
-  animation: entrance-ornament 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: entrance-ornament 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes entrance-pop {
@@ -330,7 +330,7 @@ const avatarButtons = computed(() => [
 }
 
 .entrance-pop {
-  animation: entrance-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: entrance-pop 1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -348,7 +348,7 @@ const avatarButtons = computed(() => [
 
 .marquee-track {
   @apply flex w-max;
-  animation: marquee 30s linear infinite;
+  animation: marquee 42s linear infinite;
 }
 
 .marquee-track:hover {

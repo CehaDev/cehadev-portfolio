@@ -3,7 +3,8 @@ import { Send, Lock, LoaderCircle, User, AtSign, Tag, MessageSquare } from 'luci
 
 const form = reactive({ name: '', email: '', subject: '', message: '' })
 const errors = reactive<Record<string, string>>({})
-const status = ref<'idle' | 'loading' | 'success'>('idle')
+const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
+const errorMsg = ref('')
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -18,8 +19,22 @@ function validate() {
 async function submit() {
   if (!validate() || status.value === 'loading') return
   status.value = 'loading'
-  await new Promise((r) => setTimeout(r, 1200))
-  status.value = 'success'
+  errorMsg.value = ''
+  try {
+    await $fetch('/api/contact', {
+      method: 'POST',
+      body: { ...form }
+    })
+    status.value = 'success'
+    form.name = ''
+    form.email = ''
+    form.subject = ''
+    form.message = ''
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    status.value = 'error'
+    errorMsg.value = err.data?.statusMessage ?? 'Gagal mengirim pesan, coba lagi.'
+  }
 }
 </script>
 
@@ -119,6 +134,10 @@ async function submit() {
 
       <p v-if="status === 'success'" class="rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm font-medium text-success" role="status">
         Pesan berhasil dikirim! Terima kasih, saya akan segera membalas.
+      </p>
+
+      <p v-if="status === 'error'" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-400" role="alert">
+        {{ errorMsg }}
       </p>
 
       <p class="flex items-center gap-2 text-xs text-text-muted">

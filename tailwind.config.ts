@@ -64,8 +64,8 @@ export default <Partial<Config>>{
         }
       },
       animation: {
-        'fade-up': 'fade-up 0.6s ease-out both',
-        float: 'float 5s ease-in-out infinite'
+        'fade-up': 'fade-up 0.8s ease-out both',
+        float: 'float 8s ease-in-out infinite'
       }
     }
   },
