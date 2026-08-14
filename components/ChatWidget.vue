@@ -5,6 +5,8 @@ const STORAGE_KEY = 'cehadev-chat-session'
 
 const { trigger } = useChatWidget()
 const { data: site } = await useSiteSettings()
+const { t } = useI18n()
+const { lang } = useLang()
 
 const pendingTrigger = ref(false)
 
@@ -36,7 +38,7 @@ function scrollToBottom() {
 }
 
 function formatTime(at: string) {
-  return new Date(at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+  return new Date(at).toLocaleTimeString(lang.value === 'en' ? 'en-US' : 'id-ID', { hour: '2-digit', minute: '2-digit' })
 }
 
 async function loadSession() {
@@ -109,7 +111,7 @@ async function sendMessage(textOverride?: string) {
     await fetchThread()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
-    error.value = err.data?.statusMessage ?? 'Gagal mengirim pesan'
+    error.value = err.data?.statusMessage ?? t('chat.error')
   } finally {
     sending.value = false
   }
@@ -184,7 +186,7 @@ watch(messages, scrollToBottom)
         v-if="open"
         class="mb-4 flex h-[520px] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-card border border-border bg-card shadow-card"
         role="dialog"
-        aria-label="Chat dengan CehaDev"
+        :aria-label="t('chat.aria')"
       >
         <!-- Header -->
         <div class="flex items-center justify-between gap-3 bg-gradient-brand px-4 py-3.5 text-white">
@@ -194,14 +196,14 @@ watch(messages, scrollToBottom)
               <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-primary-violet bg-success" />
             </span>
             <div>
-              <p class="text-sm font-bold leading-tight">CehaDev Support</p>
-              <p class="text-[11px] opacity-90">{{ status === 'resolved' ? 'Percakapan selesai' : 'Online — biasanya membalas cepat' }}</p>
+              <p class="text-sm font-bold leading-tight">{{ t('chat.title') }}</p>
+              <p class="text-[11px] opacity-90">{{ status === 'resolved' ? t('chat.resolved') : t('chat.online') }}</p>
             </div>
           </div>
           <button
             type="button"
             class="flex h-8 w-8 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
-            :aria-label="'Tutup chat'"
+            :aria-label="t('chat.close')"
             @click="toggle"
           >
             <X :size="18" />
@@ -238,9 +240,9 @@ watch(messages, scrollToBottom)
                 <Sparkles :size="22" :stroke-width="1.5" />
               </span>
             </div>
-            <p class="text-center text-sm font-semibold text-text">Hai! Ada yang bisa saya bantu?</p>
+            <p class="text-center text-sm font-semibold text-text">{{ t('chat.greeting') }}</p>
             <p class="text-center text-xs leading-relaxed text-text-muted">
-              Pilih salah satu pertanyaan di bawah, atau tulis pesan Anda langsung.
+              {{ t('chat.hint') }}
             </p>
 
             <div class="flex flex-wrap justify-center gap-2 pt-1">
@@ -268,7 +270,7 @@ watch(messages, scrollToBottom)
                 v-model="name"
                 type="text"
                 class="input-field !py-2 pl-9 text-xs"
-                placeholder="Nama"
+                placeholder="{{ t('chat.namePlaceholder') }}"
                 autocomplete="name"
               />
             </div>
@@ -280,7 +282,7 @@ watch(messages, scrollToBottom)
                 v-model="email"
                 type="email"
                 class="input-field !py-2 pl-9 text-xs"
-                placeholder="Email"
+                placeholder="{{ t('chat.emailPlaceholder') }}"
                 autocomplete="email"
               />
             </div>
@@ -290,14 +292,14 @@ watch(messages, scrollToBottom)
               v-model="input"
               rows="1"
               class="input-field resize-none !py-2.5 text-sm"
-              :placeholder="isNew ? 'Tulis pesan Anda...' : 'Ketik balasan...'"
+              :placeholder="isNew ? t('chat.writeMessage') : t('chat.typeReply')"
               @keydown.enter.exact.prevent="sendMessage()"
             />
             <button
               type="button"
               class="btn-primary flex h-10 w-10 shrink-0 items-center justify-center !rounded-xl !p-0"
               :disabled="sending || !input.trim()"
-              :aria-label="'Kirim pesan'"
+              :aria-label="t('chat.send')"
               @click="sendMessage()"
             >
               <Send :size="16" :stroke-width="2" :class="sending ? 'animate-pulse' : ''" />
@@ -312,7 +314,7 @@ watch(messages, scrollToBottom)
     <button
       type="button"
       class="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-brand text-white shadow-btn-glow transition-transform duration-200 hover:scale-105"
-      :aria-label="open ? 'Tutup chat' : 'Buka chat'"
+      :aria-label="open ? t('chat.close') : t('chat.open')"
       @click="toggle"
     >
       <X v-if="open" :size="22" :stroke-width="2" />

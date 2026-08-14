@@ -2,13 +2,15 @@
 import { BarChart3, FolderKanban, Tag, CalendarRange, Code2 } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
-useSeoMeta({
-  title: 'Projects | CehaDev',
-  description: 'Kumpulan project yang pernah dikerjakan CehaDev — dari web app, e-commerce, dashboard, hingga backend API.'
-})
-
 const { data: projects } = await useProjectsContent()
 const { data: site } = await useSiteSettings()
+
+useSeoMeta({
+  title: () => site.value?.seo?.projects?.title ?? 'Projects | CehaDev',
+  description: () => site.value?.seo?.projects?.description ?? 'Kumpulan project yang pernah dikerjakan CehaDev — dari web app, e-commerce, dashboard, hingga backend API.'
+})
+
+const headings = computed(() => site.value?.headings?.projects ?? {})
 
 const categories = computed(() => ['All', ...new Set((projects.value ?? []).map((p) => p.category))])
 const activeCategory = ref('All')
@@ -59,10 +61,10 @@ const statIcons = {
 const statItems = computed(() => {
   const config = (site.value?.projectStats as Array<{ icon?: string; label?: string; value?: string }> | undefined) ?? []
   const defaults = [
-    { icon: 'FolderKanban', label: 'Project', value: String(totalProjects.value) },
-    { icon: 'Tag', label: 'Kategori', value: String(totalCategories.value) },
-    { icon: 'CalendarRange', label: 'Tahun', value: yearsRange.value },
-    { icon: 'Code2', label: 'Tech', value: String(techStats.value.length) }
+    { icon: 'FolderKanban', label: headings.value.statProject ?? 'Project', value: String(totalProjects.value) },
+    { icon: 'Tag', label: headings.value.statCategory ?? 'Kategori', value: String(totalCategories.value) },
+    { icon: 'CalendarRange', label: headings.value.statYear ?? 'Tahun', value: yearsRange.value },
+    { icon: 'Code2', label: headings.value.statTech ?? 'Tech', value: String(techStats.value.length) }
   ]
   return defaults.map((d, i) => {
     const c = config[i] as { icon?: string; label?: string; value?: string } | undefined
@@ -81,13 +83,13 @@ const statItems = computed(() => {
     <div class="text-center">
       <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-xs text-text-secondary shadow-card">
         <span class="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-        Portofolio
+        {{ headings.portfolio ?? 'Portofolio' }}
       </span>
       <h1 class="mt-5 text-4xl font-extrabold tracking-tight md:text-5xl">
-        My <span class="bg-gradient-brand bg-clip-text text-transparent">Projects</span>
+        {{ headings.myHead1 ?? 'My' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.myHead2 ?? 'Projects' }}</span>
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
-        Kumpulan project yang saya kerjakan — dari aplikasi web, e-commerce, dashboard, hingga backend API. Setiap project dibangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.
+        {{ headings.heroDesc ?? 'Kumpulan project yang saya kerjakan — dari aplikasi web, e-commerce, dashboard, hingga backend API. Setiap project dibangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.' }}
       </p>
 
       <div class="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
@@ -104,7 +106,7 @@ const statItems = computed(() => {
     <div class="mt-12 grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
       <!-- FILTER + GRID PROJECT -->
       <div class="min-w-0 lg:order-1">
-        <div class="flex flex-wrap justify-center gap-2.5 lg:justify-start" role="tablist" aria-label="Filter kategori project">
+        <div class="flex flex-wrap justify-center gap-2.5 lg:justify-start" role="tablist" :aria-label="headings.filterAria ?? 'Filter kategori project'">
           <button
             v-for="cat in categories"
             :key="cat"
@@ -117,7 +119,7 @@ const statItems = computed(() => {
               : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
             @click="activeCategory = cat"
           >
-            {{ cat }}
+            {{ cat === 'All' ? (headings.allCategory ?? 'All') : cat }}
             <span class="ml-1.5 text-xs" :class="activeCategory === cat ? 'text-white/80' : 'text-text-muted'">({{ categoryCount(cat) }})</span>
           </button>
         </div>
@@ -137,8 +139,8 @@ const statItems = computed(() => {
               <BarChart3 :size="20" :stroke-width="1.5" />
             </span>
             <div>
-              <h2 class="text-lg font-extrabold text-text">Bahasa & Teknologi</h2>
-              <p class="text-xs text-text-muted">Frekuensi pemakaian di seluruh project</p>
+              <h2 class="text-lg font-extrabold text-text">{{ headings.langTechTitle ?? 'Bahasa & Teknologi' }}</h2>
+              <p class="text-xs text-text-muted">{{ headings.langTechSub ?? 'Frekuensi pemakaian di seluruh project' }}</p>
             </div>
           </div>
 

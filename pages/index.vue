@@ -2,14 +2,18 @@
 import { ArrowRight, Mail, ArrowUpRight, Github, Linkedin, Instagram, Sparkles, Rocket, Braces, Code2, Zap, Asterisk, Plus, Terminal, GitBranch } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
+const { data: site } = await useSiteSettings()
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'CehaDev — Web Developer Portfolio',
-  description: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
+  title: () => site.value?.seo?.home?.title ?? 'CehaDev — Web Developer Portfolio',
+  description: () => site.value?.seo?.home?.description ?? 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
 })
 
-const { data: site } = await useSiteSettings()
 const { data: skills } = await useSkillsContent()
 const { data: projects } = await useProjectsContent()
+
+const headings = computed(() => site.value?.headings?.home ?? {})
 
 const featuredProjects = computed(() => {
   const list = projects.value ?? []
@@ -50,8 +54,8 @@ const heroOrnaments = [
 ]
 
 const avatarButtons = computed(() => [
-  { to: '/projects', href: null, icon: Rocket, style: 'gradient', pos: '-left-3 top-8 md:-left-6', label: 'Lihat project', delay: 400 },
-  { to: '/contact', href: null, icon: Mail, style: 'outline', pos: '-left-4 bottom-10 md:-left-7', label: 'Hubungi saya', delay: 550 },
+  { to: '/projects', href: null, icon: Rocket, style: 'gradient', pos: '-left-3 top-8 md:-left-6', label: headings.value.viewProjectsBtn ?? t('projectCard.viewProject'), delay: 400 },
+  { to: '/contact', href: null, icon: Mail, style: 'outline', pos: '-left-4 bottom-10 md:-left-7', label: headings.value.contactMeBtn ?? t('footer.contactMe'), delay: 550 },
   { to: null, href: site.value?.socials?.github ?? 'https://github.com', icon: Github, style: 'outline', pos: '-right-3 bottom-14 md:-right-6', label: 'GitHub', delay: 700 }
 ])
 </script>
@@ -113,12 +117,12 @@ const avatarButtons = computed(() => [
 
           <div class="mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
             <NuxtLink to="/projects" class="btn-primary">
-              View My Work
+              {{ headings.viewWork ?? t('projectCard.viewProject') }}
               <ArrowRight :size="17" :stroke-width="2" />
             </NuxtLink>
             <NuxtLink to="/contact" class="btn-outline">
               <Mail :size="17" :stroke-width="1.75" />
-              Contact Me
+              {{ headings.contactMe ?? t('footer.contactMe') }}
             </NuxtLink>
           </div>
 
@@ -160,8 +164,8 @@ const avatarButtons = computed(() => [
                 <Sparkles :size="16" :stroke-width="1.75" />
               </span>
               <div class="leading-tight">
-                <p class="text-xs font-semibold text-text">Open to work</p>
-                <p class="text-[11px] text-text-muted">Let's build something great</p>
+                <p class="text-xs font-semibold text-text">{{ headings.openToWork ?? 'Open to work' }}</p>
+                <p class="text-[11px] text-text-muted">{{ headings.buildGreat ?? "Let's build something great" }}</p>
               </div>
             </div>
 
@@ -203,7 +207,7 @@ const avatarButtons = computed(() => [
     </section>
 
     <!-- TECH MARQUEE -->
-    <section class="border-y border-border/60 bg-bg-alt/60 py-6" aria-label="Teknologi yang dikuasai">
+    <section class="border-y border-border/60 bg-bg-alt/60 py-6" :aria-label="headings.techMarqueeAria ?? 'Teknologi yang dikuasai'">
       <div class="marquee-container">
         <div class="marquee-track">
           <div v-for="n in 2" :key="n" class="marquee-group">
@@ -231,19 +235,19 @@ const avatarButtons = computed(() => [
     <section class="container-site py-20 md:py-24">
       <Reveal class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <span class="section-label"><span class="dot" aria-hidden="true" /> Featured Work</span>
+          <span class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.featuredWork ?? 'Featured Work' }}</span>
           <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-            Selected <span class="bg-gradient-brand bg-clip-text text-transparent">Projects</span>
+            {{ headings.selectedHead1 ?? 'Selected' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.selectedHead2 ?? 'Projects' }}</span>
           </h2>
           <p class="mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
-            Beberapa project yang saya bangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.
+            {{ headings.featuredDesc ?? 'Beberapa project yang saya bangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.' }}
           </p>
         </div>
         <NuxtLink
           to="/projects"
           class="group inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary-violet"
         >
-          View All Projects
+          {{ headings.viewAllProjects ?? 'View All Projects' }}
           <ArrowUpRight :size="17" :stroke-width="2" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </NuxtLink>
       </Reveal>
@@ -264,14 +268,14 @@ const avatarButtons = computed(() => [
         <div class="absolute inset-0 bg-glow-circle opacity-40" style="mask-image: linear-gradient(to bottom, black, transparent)" aria-hidden="true" />
         <div class="relative">
           <h2 class="text-3xl font-extrabold tracking-tight text-text md:text-4xl">
-            Have an idea? <span class="bg-gradient-brand bg-clip-text text-transparent">Let's build it together.</span>
+            {{ headings.ctaHead1 ?? 'Have an idea?' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.ctaHead2 ?? "Let's build it together." }}</span>
           </h2>
           <p class="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-text-secondary">
-            Saya selalu terbuka untuk kolaborasi, project freelance, atau sekadar diskusi seputar teknologi.
+            {{ headings.ctaDesc ?? 'Saya selalu terbuka untuk kolaborasi, project freelance, atau sekadar diskusi seputar teknologi.' }}
           </p>
           <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <NuxtLink to="/contact" class="btn-primary">Start a Project</NuxtLink>
-            <NuxtLink to="/cv" class="btn-outline">Download CV</NuxtLink>
+            <NuxtLink to="/contact" class="btn-primary">{{ headings.startProject ?? 'Start a Project' }}</NuxtLink>
+            <NuxtLink to="/cv" class="btn-outline">{{ headings.downloadCv ?? t('nav.downloadCv') }}</NuxtLink>
           </div>
         </div>
       </Reveal>

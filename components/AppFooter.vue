@@ -1,19 +1,31 @@
 <script setup lang="ts">
 import { ArrowUp, Heart, Mail, Phone, MapPin, Github, Linkedin, Instagram, ArrowRight, MessageCircle, Eye, Users } from 'lucide-vue-next'
-import { navLinks } from '~/composables/useSiteData'
 
 const route = useRoute()
 const { data: site } = await useSiteSettings()
 const { openChat } = useChatWidget()
 const { data: stats, sourceOf, formatCount } = useStats()
+const { t } = useI18n()
 const year = new Date().getFullYear()
 
 const isContact = computed(() => route.path.startsWith('/contact'))
 
+const navItems = computed(() =>
+  [
+    { to: '/', key: 'home' },
+    { to: '/about', key: 'about' },
+    { to: '/projects', key: 'projects' },
+    { to: '/contact', key: 'contact' }
+  ].map(({ to, key }) => ({
+    to,
+    label: site.value?.headings?.nav?.[key] ?? t(`nav.${key}`)
+  }))
+)
+
 const contactItems = computed(() => [
-  { icon: Mail, label: 'Email', value: site.value?.email ?? '', href: `mailto:${site.value?.email ?? ''}` },
-  { icon: Phone, label: 'Phone', value: site.value?.phone ?? '', href: `tel:${(site.value?.phone ?? '').replace(/[^+\d]/g, '')}` },
-  { icon: MapPin, label: 'Location', value: site.value?.location ?? '', href: `https://maps.google.com/?q=${encodeURIComponent(site.value?.location ?? '')}` }
+  { icon: Mail, label: t('footer.emailLabel'), value: site.value?.email ?? '', href: `mailto:${site.value?.email ?? ''}` },
+  { icon: Phone, label: t('footer.phoneLabel'), value: site.value?.phone ?? '', href: `tel:${(site.value?.phone ?? '').replace(/[^+\d]/g, '')}` },
+  { icon: MapPin, label: t('footer.locationLabel'), value: site.value?.location ?? '', href: `https://maps.google.com/?q=${encodeURIComponent(site.value?.location ?? '')}` }
 ])
 
 const socials = computed(() => {
@@ -32,15 +44,15 @@ const socials = computed(() => {
       <!-- FAQ (hanya di halaman kontak) -->
       <div v-if="isContact" class="grid items-start gap-10 lg:grid-cols-[1fr_1.25fr]">
         <div>
-          <span class="section-label"><span class="dot" aria-hidden="true" /> Frequently Asked Questions</span>
+          <span class="section-label"><span class="dot" aria-hidden="true" /> {{ t('footer.faqTitle') }}</span>
           <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-text md:text-3xl">
-            Ada pertanyaan<span class="bg-gradient-brand bg-clip-text text-transparent">?</span>
+            {{ t('footer.faqHead') }}<span class="bg-gradient-brand bg-clip-text text-transparent">?</span>
           </h2>
           <p class="mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
-            Pilih pertanyaan di bawah untuk mengirimnya langsung ke kolom chat, atau tulis pertanyaan Anda sendiri.
+            {{ t('footer.faqDesc') }}
           </p>
           <button type="button" class="btn-primary mt-6 !py-2.5" @click="openChat()">
-            Buka kolom chat
+            {{ t('footer.openChat') }}
             <MessageCircle :size="15" :stroke-width="2" />
           </button>
         </div>
@@ -73,19 +85,19 @@ const socials = computed(() => {
             <span class="text-text">Ceha</span><span class="bg-gradient-brand bg-clip-text text-transparent">Dev</span>
           </NuxtLink>
           <p class="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
-            {{ site?.role ?? 'Web Developer & Tech Enthusiast' }} yang membangun produk digital modern, cepat, dan mudah digunakan.
+            {{ t('footer.blurb', { role: site?.role ?? 'Web Developer & Tech Enthusiast' }) }}
           </p>
           <div v-if="stats" class="mt-4 flex flex-wrap items-center gap-2">
             <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
               <Eye :size="13" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-              {{ formatCount(stats.total.views) }} kunjungan
+              {{ formatCount(stats.total.views) }} {{ t('common.visits') }}
             </span>
             <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
               <Users :size="13" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-              {{ formatCount(stats.total.visitors) }} pengunjung
+              {{ formatCount(stats.total.visitors) }} {{ t('common.visitors') }}
             </span>
             <span v-if="sourceOf('Google') > 0" class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-secondary">
-              {{ formatCount(sourceOf('Google')) }} dari Google
+              {{ formatCount(sourceOf('Google')) }} {{ t('common.fromGoogle') }}
             </span>
           </div>
           <div class="mt-5 flex items-center gap-2.5">
@@ -105,16 +117,16 @@ const socials = computed(() => {
 
         <!-- Quick Links -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wider text-text">Quick Links</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-text">{{ t('footer.quickLinks') }}</h3>
           <ul class="mt-4 space-y-2.5">
-            <li v-for="link in navLinks" :key="link.to">
+            <li v-for="link in navItems" :key="link.to">
               <NuxtLink :to="link.to" class="text-sm text-text-secondary transition-colors hover:text-primary">
                 {{ link.label }}
               </NuxtLink>
             </li>
             <li>
               <a :href="site?.cvUrl ? `${site.cvUrl}?download=1` : '/cv?download=1'" class="text-sm text-text-secondary transition-colors hover:text-primary">
-                Download CV
+                {{ t('nav.downloadCv') }}
               </a>
             </li>
           </ul>
@@ -122,7 +134,7 @@ const socials = computed(() => {
 
         <!-- Contact -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wider text-text">Contact</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-text">{{ t('footer.contact') }}</h3>
           <ul class="mt-4 space-y-2.5">
             <li v-for="c in contactItems" :key="c.label">
               <a
@@ -143,10 +155,10 @@ const socials = computed(() => {
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
             <Mail :size="18" :stroke-width="1.75" />
           </span>
-          <h3 class="mt-3 text-base font-bold text-text">Let's work together</h3>
-          <p class="mt-1.5 text-sm leading-relaxed text-text-secondary">Punya project atau ide? Mari diskusikan.</p>
+          <h3 class="mt-3 text-base font-bold text-text">{{ t('footer.letsWorkTogether') }}</h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-text-secondary">{{ t('footer.ctaDesc') }}</p>
           <NuxtLink to="/contact" class="btn-primary mt-4 w-full !py-2.5">
-            Contact Me
+            {{ t('footer.contactMe') }}
             <ArrowRight :size="15" :stroke-width="2" />
           </NuxtLink>
         </div>
@@ -156,16 +168,16 @@ const socials = computed(() => {
     <!-- BOTTOM BAR -->
     <div>
       <div class="container-site flex flex-col items-center gap-4 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
-        <p class="text-sm text-text-muted">© {{ year }} CehaDev. All rights reserved.</p>
+        <p class="text-sm text-text-muted">{{ t('common.rightsReserved', { year }) }}</p>
         <p class="flex items-center gap-2 text-sm font-medium text-text-secondary">
           <Heart class="h-4 w-4 fill-red-500 text-red-500" aria-hidden="true" />
-          Build. Learn. Break. Fix. Repeat.
+          {{ t('common.motto') }}
         </p>
         <a
           href="#top"
           class="group flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-text"
         >
-          Back to top
+          {{ t('common.backToTop') }}
           <span class="flex items-center justify-center rounded-full border border-border p-2 transition-colors group-hover:border-primary/60">
             <ArrowUp :size="14" :stroke-width="2" />
           </span>

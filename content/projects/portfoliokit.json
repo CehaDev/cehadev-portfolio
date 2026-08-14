@@ -1,56 +1,69 @@
 {
   "slug": "portfoliokit",
-  "title": "PortfolioKit",
-  "tagline": "Starter kit portfolio developer dengan tema gelap modern.",
-  "description": "Template portfolio open-source yang bisa dikustomisasi penuh, dibangun dengan Nuxt dan Tailwind, siap deploy dalam hitungan menit.",
-  "tags": ["Nuxt.js", "Tailwind CSS", "TypeScript"],
+  "title": { "id": "PortfolioKit", "en": "PortfolioKit" },
+  "tagline": {
+    "id": "Starter kit portfolio developer dengan tema gelap modern.",
+    "en": "A developer portfolio starter kit with a modern dark theme."
+  },
+  "description": {
+    "id": "Template portfolio open-source yang bisa dikustomisasi penuh, dibangun dengan Nuxt dan Tailwind, siap deploy dalam hitungan menit.",
+    "en": "A fully customizable open-source portfolio template built with Nuxt and Tailwind, ready to deploy in minutes."
+  },
+  "tags": [
+    { "id": "Nuxt.js", "en": "Nuxt.js" },
+    { "id": "Tailwind CSS", "en": "Tailwind CSS" },
+    { "id": "TypeScript", "en": "TypeScript" }
+  ],
   "tech": ["nuxt", "tailwind", "typescript", "git"],
-  "category": "Open Source",
+  "category": { "id": "Open Source", "en": "Open Source" },
   "year": "2025",
-  "role": "Creator",
-  "duration": "1 Bulan",
+  "role": { "id": "Creator", "en": "Creator" },
+  "duration": { "id": "1 Bulan", "en": "1 Month" },
   "liveUrl": "https://portfoliokit.example.com",
   "githubUrl": "https://github.com/cehadev/portfoliokit",
   "detail": {
-    "overview": "PortfolioKit adalah starter kit portfolio untuk developer yang mengutamakan kecepatan dan fleksibilitas. Dibangun dengan Nuxt 3 dan Tailwind CSS, template ini hadir dengan tema gelap modern, mode terang/gelap, dan struktur yang mudah dikustomisasi penuh.\n\nDirancang sebagai proyek open-source, PortfolioKit mendukung pengelolaan konten via file JSON dan dilengkapi komponen siap pakai seperti hero, kartu project, dan form kontak. Dalam hitungan menit, developer dapat men-deploy portfolio profesional.",
+    "overview": {
+      "id": "PortfolioKit adalah starter kit portfolio untuk developer yang mengutamakan kecepatan dan fleksibilitas. Dibangun dengan Nuxt 3 dan Tailwind CSS, template ini hadir dengan tema gelap modern, mode terang/gelap, dan struktur yang mudah dikustomisasi penuh.\n\nDirancang sebagai proyek open-source, PortfolioKit mendukung pengelolaan konten via file JSON dan dilengkapi komponen siap pakai seperti hero, kartu project, dan form kontak. Dalam hitungan menit, developer dapat men-deploy portfolio profesional.",
+      "en": "PortfolioKit is a portfolio starter kit for developers who value speed and flexibility. Built with Nuxt 3 and Tailwind CSS, it ships with a modern dark theme, light/dark mode, and a structure that's easy to fully customize.\n\nDesigned as an open-source project, PortfolioKit supports content management via JSON files and includes ready-to-use components like hero, project cards, and a contact form. In minutes, developers can deploy a professional portfolio."
+    },
     "featureHighlights": [
-      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Tema Gelap Modern", "desc": "Desain premium dengan dukungan mode terang & gelap." },
-      { "icon": "Code2", "color": "#8B5CF6", "title": "Kustomisasi Mudah", "desc": "Semua konten dikelola lewat file JSON." },
-      { "icon": "Rocket", "color": "#22C55E", "title": "Siap Deploy", "desc": "Optimasi SEO dan performa sejak awal." },
-      { "icon": "FolderGit2", "color": "#F59E0B", "title": "Open Source", "desc": "Kode terbuka, bebas dipakai dan dikembangkan." }
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": { "id": "Tema Gelap Modern", "en": "Modern Dark Theme" }, "desc": { "id": "Desain premium dengan dukungan mode terang & gelap.", "en": "Premium design with light & dark mode support." } },
+      { "icon": "Code2", "color": "#8B5CF6", "title": { "id": "Kustomisasi Mudah", "en": "Easy Customization" }, "desc": { "id": "Semua konten dikelola lewat file JSON.", "en": "All content managed through JSON files." } },
+      { "icon": "Rocket", "color": "#22C55E", "title": { "id": "Siap Deploy", "en": "Deploy Ready" }, "desc": { "id": "Optimasi SEO dan performa sejak awal.", "en": "SEO and performance optimized from the start." } },
+      { "icon": "FolderGit2", "color": "#F59E0B", "title": { "id": "Open Source", "en": "Open Source" }, "desc": { "id": "Kode terbuka, bebas dipakai dan dikembangkan.", "en": "Open code, free to use and extend." } }
     ],
     "mainFeatures": [
-      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": "Komponen Lengkap", "desc": "Hero, kartu project, skill, galeri, dan form kontak siap pakai." },
-      { "icon": "Code2", "color": "#8B5CF6", "title": "Konten Berbasis File", "desc": "Ubah data tanpa menyentuh kode melalui collection JSON." },
-      { "icon": "Star", "color": "#F59E0B", "title": "Mode Terang/Gelap", "desc": "Tema yang responsif terhadap preferensi pengguna." },
-      { "icon": "Search", "color": "#22C55E", "title": "SEO Friendly", "desc": "Meta tags dinamis dan struktur semantic yang baik." },
-      { "icon": "Rocket", "color": "#F43F5E", "title": "Performa Tinggi", "desc": "SSR, code splitting, dan gambar teroptimasi otomatis." }
+      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": { "id": "Komponen Lengkap", "en": "Complete Components" }, "desc": { "id": "Hero, kartu project, skill, galeri, dan form kontak siap pakai.", "en": "Hero, project cards, skills, gallery, and contact form ready to use." } },
+      { "icon": "Code2", "color": "#8B5CF6", "title": { "id": "Konten Berbasis File", "en": "File-Based Content" }, "desc": { "id": "Ubah data tanpa menyentuh kode melalui collection JSON.", "en": "Edit data without touching code via JSON collections." } },
+      { "icon": "Star", "color": "#F59E0B", "title": { "id": "Mode Terang/Gelap", "en": "Light/Dark Mode" }, "desc": { "id": "Tema yang responsif terhadap preferensi pengguna.", "en": "A theme that responds to user preferences." } },
+      { "icon": "Search", "color": "#22C55E", "title": { "id": "SEO Friendly", "en": "SEO Friendly" }, "desc": { "id": "Meta tags dinamis dan struktur semantic yang baik.", "en": "Dynamic meta tags and solid semantic structure." } },
+      { "icon": "Rocket", "color": "#F43F5E", "title": { "id": "Performa Tinggi", "en": "High Performance" }, "desc": { "id": "SSR, code splitting, dan gambar teroptimasi otomatis.", "en": "SSR, code splitting, and automatically optimized images." } }
     ],
     "techStack": ["nuxt", "tailwind", "typescript", "git"],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": "Riset", "desc": "Menganalisis kebutuhan umum portfolio developer." },
-      { "num": "02", "icon": "PenTool", "title": "Desain Sistem", "desc": "Membangun design system dan komponen reusable." },
-      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Implementasi komponen, konten, dan integrasi SEO." },
-      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Menguji responsivitas, aksesibilitas, dan performa." },
-      { "num": "05", "icon": "Rocket", "title": "Publikasi", "desc": "Menerbitkan sebagai open-source dengan dokumentasi lengkap." }
+      { "num": "01", "icon": "ClipboardList", "title": { "id": "Riset", "en": "Research" }, "desc": { "id": "Menganalisis kebutuhan umum portfolio developer.", "en": "Analyzing common developer portfolio needs." } },
+      { "num": "02", "icon": "PenTool", "title": { "id": "Desain Sistem", "en": "System Design" }, "desc": { "id": "Membangun design system dan komponen reusable.", "en": "Building a design system and reusable components." } },
+      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Implementasi komponen, konten, dan integrasi SEO.", "en": "Implementing components, content, and SEO integration." } },
+      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Menguji responsivitas, aksesibilitas, dan performa.", "en": "Testing responsiveness, accessibility, and performance." } },
+      { "num": "05", "icon": "Rocket", "title": { "id": "Publikasi", "en": "Publication" }, "desc": { "id": "Menerbitkan sebagai open-source dengan dokumentasi lengkap.", "en": "Publishing as open source with full documentation." } }
     ],
     "challenges": [
-      { "title": "Keseimbangan fleksibilitas & kesederhanaan", "desc": "Menjaga template tetap mudah dipahami pemula tanpa membatasi pengguna lanjutan." },
-      { "title": "Konsistensi desain", "desc": "Memastikan semua komponen mengikuti design system yang sama di berbagai halaman." },
-      { "title": "Performa & SEO", "desc": "Mengoptimalkan skor Lighthouse tanpa mengorbankan fitur." }
+      { "title": { "id": "Keseimbangan fleksibilitas & kesederhanaan", "en": "Flexibility vs. simplicity balance" }, "desc": { "id": "Menjaga template tetap mudah dipahami pemula tanpa membatasi pengguna lanjutan.", "en": "Keeping the template easy for beginners without limiting advanced users." } },
+      { "title": { "id": "Konsistensi desain", "en": "Design consistency" }, "desc": { "id": "Memastikan semua komponen mengikuti design system yang sama di berbagai halaman.", "en": "Making sure all components follow the same design system across pages." } },
+      { "title": { "id": "Performa & SEO", "en": "Performance & SEO" }, "desc": { "id": "Mengoptimalkan skor Lighthouse tanpa mengorbankan fitur.", "en": "Optimizing Lighthouse scores without sacrificing features." } }
     ],
     "results": [
-      { "icon": "FolderGit2", "value": "500+", "label": "Unduhan Starter Kit" },
-      { "icon": "Star", "value": "4.9/5", "label": "Rating Pengguna" },
-      { "icon": "Activity", "value": "100+", "label": "Perubahan Fitur" },
-      { "icon": "Users", "value": "300+", "label": "Developer Menggunakan" }
+      { "icon": "FolderGit2", "value": { "id": "500+", "en": "500+" }, "label": { "id": "Unduhan Starter Kit", "en": "Starter Kit Downloads" } },
+      { "icon": "Star", "value": { "id": "4.9/5", "en": "4.9/5" }, "label": { "id": "Rating Pengguna", "en": "User Rating" } },
+      { "icon": "Activity", "value": { "id": "100+", "en": "100+" }, "label": { "id": "Perubahan Fitur", "en": "Feature Updates" } },
+      { "icon": "Users", "value": { "id": "300+", "en": "300+" }, "label": { "id": "Developer Menggunakan", "en": "Developers Using It" } }
     ],
     "gallery": [
-      { "label": "Halaman Utama", "seed": 51 },
-      { "label": "Proyek", "seed": 52 },
-      { "label": "Skills", "seed": 53 },
-      { "label": "Kontak", "seed": 54 },
-      { "label": "CV", "seed": 55 }
+      { "label": { "id": "Halaman Utama", "en": "Home Page" }, "seed": 51 },
+      { "label": { "id": "Proyek", "en": "Projects" }, "seed": 52 },
+      { "label": { "id": "Skills", "en": "Skills" }, "seed": 53 },
+      { "label": { "id": "Kontak", "en": "Contact" }, "seed": 54 },
+      { "label": { "id": "CV", "en": "CV" }, "seed": 55 }
     ]
   }
 }

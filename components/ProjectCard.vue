@@ -15,6 +15,7 @@ const props = defineProps<{ project: ProjectCardData }>()
 
 const { tiltRef, glareRef, onMove, onLeave } = useTilt(7)
 const { viewsOf, formatCount } = useStats()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -45,7 +46,7 @@ const { viewsOf, formatCount } = useStats()
           :href="project.liveUrl"
           target="_blank"
           rel="noopener noreferrer"
-          :aria-label="`Lihat demo ${project.title}`"
+          :aria-label="t('projectCard.viewDemoAria', { title: project.title })"
           class="mt-0.5 shrink-0 text-text-muted transition-colors hover:text-primary"
         >
           <ExternalLink :size="18" :stroke-width="1.5" />
@@ -58,14 +59,14 @@ const { viewsOf, formatCount } = useStats()
         <TechBadge v-for="tag in project.tags.slice(0, 3)" :key="tag" :name="tag" />
         <span class="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-bg-alt px-2.5 py-1 text-[11px] font-medium text-text-muted">
           <Eye :size="12" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-          {{ formatCount(viewsOf(project.slug)) }} dilihat
+          {{ formatCount(viewsOf(project.slug)) }} {{ t('common.viewed') }}
         </span>
       </div>
       <NuxtLink
         :to="`/projects/${project.slug}`"
         class="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet"
       >
-        View Project
+        {{ t('projectCard.viewProject') }}
         <ArrowRight :size="15" :stroke-width="2" class="transition-transform group-hover:translate-x-0.5" />
       </NuxtLink>
     </div>

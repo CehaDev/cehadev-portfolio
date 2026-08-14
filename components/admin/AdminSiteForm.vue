@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { Plus, Trash2, LoaderCircle, Save } from 'lucide-vue-next'
+import { Plus, Trash2, LoaderCircle, Save, Languages } from 'lucide-vue-next'
 
+interface LS {
+  id: string
+  en: string
+}
 interface StatItem {
   icon: string
-  label: string
-  sub: string
+  label: LS
+  sub: LS
   end: number
-  suffix: string
+  suffix: LS
 }
 interface FaqItem {
-  q: string
-  a: string
+  q: LS
+  a: LS
+}
+interface ProjectStatItem {
+  icon: string
+  label: LS
+  value: LS
 }
 
 const props = defineProps<{
@@ -20,42 +29,78 @@ const props = defineProps<{
 
 const emit = defineEmits<{ saved: [data: Record<string, unknown>] }>()
 
+function str(v: unknown): string {
+  return typeof v === 'string' ? v : ''
+}
+function ls(v: unknown): LS {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    const o = v as Record<string, unknown>
+    return { id: str(o.id), en: str(o.en) }
+  }
+  const s = str(v)
+  return { id: s, en: s }
+}
+
 const form = reactive({
-  name: props.initial?.name ?? '',
-  role: props.initial?.role ?? '',
-  heroBadge: props.initial?.heroBadge ?? '',
-  heroTitle1: props.initial?.heroTitle1 ?? '',
-  heroTitleGradient: props.initial?.heroTitleGradient ?? '',
-  heroSubtitle: props.initial?.heroSubtitle ?? '',
-  heroDescription: props.initial?.heroDescription ?? '',
-  aboutIntro: (props.initial?.aboutIntro ?? []).join('\n'),
-  aboutChecklist: [...(props.initial?.aboutChecklist ?? [])],
-  quote: props.initial?.quote ?? '',
-  quoteHighlight: props.initial?.quoteHighlight ?? '',
-  stats: (props.initial?.stats ?? []).map((s: any) => ({ icon: s.icon ?? '', label: s.label ?? '', sub: s.sub ?? '', end: s.end ?? 0, suffix: s.suffix ?? '' })),
-  email: props.initial?.email ?? '',
-  phone: props.initial?.phone ?? '',
-  location: props.initial?.location ?? '',
-  website: props.initial?.website ?? '',
-  cvUrl: props.initial?.cvUrl ?? '',
+  name: str(props.initial?.name),
+  role: ls(props.initial?.role),
+  heroBadge: ls(props.initial?.heroBadge),
+  heroTitle1: ls(props.initial?.heroTitle1),
+  heroTitleGradient: ls(props.initial?.heroTitleGradient),
+  heroSubtitle: ls(props.initial?.heroSubtitle),
+  heroDescription: ls(props.initial?.heroDescription),
+  aboutIntro: (props.initial?.aboutIntro ?? []).map(ls),
+  aboutChecklist: (props.initial?.aboutChecklist ?? []).map(ls),
+  quote: ls(props.initial?.quote),
+  quoteHighlight: ls(props.initial?.quoteHighlight),
+  stats: (props.initial?.stats ?? []).map((s: any) => ({
+    icon: str(s?.icon),
+    label: ls(s?.label),
+    sub: ls(s?.sub),
+    end: Number(s?.end) || 0,
+    suffix: ls(s?.suffix)
+  })),
+  email: str(props.initial?.email),
+  phone: str(props.initial?.phone),
+  location: ls(props.initial?.location),
+  website: str(props.initial?.website),
+  cvUrl: str(props.initial?.cvUrl),
   socials: {
-    github: props.initial?.socials?.github ?? '',
-    linkedin: props.initial?.socials?.linkedin ?? '',
-    instagram: props.initial?.socials?.instagram ?? ''
+    github: str(props.initial?.socials?.github),
+    linkedin: str(props.initial?.socials?.linkedin),
+    instagram: str(props.initial?.socials?.instagram)
   },
-  projectStats: (props.initial?.projectStats ?? []).map((s: any) => ({ icon: s.icon ?? '', label: s.label ?? '', value: s.value ?? '' })),
-  faqs: (props.initial?.faqs ?? []).map((f: any) => ({ q: f.q ?? '', a: f.a ?? '' }))
+  projectStats: (props.initial?.projectStats ?? []).map((s: any) => ({
+    icon: str(s?.icon),
+    label: ls(s?.label),
+    value: ls(s?.value)
+  })),
+  faqs: (props.initial?.faqs ?? []).map((f: any) => ({
+    q: ls(f?.q),
+    a: ls(f?.a)
+  })),
+  headings: reactive(props.initial?.headings ?? {}),
+  seo: reactive(props.initial?.seo ?? {})
 })
 
 const error = ref('')
 const saving = ref(false)
-const newChecklist = ref('')
+
+function cleanLs(v: LS): { id: string; en: string } {
+  return { id: v.id.trim(), en: v.en.trim() }
+}
 
 function emptyStat(): StatItem {
-  return { icon: 'Activity', label: '', sub: '', end: 0, suffix: '+' }
+  return { icon: 'Activity', label: { id: '', en: '' }, sub: { id: '', en: '' }, end: 0, suffix: { id: '+', en: '+' } }
 }
 function emptyFaq(): FaqItem {
-  return { q: '', a: '' }
+  return { q: { id: '', en: '' }, a: { id: '', en: '' } }
+}
+function emptyProjectStat(): ProjectStatItem {
+  return { icon: 'FolderKanban', label: { id: '', en: '' }, value: { id: '', en: '' } }
+}
+function emptyParagraph(): LS {
+  return { id: '', en: '' }
 }
 function addItem<T>(list: T[], empty: () => T) {
   list.push(empty())
@@ -64,10 +109,11 @@ function removeItem<T>(list: T[], index: number) {
   list.splice(index, 1)
 }
 
-function addChecklist() {
-  const v = newChecklist.value.trim()
-  if (v && !form.aboutChecklist.includes(v)) form.aboutChecklist.push(v)
-  newChecklist.value = ''
+function addKey(parent: Record<string, unknown>) {
+  const key = window.prompt('Nama key (contoh: home)')?.trim()
+  if (key && !(key in parent)) {
+    parent[key] = { id: '', en: '' }
+  }
 }
 
 function validate() {
@@ -82,26 +128,28 @@ function validate() {
 function payload() {
   return {
     name: form.name.trim(),
-    role: form.role.trim(),
-    heroBadge: form.heroBadge.trim(),
-    heroTitle1: form.heroTitle1.trim(),
-    heroTitleGradient: form.heroTitleGradient.trim(),
-    heroSubtitle: form.heroSubtitle.trim(),
-    heroDescription: form.heroDescription.trim(),
-    aboutIntro: form.aboutIntro.split('\n').map((s) => s.trim()).filter(Boolean),
-    aboutChecklist: form.aboutChecklist.map((s) => s.trim()).filter(Boolean),
-    quote: form.quote.trim(),
-    quoteHighlight: form.quoteHighlight.trim(),
-    stats: form.stats.map((s) => ({
-      icon: s.icon.trim(),
-      label: s.label.trim(),
-      sub: s.sub.trim(),
-      end: Number(s.end) || 0,
-      suffix: s.suffix.trim()
-    })).filter((s) => s.label),
+    role: cleanLs(form.role),
+    heroBadge: cleanLs(form.heroBadge),
+    heroTitle1: cleanLs(form.heroTitle1),
+    heroTitleGradient: cleanLs(form.heroTitleGradient),
+    heroSubtitle: cleanLs(form.heroSubtitle),
+    heroDescription: cleanLs(form.heroDescription),
+    aboutIntro: form.aboutIntro.map(cleanLs).filter((i) => i.id || i.en),
+    aboutChecklist: form.aboutChecklist.map(cleanLs).filter((i) => i.id || i.en),
+    quote: cleanLs(form.quote),
+    quoteHighlight: cleanLs(form.quoteHighlight),
+    stats: form.stats
+      .map((s) => ({
+        icon: s.icon.trim(),
+        label: cleanLs(s.label),
+        sub: cleanLs(s.sub),
+        end: Number(s.end) || 0,
+        suffix: cleanLs(s.suffix)
+      }))
+      .filter((s) => s.label.id || s.label.en),
     email: form.email.trim(),
     phone: form.phone.trim(),
-    location: form.location.trim(),
+    location: cleanLs(form.location),
     website: form.website.trim(),
     cvUrl: form.cvUrl.trim(),
     socials: {
@@ -109,12 +157,18 @@ function payload() {
       linkedin: form.socials.linkedin.trim(),
       instagram: form.socials.instagram.trim()
     },
-    projectStats: form.projectStats.map((s) => ({
-      icon: s.icon.trim(),
-      label: s.label.trim(),
-      value: s.value.trim()
-    })).filter((s) => s.label),
-    faqs: form.faqs.map((f) => ({ q: f.q.trim(), a: f.a.trim() })).filter((f) => f.q)
+    projectStats: form.projectStats
+      .map((s) => ({
+        icon: s.icon.trim(),
+        label: cleanLs(s.label),
+        value: cleanLs(s.value)
+      }))
+      .filter((s) => s.label.id || s.label.en),
+    faqs: form.faqs
+      .map((f) => ({ q: cleanLs(f.q), a: cleanLs(f.a) }))
+      .filter((f) => f.q.id || f.q.en),
+    headings: form.headings,
+    seo: form.seo
   }
 }
 
@@ -138,35 +192,41 @@ async function save() {
 <template>
   <form class="space-y-8" novalidate @submit.prevent="save">
     <div class="card p-7">
-      <h3 class="mb-5 text-base font-bold text-text">Identitas & Hero</h3>
-      <div class="grid gap-5 sm:grid-cols-2">
+      <div class="mb-5 flex items-center gap-2">
+        <Languages :size="16" :stroke-width="2" class="text-primary" />
+        <h3 class="text-base font-bold text-text">Identitas & Hero</h3>
+      </div>
+      <p class="mb-5 text-xs text-text-muted">Semua kolom teks dapat diisi dua bahasa. Kosongkan kolom EN agar otomatis memakai teks Indonesia.</p>
+      <div class="grid gap-5">
         <div>
           <label for="site-name" class="mb-1.5 block text-sm font-medium text-text">Nama / Brand</label>
           <input id="site-name" v-model="form.name" type="text" class="input-field" placeholder="CehaDev" />
         </div>
         <div>
-          <label for="site-role" class="mb-1.5 block text-sm font-medium text-text">Role / Profesi</label>
-          <input id="site-role" v-model="form.role" type="text" class="input-field" placeholder="Web Developer & Tech Enthusiast" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Role / Profesi</label>
+          <LocaleInput v-model="form.role" placeholder="Web Developer & Tech Enthusiast" />
         </div>
         <div>
-          <label for="site-hero-badge" class="mb-1.5 block text-sm font-medium text-text">Badge Hero</label>
-          <input id="site-hero-badge" v-model="form.heroBadge" type="text" class="input-field" placeholder="Available for collaboration" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Badge Hero</label>
+          <LocaleInput v-model="form.heroBadge" placeholder="Available for collaboration" />
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-text">Teks Hero (sebelum gradient)</label>
+            <LocaleInput v-model="form.heroTitle1" placeholder="Hi, I'm" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-text">Teks Hero Gradient</label>
+            <LocaleInput v-model="form.heroTitleGradient" placeholder="CehaDev" />
+          </div>
         </div>
         <div>
-          <label for="site-hero-title1" class="mb-1.5 block text-sm font-medium text-text">Teks Hero (sebelum gradient)</label>
-          <input id="site-hero-title1" v-model="form.heroTitle1" type="text" class="input-field" placeholder="Hi, I'm" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Subtitle Hero</label>
+          <LocaleInput v-model="form.heroSubtitle" placeholder="Web Developer & Tech Enthusiast" />
         </div>
         <div>
-          <label for="site-hero-gradient" class="mb-1.5 block text-sm font-medium text-text">Teks Hero Gradient</label>
-          <input id="site-hero-gradient" v-model="form.heroTitleGradient" type="text" class="input-field" placeholder="CehaDev" />
-        </div>
-        <div>
-          <label for="site-hero-subtitle" class="mb-1.5 block text-sm font-medium text-text">Subtitle Hero</label>
-          <input id="site-hero-subtitle" v-model="form.heroSubtitle" type="text" class="input-field" placeholder="Web Developer & Tech Enthusiast" />
-        </div>
-        <div class="sm:col-span-2">
-          <label for="site-hero-desc" class="mb-1.5 block text-sm font-medium text-text">Deskripsi Hero</label>
-          <textarea id="site-hero-desc" v-model="form.heroDescription" rows="3" class="input-field resize-none" placeholder="Deskripsi singkat di bagian hero..." />
+          <label class="mb-1.5 block text-sm font-medium text-text">Deskripsi Hero</label>
+          <LocaleTextarea v-model="form.heroDescription" :rows="3" placeholder="Deskripsi singkat di bagian hero..." />
         </div>
       </div>
     </div>
@@ -175,24 +235,43 @@ async function save() {
       <h3 class="mb-5 text-base font-bold text-text">Tentang</h3>
       <div class="grid gap-5">
         <div>
-          <label for="site-about-intro" class="mb-1.5 block text-sm font-medium text-text">Paragraf Pengantar (satu paragraf per baris)</label>
-          <textarea id="site-about-intro" v-model="form.aboutIntro" rows="5" class="input-field resize-none" placeholder="Tulis setiap paragraf pada baris terpisah..." />
+          <div class="mb-3 flex items-center justify-between">
+            <p class="text-sm font-medium text-text">Paragraf Pengantar</p>
+            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.aboutIntro, emptyParagraph)">
+              <Plus :size="14" :stroke-width="2" />
+              Tambah
+            </button>
+          </div>
+          <div class="space-y-4">
+            <div v-for="(p, i) in form.aboutIntro" :key="i" class="rounded-lg border border-border bg-bg p-4">
+              <div class="mb-2 flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Paragraf {{ i + 1 }}</span>
+                <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2 py-1 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10" @click="removeItem(form.aboutIntro, i)">
+                  <Trash2 :size="12" :stroke-width="1.5" />
+                  Hapus
+                </button>
+              </div>
+              <LocaleTextarea v-model="form.aboutIntro[i]" :rows="3" placeholder="Tulis paragraf..." />
+            </div>
+            <p v-if="!form.aboutIntro.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
+              Belum ada paragraf. Klik "Tambah" untuk menambahkan.
+            </p>
+          </div>
         </div>
 
         <div>
           <div class="mb-3 flex items-center justify-between">
             <p class="text-sm font-medium text-text">Checklist Tentang</p>
-            <div class="flex gap-2">
-              <input v-model="newChecklist" type="text" class="input-field !py-2.5 !text-sm" placeholder="Tambah poin..." @keydown.enter.prevent="addChecklist" />
-              <button type="button" class="btn-outline shrink-0 !px-3 !py-2 text-xs" @click="addChecklist">
-                <Plus :size="14" :stroke-width="2" />
-                Tambah
-              </button>
-            </div>
+            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.aboutChecklist, emptyParagraph)">
+              <Plus :size="14" :stroke-width="2" />
+              Tambah
+            </button>
           </div>
           <ul class="space-y-2">
             <li v-for="(item, i) in form.aboutChecklist" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-2.5">
-              <span class="min-w-0 flex-1 text-sm text-text">{{ item }}</span>
+              <div class="min-w-0 flex-1">
+                <LocaleInput v-model="form.aboutChecklist[i]" placeholder="Tulis poin checklist..." />
+              </div>
               <button type="button" class="rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus poin ${i + 1}`" @click="removeItem(form.aboutChecklist, i)">
                 <Trash2 :size="14" :stroke-width="1.5" />
               </button>
@@ -205,12 +284,12 @@ async function save() {
 
         <div class="grid gap-5 sm:grid-cols-2">
           <div>
-            <label for="site-quote" class="mb-1.5 block text-sm font-medium text-text">Kutipan</label>
-            <input id="site-quote" v-model="form.quote" type="text" class="input-field" placeholder="Code is not just about how it works..." />
+            <label class="mb-1.5 block text-sm font-medium text-text">Kutipan</label>
+            <LocaleInput v-model="form.quote" placeholder="Code is not just about how it works..." />
           </div>
           <div>
-            <label for="site-quote-highlight" class="mb-1.5 block text-sm font-medium text-text">Kutipan (highlight)</label>
-            <input id="site-quote-highlight" v-model="form.quoteHighlight" type="text" class="input-field" placeholder="how it's built." />
+            <label class="mb-1.5 block text-sm font-medium text-text">Kutipan (highlight)</label>
+            <LocaleInput v-model="form.quoteHighlight" placeholder="how it's built." />
           </div>
         </div>
       </div>
@@ -234,26 +313,28 @@ async function save() {
               Hapus
             </button>
           </div>
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <div>
-              <label :for="`site-stat-icon-${i}`" class="mb-1.5 block text-sm font-medium text-text">Ikon</label>
-              <input :id="`site-stat-icon-${i}`" v-model="s.icon" type="text" class="input-field" placeholder="Activity / Clock / Code2" />
+          <div class="grid gap-4">
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label :for="`site-stat-icon-${i}`" class="mb-1.5 block text-sm font-medium text-text">Ikon</label>
+                <input :id="`site-stat-icon-${i}`" v-model="s.icon" type="text" class="input-field" placeholder="Activity / Clock / Code2" />
+              </div>
+              <div>
+                <label :for="`site-stat-end-${i}`" class="mb-1.5 block text-sm font-medium text-text">Angka Akhir</label>
+                <input :id="`site-stat-end-${i}`" v-model.number="s.end" type="number" class="input-field" placeholder="2" />
+              </div>
             </div>
             <div>
               <label :for="`site-stat-label-${i}`" class="mb-1.5 block text-sm font-medium text-text">Label</label>
-              <input :id="`site-stat-label-${i}`" v-model="s.label" type="text" class="input-field" placeholder="Years" />
+              <LocaleInput :id="`site-stat-label-${i}`" v-model="s.label" placeholder="Years" />
             </div>
             <div>
               <label :for="`site-stat-sub-${i}`" class="mb-1.5 block text-sm font-medium text-text">Sub</label>
-              <input :id="`site-stat-sub-${i}`" v-model="s.sub" type="text" class="input-field" placeholder="Learning & Building" />
-            </div>
-            <div>
-              <label :for="`site-stat-end-${i}`" class="mb-1.5 block text-sm font-medium text-text">Angka Akhir</label>
-              <input :id="`site-stat-end-${i}`" v-model.number="s.end" type="number" class="input-field" placeholder="2" />
+              <LocaleInput :id="`site-stat-sub-${i}`" v-model="s.sub" placeholder="Learning & Building" />
             </div>
             <div>
               <label :for="`site-stat-suffix-${i}`" class="mb-1.5 block text-sm font-medium text-text">Sufiks</label>
-              <input :id="`site-stat-suffix-${i}`" v-model="s.suffix" type="text" class="input-field" placeholder="+" />
+              <LocaleInput :id="`site-stat-suffix-${i}`" v-model="s.suffix" placeholder="+" />
             </div>
           </div>
         </div>
@@ -275,8 +356,8 @@ async function save() {
           <input id="site-phone" v-model="form.phone" type="text" class="input-field" placeholder="+62 812-3456-7890" />
         </div>
         <div>
-          <label for="site-location" class="mb-1.5 block text-sm font-medium text-text">Lokasi</label>
-          <input id="site-location" v-model="form.location" type="text" class="input-field" placeholder="Wirosari, Grobogan, Jawa Tengah" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Lokasi</label>
+          <LocaleInput v-model="form.location" placeholder="Wirosari, Grobogan, Jawa Tengah" />
         </div>
         <div>
           <label for="site-website" class="mb-1.5 block text-sm font-medium text-text">Website</label>
@@ -302,7 +383,13 @@ async function save() {
     </div>
 
     <div class="card p-7">
-      <h3 class="mb-5 text-base font-bold text-text">Statistik Halaman Project</h3>
+      <div class="mb-5 flex items-center justify-between">
+        <h3 class="text-base font-bold text-text">Statistik Halaman Project</h3>
+        <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.projectStats, emptyProjectStat)">
+          <Plus :size="14" :stroke-width="2" />
+          Tambah
+        </button>
+      </div>
       <p class="mb-4 text-xs text-text-muted">
         Mengatur 4 kartu statistik di halaman project. Ikon yang didukung: FolderKanban, Tag, CalendarRange, Code2. Kosongkan label untuk menonaktifkan kartu.
       </p>
@@ -315,7 +402,7 @@ async function save() {
               Hapus
             </button>
           </div>
-          <div class="grid gap-4 sm:grid-cols-3">
+          <div class="grid gap-4">
             <div>
               <label :for="`site-ps-icon-${i}`" class="mb-1.5 block text-sm font-medium text-text">Ikon</label>
               <select :id="`site-ps-icon-${i}`" v-model="s.icon" class="input-field">
@@ -327,11 +414,11 @@ async function save() {
             </div>
             <div>
               <label :for="`site-ps-label-${i}`" class="mb-1.5 block text-sm font-medium text-text">Label</label>
-              <input :id="`site-ps-label-${i}`" v-model="s.label" type="text" class="input-field" placeholder="Project" />
+              <LocaleInput :id="`site-ps-label-${i}`" v-model="s.label" placeholder="Project" />
             </div>
             <div>
               <label :for="`site-ps-value-${i}`" class="mb-1.5 block text-sm font-medium text-text">Nilai</label>
-              <input :id="`site-ps-value-${i}`" v-model="s.value" type="text" class="input-field" placeholder="6" />
+              <LocaleInput :id="`site-ps-value-${i}`" v-model="s.value" placeholder="6" />
             </div>
           </div>
         </div>
@@ -361,11 +448,11 @@ async function save() {
           <div class="grid gap-4">
             <div>
               <label :for="`site-faq-q-${i}`" class="mb-1.5 block text-sm font-medium text-text">Pertanyaan</label>
-              <input :id="`site-faq-q-${i}`" v-model="f.q" type="text" class="input-field" placeholder="Apakah Anda menerima project freelance?" />
+              <LocaleInput :id="`site-faq-q-${i}`" v-model="f.q" placeholder="Apakah Anda menerima project freelance?" />
             </div>
             <div>
               <label :for="`site-faq-a-${i}`" class="mb-1.5 block text-sm font-medium text-text">Jawaban</label>
-              <textarea :id="`site-faq-a-${i}`" v-model="f.a" rows="2" class="input-field resize-none" placeholder="Jawaban..." />
+              <LocaleTextarea :id="`site-faq-a-${i}`" v-model="f.a" :rows="2" placeholder="Jawaban..." />
             </div>
           </div>
         </div>
@@ -373,6 +460,34 @@ async function save() {
           Belum ada FAQ. Klik "Tambah" untuk menambahkan.
         </p>
       </div>
+    </div>
+
+    <div class="card p-7">
+      <div class="mb-5 flex items-center justify-between">
+        <h3 class="text-base font-bold text-text">Heading & Label Halaman</h3>
+        <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addKey(form.headings)">
+          <Plus :size="14" :stroke-width="2" />
+          Tambah Halaman
+        </button>
+      </div>
+      <p class="mb-4 text-xs text-text-muted">
+        Kelola semua heading, label, tombol, dan teks antarmuka per halaman (nav, home, about, skills, projects, projectDetail, contact, cv). Struktur: halaman &rarr; key &rarr; teks ID & EN.
+      </p>
+      <LocaleTreeEditor :data="form.headings" />
+    </div>
+
+    <div class="card p-7">
+      <div class="mb-5 flex items-center justify-between">
+        <h3 class="text-base font-bold text-text">SEO / Meta</h3>
+        <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addKey(form.seo)">
+          <Plus :size="14" :stroke-width="2" />
+          Tambah Halaman
+        </button>
+      </div>
+      <p class="mb-4 text-xs text-text-muted">
+        Kelola judul dan deskripsi SEO untuk tiap halaman (home, about, skills, projects, contact, cv). Struktur: halaman &rarr; title/description &rarr; teks ID & EN.
+      </p>
+      <LocaleTreeEditor :data="form.seo" />
     </div>
 
     <p v-if="error" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">{{ error }}</p>

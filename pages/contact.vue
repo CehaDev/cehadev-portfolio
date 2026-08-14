@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { Mail, Phone, MapPin, Github, Linkedin, Instagram } from 'lucide-vue-next'
 
-useSeoMeta({
-  title: 'Contact | CehaDev',
-  description: 'Hubungi CehaDev untuk kolaborasi, project freelance, atau sekadar menyapa. Respons cepat dan terbuka untuk peluang kerja sama.'
-})
-
 const { data: site } = await useSiteSettings()
 
+useSeoMeta({
+  title: () => site.value?.seo?.contact?.title ?? 'Contact | CehaDev',
+  description: () => site.value?.seo?.contact?.description ?? 'Hubungi CehaDev untuk kolaborasi, project freelance, atau sekadar menyapa. Respons cepat dan terbuka untuk peluang kerja sama.'
+})
+
+const headings = computed(() => site.value?.headings?.contact ?? {})
+
 const contacts = computed(() => [
-  { icon: Mail, label: 'Email', value: site.value?.email ?? '', href: `mailto:${site.value?.email ?? ''}` },
-  { icon: Phone, label: 'Phone', value: site.value?.phone ?? '', href: `tel:${(site.value?.phone ?? '').replace(/[^+\d]/g, '')}` },
-  { icon: MapPin, label: 'Location', value: site.value?.location ?? '', href: `https://maps.google.com/?q=${encodeURIComponent(site.value?.location ?? '')}` }
+  { icon: Mail, label: headings.value.contactEmail ?? 'Email', value: site.value?.email ?? '', href: `mailto:${site.value?.email ?? ''}` },
+  { icon: Phone, label: headings.value.contactPhone ?? 'Phone', value: site.value?.phone ?? '', href: `tel:${(site.value?.phone ?? '').replace(/[^+\d]/g, '')}` },
+  { icon: MapPin, label: headings.value.contactLocation ?? 'Location', value: site.value?.location ?? '', href: `https://maps.google.com/?q=${encodeURIComponent(site.value?.location ?? '')}` }
 ])
 
 const socials = computed(() => {
@@ -29,12 +31,12 @@ const socials = computed(() => {
     <!-- HERO -->
     <section class="mx-auto max-w-2xl text-center">
       <Reveal>
-        <span class="section-label"><span class="dot" aria-hidden="true" /> Let's work together</span>
+        <span class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.letsWork ?? "Let's work together" }}</span>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight md:text-5xl">
-          Get In <span class="bg-gradient-brand bg-clip-text text-transparent">Touch</span>
+          {{ headings.getIn1 ?? 'Get In' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.getIn2 ?? 'Touch' }}</span>
         </h1>
         <p class="mt-4 text-[15px] leading-relaxed text-text-secondary">
-          Ada pertanyaan, ide, atau project yang ingin dikerjakan? Saya selalu senang berdiskusi tentang teknologi dan peluang baru.
+          {{ headings.heroDesc ?? 'Ada pertanyaan, ide, atau project yang ingin dikerjakan? Saya selalu senang berdiskusi tentang teknologi dan peluang baru.' }}
         </p>
 
         <span class="mt-6 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3.5 py-1.5 text-xs font-medium text-success">
@@ -42,7 +44,7 @@ const socials = computed(() => {
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
             <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
           </span>
-          Available for new projects
+          {{ headings.available ?? 'Available for new projects' }}
         </span>
 
         <div class="mt-6 flex items-center justify-center gap-3">

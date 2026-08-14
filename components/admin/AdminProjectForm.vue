@@ -1,35 +1,39 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { LoaderCircle, Save, Plus, Trash2, Layers, ListChecks, GitBranch, Bug, BarChart3, Images } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 
+interface LS {
+  id: string
+  en: string
+}
 interface FeatureItem {
   icon: string
   color: string
-  title: string
-  desc: string
+  title: LS
+  desc: LS
 }
 interface ProcessItem {
   num: string
   icon: string
-  title: string
-  desc: string
+  title: LS
+  desc: LS
 }
 interface ChallengeItem {
-  title: string
-  desc: string
+  title: LS
+  desc: LS
 }
 interface ResultItem {
   icon: string
-  value: string
-  label: string
+  value: LS
+  label: LS
 }
 interface GalleryItem {
-  label: string
+  label: LS
   seed: number
 }
 interface DetailState {
-  overview: string
+  overview: LS
   featureHighlights: FeatureItem[]
   mainFeatures: FeatureItem[]
   techStack: string[]
@@ -49,34 +53,46 @@ const props = withDefaults(
 )
 const emit = defineEmits<{ saved: [data: Record<string, unknown>] }>()
 
+function str(v: unknown): string {
+  return typeof v === 'string' ? v : ''
+}
+function ls(v: unknown): LS {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    const o = v as Record<string, unknown>
+    return { id: str(o.id), en: str(o.en) }
+  }
+  const s = str(v)
+  return { id: s, en: s }
+}
+
 const initialDetail = props.initial?.detail ?? {}
 
 const form = reactive({
-  title: props.initial?.title ?? '',
-  slug: props.initial?.slug ?? '',
-  tagline: props.initial?.tagline ?? '',
-  description: props.initial?.description ?? '',
-  category: props.initial?.category ?? 'Web App',
-  year: props.initial?.year ?? String(new Date().getFullYear()),
-  role: props.initial?.role ?? 'Full-Stack Developer',
-  duration: props.initial?.duration ?? '',
-  liveUrl: props.initial?.liveUrl ?? '',
-  githubUrl: props.initial?.githubUrl ?? '',
-  featured: props.initial?.featured ?? false,
-  archived: props.initial?.archived ?? false,
-  tags: (props.initial?.tags ?? []).join(', '),
+  title: ls(props.initial?.title),
+  slug: str(props.initial?.slug),
+  tagline: ls(props.initial?.tagline),
+  description: ls(props.initial?.description),
+  category: ls(props.initial?.category),
+  year: str(props.initial?.year) || String(new Date().getFullYear()),
+  role: ls(props.initial?.role),
+  duration: ls(props.initial?.duration),
+  liveUrl: str(props.initial?.liveUrl),
+  githubUrl: str(props.initial?.githubUrl),
+  featured: Boolean(props.initial?.featured),
+  archived: Boolean(props.initial?.archived),
+  tags: (props.initial?.tags ?? []).map(ls),
   tech: [...(props.initial?.tech ?? [])]
 })
 
 const detail = reactive<DetailState>({
-  overview: initialDetail.overview ?? '',
-  featureHighlights: (initialDetail.featureHighlights ?? []).map((f: any) => ({ icon: f.icon ?? 'Star', color: f.color ?? '#8B5CF6', title: f.title ?? '', desc: f.desc ?? '' })),
-  mainFeatures: (initialDetail.mainFeatures ?? []).map((f: any) => ({ icon: f.icon ?? 'Star', color: f.color ?? '#8B5CF6', title: f.title ?? '', desc: f.desc ?? '' })),
+  overview: ls(initialDetail.overview),
+  featureHighlights: (initialDetail.featureHighlights ?? []).map((f: any) => ({ icon: str(f?.icon) || 'Star', color: str(f?.color) || '#8B5CF6', title: ls(f?.title), desc: ls(f?.desc) })),
+  mainFeatures: (initialDetail.mainFeatures ?? []).map((f: any) => ({ icon: str(f?.icon) || 'Star', color: str(f?.color) || '#8B5CF6', title: ls(f?.title), desc: ls(f?.desc) })),
   techStack: [...(initialDetail.techStack ?? [])],
-  process: (initialDetail.process ?? []).map((p: any) => ({ num: p.num ?? '', icon: p.icon ?? 'Code2', title: p.title ?? '', desc: p.desc ?? '' })),
-  challenges: (initialDetail.challenges ?? []).map((c: any) => ({ title: c.title ?? '', desc: c.desc ?? '' })),
-  results: (initialDetail.results ?? []).map((r: any) => ({ icon: r.icon ?? 'Activity', value: r.value ?? '', label: r.label ?? '' })),
-  gallery: (initialDetail.gallery ?? []).map((g: any) => ({ label: g.label ?? '', seed: g.seed ?? 1 }))
+  process: (initialDetail.process ?? []).map((p: any) => ({ num: str(p?.num), icon: str(p?.icon) || 'Code2', title: ls(p?.title), desc: ls(p?.desc) })),
+  challenges: (initialDetail.challenges ?? []).map((c: any) => ({ title: ls(c?.title), desc: ls(c?.desc) })),
+  results: (initialDetail.results ?? []).map((r: any) => ({ icon: str(r?.icon) || 'Activity', value: ls(r?.value), label: ls(r?.label) })),
+  gallery: (initialDetail.gallery ?? []).map((g: any) => ({ label: ls(g?.label), seed: Number(g?.seed) || 1 }))
 })
 
 const techKeys = Object.keys(techIcons)
@@ -86,11 +102,16 @@ const iconOptions = ['Search', 'LayoutDashboard', 'MessageSquare', 'ShieldCheck'
 const error = ref('')
 const saving = ref(false)
 
+function cleanLs(v: LS): { id: string; en: string } {
+  return { id: v.id.trim(), en: v.en.trim() }
+}
+
 function autoSlug() {
-  if (!form.slug && form.title) {
-    form.slug = form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  if (!form.slug && form.title.id) {
+    form.slug = form.title.id.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
   }
 }
+watch(() => form.title.id, () => autoSlug())
 
 function toggleTech(key: string) {
   const i = form.tech.indexOf(key)
@@ -105,7 +126,7 @@ function toggleStack(key: string) {
 }
 
 function validate() {
-  if (!form.title.trim() || !form.slug.trim()) {
+  if (!form.title.id.trim() || !form.slug.trim()) {
     error.value = 'Judul dan slug wajib diisi'
     return false
   }
@@ -113,20 +134,36 @@ function validate() {
   return true
 }
 
+function hasText(v: LS): boolean {
+  return Boolean(v.id.trim() || v.en.trim())
+}
+
 function payload() {
   const d = detail
   const detailPayload = {
-    overview: d.overview.trim(),
-    featureHighlights: d.featureHighlights.map((f) => ({ icon: f.icon, color: f.color, title: f.title.trim(), desc: f.desc.trim() })).filter((f) => f.title),
-    mainFeatures: d.mainFeatures.map((f) => ({ icon: f.icon, color: f.color, title: f.title.trim(), desc: f.desc.trim() })).filter((f) => f.title),
+    overview: cleanLs(d.overview),
+    featureHighlights: d.featureHighlights
+      .map((f) => ({ icon: f.icon, color: f.color, title: cleanLs(f.title), desc: cleanLs(f.desc) }))
+      .filter((f) => hasText(f.title)),
+    mainFeatures: d.mainFeatures
+      .map((f) => ({ icon: f.icon, color: f.color, title: cleanLs(f.title), desc: cleanLs(f.desc) }))
+      .filter((f) => hasText(f.title)),
     techStack: d.techStack,
-    process: d.process.map((p) => ({ num: p.num.trim(), icon: p.icon, title: p.title.trim(), desc: p.desc.trim() })).filter((p) => p.title),
-    challenges: d.challenges.map((c) => ({ title: c.title.trim(), desc: c.desc.trim() })).filter((c) => c.title),
-    results: d.results.map((r) => ({ icon: r.icon, value: r.value.trim(), label: r.label.trim() })).filter((r) => r.label),
-    gallery: d.gallery.map((g) => ({ label: g.label.trim(), seed: Number(g.seed) || 1 })).filter((g) => g.label)
+    process: d.process
+      .map((p) => ({ num: p.num.trim(), icon: p.icon, title: cleanLs(p.title), desc: cleanLs(p.desc) }))
+      .filter((p) => hasText(p.title)),
+    challenges: d.challenges
+      .map((c) => ({ title: cleanLs(c.title), desc: cleanLs(c.desc) }))
+      .filter((c) => hasText(c.title)),
+    results: d.results
+      .map((r) => ({ icon: r.icon, value: cleanLs(r.value), label: cleanLs(r.label) }))
+      .filter((r) => hasText(r.label)),
+    gallery: d.gallery
+      .map((g) => ({ label: cleanLs(g.label), seed: Number(g.seed) || 1 }))
+      .filter((g) => hasText(g.label))
   }
   const hasDetail =
-    detailPayload.overview ||
+    hasText(detailPayload.overview) ||
     detailPayload.featureHighlights.length ||
     detailPayload.mainFeatures.length ||
     detailPayload.techStack.length ||
@@ -136,19 +173,19 @@ function payload() {
     detailPayload.gallery.length
 
   return {
-    title: form.title.trim(),
+    title: cleanLs(form.title),
     slug: form.slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''),
-    tagline: form.tagline.trim(),
-    description: form.description.trim(),
-    category: form.category.trim() || 'Web App',
+    tagline: cleanLs(form.tagline),
+    description: cleanLs(form.description),
+    category: cleanLs(form.category),
     year: form.year.trim(),
-    role: form.role.trim(),
-    duration: form.duration.trim(),
+    role: cleanLs(form.role),
+    duration: cleanLs(form.duration),
     liveUrl: form.liveUrl.trim(),
     githubUrl: form.githubUrl.trim(),
     featured: form.featured,
     archived: form.archived,
-    tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
+    tags: form.tags.map(cleanLs).filter(hasText),
     tech: form.tech,
     ...(hasDetail ? { detail: detailPayload } : {})
   }
@@ -160,20 +197,23 @@ function addItem<T>(list: T[], empty: () => T) {
 function removeItem<T>(list: T[], index: number) {
   list.splice(index, 1)
 }
+function emptyLS(): LS {
+  return { id: '', en: '' }
+}
 function emptyFeature(): FeatureItem {
-  return { icon: 'Star', color: '#8B5CF6', title: '', desc: '' }
+  return { icon: 'Star', color: '#8B5CF6', title: { id: '', en: '' }, desc: { id: '', en: '' } }
 }
 function emptyProcess(): ProcessItem {
-  return { num: String(detail.process.length + 1).padStart(2, '0'), icon: 'Code2', title: '', desc: '' }
+  return { num: String(detail.process.length + 1).padStart(2, '0'), icon: 'Code2', title: { id: '', en: '' }, desc: { id: '', en: '' } }
 }
 function emptyChallenge(): ChallengeItem {
-  return { title: '', desc: '' }
+  return { title: { id: '', en: '' }, desc: { id: '', en: '' } }
 }
 function emptyResult(): ResultItem {
-  return { icon: 'Activity', value: '', label: '' }
+  return { icon: 'Activity', value: { id: '', en: '' }, label: { id: '', en: '' } }
 }
 function emptyGallery(): GalleryItem {
-  return { label: '', seed: 1 }
+  return { label: { id: '', en: '' }, seed: 1 }
 }
 
 async function save() {
@@ -196,23 +236,27 @@ async function save() {
 <template>
   <form class="space-y-8" novalidate @submit.prevent="save">
     <div class="card p-7">
-      <h3 class="mb-5 text-base font-bold text-text">Informasi Dasar</h3>
+      <div class="mb-5 flex items-center gap-2">
+        <Layers :size="16" :stroke-width="2" class="text-primary" />
+        <h3 class="text-base font-bold text-text">Informasi Dasar</h3>
+      </div>
+      <p class="mb-5 text-xs text-text-muted">Semua kolom teks dapat diisi dua bahasa. Kosongkan kolom EN agar otomatis memakai teks Indonesia.</p>
       <div class="grid gap-5 sm:grid-cols-2">
         <div>
-          <label for="pf-title" class="mb-1.5 block text-sm font-medium text-text">Judul Project</label>
-          <input id="pf-title" v-model="form.title" type="text" class="input-field" placeholder="Nama project" @blur="autoSlug" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Judul Project</label>
+          <LocaleInput v-model="form.title" placeholder="Nama project" />
         </div>
         <div>
           <label for="pf-slug" class="mb-1.5 block text-sm font-medium text-text">Slug (URL)</label>
           <input id="pf-slug" v-model="form.slug" type="text" class="input-field" placeholder="nama-project" />
         </div>
         <div class="sm:col-span-2">
-          <label for="pf-tagline" class="mb-1.5 block text-sm font-medium text-text">Tagline</label>
-          <input id="pf-tagline" v-model="form.tagline" type="text" class="input-field" placeholder="Satu kalimat deskripsi singkat" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Tagline</label>
+          <LocaleInput v-model="form.tagline" placeholder="Satu kalimat deskripsi singkat" />
         </div>
         <div class="sm:col-span-2">
-          <label for="pf-desc" class="mb-1.5 block text-sm font-medium text-text">Deskripsi</label>
-          <textarea id="pf-desc" v-model="form.description" rows="3" class="input-field resize-none" placeholder="Deskripsi project untuk kartu & halaman detail" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Deskripsi</label>
+          <LocaleTextarea v-model="form.description" :rows="3" placeholder="Deskripsi project untuk kartu & halaman detail" />
         </div>
       </div>
     </div>
@@ -222,7 +266,12 @@ async function save() {
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label for="pf-cat" class="mb-1.5 block text-sm font-medium text-text">Kategori</label>
-          <select id="pf-cat" v-model="form.category" class="input-field">
+          <select
+            id="pf-cat"
+            v-model="form.category.id"
+            class="input-field"
+            @change="form.category.en = form.category.id"
+          >
             <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
           </select>
         </div>
@@ -231,12 +280,12 @@ async function save() {
           <input id="pf-year" v-model="form.year" type="text" class="input-field" placeholder="2025" />
         </div>
         <div>
-          <label for="pf-duration" class="mb-1.5 block text-sm font-medium text-text">Durasi</label>
-          <input id="pf-duration" v-model="form.duration" type="text" class="input-field" placeholder="3 Bulan" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Durasi</label>
+          <LocaleInput v-model="form.duration" placeholder="3 Bulan" />
         </div>
         <div>
-          <label for="pf-role" class="mb-1.5 block text-sm font-medium text-text">Peran</label>
-          <input id="pf-role" v-model="form.role" type="text" class="input-field" placeholder="Full-Stack Developer" />
+          <label class="mb-1.5 block text-sm font-medium text-text">Peran</label>
+          <LocaleInput v-model="form.role" placeholder="Full-Stack Developer" />
         </div>
         <div class="lg:col-span-2">
           <label for="pf-live" class="mb-1.5 block text-sm font-medium text-text">URL Live Demo</label>
@@ -286,8 +335,26 @@ async function save() {
     <div class="card p-7">
       <h3 class="mb-5 text-base font-bold text-text">Konten</h3>
       <div>
-        <label for="pf-tags" class="mb-1.5 block text-sm font-medium text-text">Tags (pisahkan dengan koma)</label>
-        <input id="pf-tags" v-model="form.tags" type="text" class="input-field" placeholder="Nuxt.js, Vue.js, Tailwind CSS" />
+        <div class="mb-3 flex items-center justify-between">
+          <p class="text-sm font-medium text-text">Tags (kategori / label project)</p>
+          <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.tags, emptyLS)">
+            <Plus :size="14" :stroke-width="2" />
+            Tambah
+          </button>
+        </div>
+        <ul class="space-y-2">
+          <li v-for="(tag, i) in form.tags" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-2.5">
+            <div class="min-w-0 flex-1">
+              <LocaleInput v-model="form.tags[i]" placeholder="Nama tag..." />
+            </div>
+            <button type="button" class="rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus tag ${i + 1}`" @click="removeItem(form.tags, i)">
+              <Trash2 :size="14" :stroke-width="1.5" />
+            </button>
+          </li>
+          <p v-if="!form.tags.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
+            Belum ada tag. Klik "Tambah" untuk menambahkan.
+          </p>
+        </ul>
       </div>
 
       <div class="mt-6">
@@ -314,7 +381,7 @@ async function save() {
       <div class="mb-6 flex items-center justify-between gap-4">
         <div>
           <h3 class="flex items-center gap-2 text-base font-bold text-text">
-            <Layers :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+            <ListChecks :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
             Konten Detail Halaman
           </h3>
           <p class="mt-1 text-sm text-text-secondary">Konten tab Overview, Fitur, Teknologi, Proses, Tantangan, Hasil, dan Galeri pada halaman detail project.</p>
@@ -323,8 +390,8 @@ async function save() {
 
       <div class="grid gap-5">
         <div>
-          <label for="pf-overview" class="mb-1.5 block text-sm font-medium text-text">Overview (paragraf dipisah baris kosong)</label>
-          <textarea id="pf-overview" v-model="detail.overview" rows="5" class="input-field resize-none" placeholder="Deskripsi panjang untuk tab Overview. Gunakan baris kosong untuk membuat paragraf baru." />
+          <label class="mb-1.5 block text-sm font-medium text-text">Overview (paragraf dipisah baris kosong)</label>
+          <LocaleTextarea v-model="detail.overview" :rows="5" placeholder="Deskripsi panjang untuk tab Overview. Gunakan baris kosong untuk membuat paragraf baru." />
         </div>
 
         <div>
@@ -356,12 +423,12 @@ async function save() {
                   <input :id="`pf-fh-color-${i}`" v-model="f.color" type="color" class="h-11 w-full cursor-pointer rounded-btn border border-border bg-bg p-1" />
                 </div>
                 <div>
-                  <label :for="`pf-fh-title-${i}`" class="mb-1 block text-xs font-medium text-text">Judul</label>
-                  <input :id="`pf-fh-title-${i}`" v-model="f.title" type="text" class="input-field !py-2" placeholder="Pencarian Cepat" />
+                  <label class="mb-1 block text-xs font-medium text-text">Judul</label>
+                  <LocaleInput :id="`pf-fh-title-${i}`" v-model="f.title" placeholder="Pencarian Cepat" />
                 </div>
                 <div class="sm:col-span-3">
-                  <label :for="`pf-fh-desc-${i}`" class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
-                  <input :id="`pf-fh-desc-${i}`" v-model="f.desc" type="text" class="input-field !py-2" placeholder="Deskripsi singkat fitur" />
+                  <label class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
+                  <LocaleInput :id="`pf-fh-desc-${i}`" v-model="f.desc" placeholder="Deskripsi singkat fitur" />
                 </div>
               </div>
             </div>
@@ -400,12 +467,12 @@ async function save() {
                   <input :id="`pf-mf-color-${i}`" v-model="f.color" type="color" class="h-11 w-full cursor-pointer rounded-btn border border-border bg-bg p-1" />
                 </div>
                 <div>
-                  <label :for="`pf-mf-title-${i}`" class="mb-1 block text-xs font-medium text-text">Judul</label>
-                  <input :id="`pf-mf-title-${i}`" v-model="f.title" type="text" class="input-field !py-2" placeholder="Dashboard Intuitif" />
+                  <label class="mb-1 block text-xs font-medium text-text">Judul</label>
+                  <LocaleInput :id="`pf-mf-title-${i}`" v-model="f.title" placeholder="Dashboard Intuitif" />
                 </div>
                 <div class="sm:col-span-3">
-                  <label :for="`pf-mf-desc-${i}`" class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
-                  <input :id="`pf-mf-desc-${i}`" v-model="f.desc" type="text" class="input-field !py-2" placeholder="Deskripsi singkat fitur" />
+                  <label class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
+                  <LocaleInput :id="`pf-mf-desc-${i}`" v-model="f.desc" placeholder="Deskripsi singkat fitur" />
                 </div>
               </div>
             </div>
@@ -466,12 +533,12 @@ async function save() {
                   </select>
                 </div>
                 <div class="sm:col-span-2">
-                  <label :for="`pf-pr-title-${i}`" class="mb-1 block text-xs font-medium text-text">Judul</label>
-                  <input :id="`pf-pr-title-${i}`" v-model="p.title" type="text" class="input-field !py-2" placeholder="Perencanaan" />
+                  <label class="mb-1 block text-xs font-medium text-text">Judul</label>
+                  <LocaleInput :id="`pf-pr-title-${i}`" v-model="p.title" placeholder="Perencanaan" />
                 </div>
                 <div class="sm:col-span-4">
-                  <label :for="`pf-pr-desc-${i}`" class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
-                  <input :id="`pf-pr-desc-${i}`" v-model="p.desc" type="text" class="input-field !py-2" placeholder="Deskripsi langkah" />
+                  <label class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
+                  <LocaleInput :id="`pf-pr-desc-${i}`" v-model="p.desc" placeholder="Deskripsi langkah" />
                 </div>
               </div>
             </div>
@@ -503,12 +570,12 @@ async function save() {
               </div>
               <div class="grid gap-3">
                 <div>
-                  <label :for="`pf-ch-title-${i}`" class="mb-1 block text-xs font-medium text-text">Judul</label>
-                  <input :id="`pf-ch-title-${i}`" v-model="c.title" type="text" class="input-field !py-2" placeholder="Sinkronisasi data real-time" />
+                  <label class="mb-1 block text-xs font-medium text-text">Judul</label>
+                  <LocaleInput :id="`pf-ch-title-${i}`" v-model="c.title" placeholder="Sinkronisasi data real-time" />
                 </div>
                 <div>
-                  <label :for="`pf-ch-desc-${i}`" class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
-                  <textarea :id="`pf-ch-desc-${i}`" v-model="c.desc" rows="2" class="input-field resize-none !py-2" placeholder="Deskripsi tantangan dan solusinya..." />
+                  <label class="mb-1 block text-xs font-medium text-text">Deskripsi</label>
+                  <LocaleTextarea :id="`pf-ch-desc-${i}`" v-model="c.desc" :rows="2" placeholder="Deskripsi tantangan dan solusinya..." />
                 </div>
               </div>
             </div>
@@ -546,12 +613,12 @@ async function save() {
                   </select>
                 </div>
                 <div>
-                  <label :for="`pf-rs-value-${i}`" class="mb-1 block text-xs font-medium text-text">Nilai</label>
-                  <input :id="`pf-rs-value-${i}`" v-model="r.value" type="text" class="input-field !py-2" placeholder="500+" />
+                  <label class="mb-1 block text-xs font-medium text-text">Nilai</label>
+                  <LocaleInput :id="`pf-rs-value-${i}`" v-model="r.value" placeholder="500+" />
                 </div>
                 <div>
-                  <label :for="`pf-rs-label-${i}`" class="mb-1 block text-xs font-medium text-text">Label</label>
-                  <input :id="`pf-rs-label-${i}`" v-model="r.label" type="text" class="input-field !py-2" placeholder="Pengguna Aktif" />
+                  <label class="mb-1 block text-xs font-medium text-text">Label</label>
+                  <LocaleInput :id="`pf-rs-label-${i}`" v-model="r.label" placeholder="Pengguna Aktif" />
                 </div>
               </div>
             </div>
@@ -573,15 +640,25 @@ async function save() {
             </button>
           </div>
           <div class="space-y-3">
-            <div v-for="(g, i) in detail.gallery" :key="i" class="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-bg p-3">
-              <span class="h-10 w-14 shrink-0 overflow-hidden rounded-md border border-border">
-                <ProjectThumb :seed="g.seed || 1" :label="g.label || 'Galeri'" height="h-10" />
-              </span>
-              <input v-model="g.label" type="text" class="input-field !py-2 sm:flex-1" placeholder="Label galeri" />
-              <input v-model.number="g.seed" type="number" class="input-field !py-2 sm:w-24" placeholder="Seed" />
-              <button type="button" class="shrink-0 rounded-lg border border-red-500/30 p-2 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus galeri ${i + 1}`" @click="removeItem(detail.gallery, i)">
-                <Trash2 :size="14" :stroke-width="1.5" />
-              </button>
+            <div v-for="(g, i) in detail.gallery" :key="i" class="rounded-lg border border-border bg-bg p-3">
+              <div class="mb-3 flex items-center gap-3">
+                <span class="h-10 w-14 shrink-0 overflow-hidden rounded-md border border-border">
+                  <ProjectThumb :seed="g.seed || 1" :label="g.label.id || 'Galeri'" height="h-10" />
+                </span>
+                <button type="button" class="ml-auto shrink-0 rounded-lg border border-red-500/30 p-2 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus galeri ${i + 1}`" @click="removeItem(detail.gallery, i)">
+                  <Trash2 :size="14" :stroke-width="1.5" />
+                </button>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-text">Label</label>
+                  <LocaleInput :id="`pf-gl-label-${i}`" v-model="g.label" placeholder="Label galeri" />
+                </div>
+                <div>
+                  <label :for="`pf-gl-seed-${i}`" class="mb-1 block text-xs font-medium text-text">Seed</label>
+                  <input :id="`pf-gl-seed-${i}`" v-model.number="g.seed" type="number" class="input-field !py-2" placeholder="Seed" />
+                </div>
+              </div>
             </div>
             <p v-if="!detail.gallery.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
               Belum ada item galeri.

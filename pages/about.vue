@@ -2,12 +2,16 @@
 import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Database, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
+const { data: site } = await useSiteSettings()
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'About | CehaDev',
-  description: 'Kenali lebih dekat CehaDev — Web Developer yang berfokus pada Nuxt.js, Vue.js, dan Node.js.'
+  title: () => site.value?.seo?.about?.title ?? 'About | CehaDev',
+  description: () => site.value?.seo?.about?.description ?? 'Kenali lebih dekat CehaDev — Web Developer yang berfokus pada Nuxt.js, Vue.js, dan Node.js.'
 })
 
-const { data: site } = await useSiteSettings()
+const headings = computed(() => site.value?.headings?.about ?? {})
+
 const { data: skills } = await useSkillsContent()
 
 const statIcons = {
@@ -18,13 +22,14 @@ const statIcons = {
 }
 
 const facts = computed(() => [
-  { icon: MapPin, label: 'Lokasi', value: site.value?.location },
-  { icon: Mail, label: 'Email', value: site.value?.email },
-  { icon: Globe, label: 'Website', value: site.value?.website },
-  { icon: Phone, label: 'Telepon', value: site.value?.phone }
+  { icon: MapPin, label: headings.value.factLocation ?? 'Lokasi', value: site.value?.location },
+  { icon: Mail, label: headings.value.factEmail ?? 'Email', value: site.value?.email },
+  { icon: Globe, label: headings.value.factWebsite ?? 'Website', value: site.value?.website },
+  { icon: Phone, label: headings.value.factPhone ?? 'Telepon', value: site.value?.phone }
 ])
 
 const categoryIcons: Record<string, Component> = {
+  Bahasa: Braces,
   Language: Braces,
   Framework: Boxes,
   Runtime: Terminal,
@@ -32,14 +37,15 @@ const categoryIcons: Record<string, Component> = {
   Tooling: Wrench,
   OS: Monitor,
   Database,
-  Lainnya: Code2
+  Lainnya: Code2,
+  Others: Code2
 }
 
 const legacyCategory: Record<string, string> = {
-  javascript: 'Language',
-  typescript: 'Language',
-  php: 'Language',
-  html5: 'Language',
+  javascript: 'Bahasa',
+  typescript: 'Bahasa',
+  php: 'Bahasa',
+  html5: 'Bahasa',
   vue: 'Framework',
   nuxt: 'Framework',
   node: 'Runtime',
@@ -50,17 +56,19 @@ const legacyCategory: Record<string, string> = {
   linux: 'OS'
 }
 
-const techSkills = computed(() =>
-  (skills.value?.technicalSkills ?? []).map((s) => ({
+const techSkills = computed(() => {
+  const fallback = site.value?.headings?.about?.otherCategory ?? 'Lainnya'
+  return (skills.value?.technicalSkills ?? []).map((s) => ({
     ...s,
-    category: s.category || legacyCategory[s.tech] || 'Lainnya'
+    category: s.category || legacyCategory[s.tech] || fallback
   }))
-)
+})
 
 const stackGroups = computed(() => {
+  const fallback = site.value?.headings?.about?.otherCategory ?? 'Lainnya'
   const groups: { category: string; items: typeof techSkills.value }[] = []
   for (const item of techSkills.value) {
-    const category = item.category || 'Lainnya'
+    const category = item.category || fallback
     let group = groups.find((g) => g.category === category)
     if (!group) {
       group = { category, items: [] }
@@ -74,8 +82,8 @@ const stackGroups = computed(() => {
 const stats = computed(() => {
   const list = site.value?.stats ?? []
   if (!list.length) return []
-  const hours = list.find((s) => s.label === 'Hours')
-  const rest = list.filter((s) => s.label !== 'Hours')
+  const hours = list.find((s) => s.icon === 'Clock')
+  const rest = list.filter((s) => s.icon !== 'Clock')
   return [hours, ...rest].filter(Boolean) as NonNullable<typeof hours>[]
 })
 
@@ -113,11 +121,11 @@ function statIcon(icon: string) {
             <AvatarIllustration :size="180" variant="code" />
 
             <div class="animate-float absolute bottom-4 -left-2 z-10 rounded-xl border border-border bg-card/90 px-4 py-2.5 shadow-card backdrop-blur md:left-10">
-              <p class="font-mono text-base font-bold text-text">2<span class="text-primary">+</span> <span class="text-xs font-medium text-text-muted">yrs</span></p>
+              <p class="font-mono text-base font-bold text-text">2<span class="text-primary">+</span> <span class="text-xs font-medium text-text-muted">{{ headings.yearsShort ?? 'yrs' }}</span></p>
             </div>
 
             <div class="animate-float absolute right-0 top-2 z-10 rounded-xl border border-border bg-card/90 px-4 py-2.5 shadow-card backdrop-blur md:right-10" style="animation-delay: 0.8s">
-              <p class="font-mono text-base font-bold text-text">10<span class="text-primary">+</span> <span class="text-xs font-medium text-text-muted">projects</span></p>
+              <p class="font-mono text-base font-bold text-text">10<span class="text-primary">+</span> <span class="text-xs font-medium text-text-muted">{{ headings.projectsShort ?? 'projects' }}</span></p>
             </div>
           </div>
 
@@ -138,11 +146,11 @@ function statIcon(icon: string) {
           <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
             <a :href="site?.cvUrl ? `${site.cvUrl}?download=1` : '/cv?download=1'" class="btn-primary">
               <Download :size="16" :stroke-width="2" />
-              Download CV
+              {{ headings.downloadCv ?? t('nav.downloadCv') }}
             </a>
             <NuxtLink to="/contact" class="btn-outline">
               <Mail :size="16" :stroke-width="1.75" />
-              Let's Talk
+              {{ headings.letsTalk ?? 'Let\'s Talk' }}
             </NuxtLink>
           </div>
         </Reveal>
@@ -176,9 +184,9 @@ function statIcon(icon: string) {
       <div class="grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
           <Reveal>
-            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">01 · Tentang Saya</p>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{{ headings.aboutLabel ?? '01 · Tentang Saya' }}</p>
             <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-text md:text-4xl">
-              Why I love <span class="bg-gradient-brand bg-clip-text text-transparent">building for the web</span>
+              {{ headings.whyHead1 ?? 'Why I love' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.whyHead2 ?? 'building for the web' }}</span>
             </h2>
           </Reveal>
 
@@ -261,9 +269,9 @@ function statIcon(icon: string) {
     <!-- 02 · TECH STACK -->
     <section class="container-site pb-20 text-center">
       <Reveal>
-        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">02 · Tech Stack</p>
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{{ headings.techLabel ?? '02 · Tech Stack' }}</p>
         <h2 class="mt-2 text-2xl font-extrabold tracking-tight md:text-4xl">
-          Tools I <span class="bg-gradient-brand bg-clip-text text-transparent">work with</span>
+          {{ headings.toolsHead1 ?? 'Tools I' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.toolsHead2 ?? 'work with' }}</span>
         </h2>
       </Reveal>
 
@@ -298,7 +306,7 @@ function statIcon(icon: string) {
                 <span class="min-w-0 flex-1 truncate text-sm font-semibold text-text">{{ s.name }}</span>
                 <span class="font-mono text-xs font-bold text-text-secondary">{{ s.level }}<span class="text-text-muted">%</span></span>
               </div>
-              <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-bg-alt" role="progressbar" :aria-label="`Tingkat ${s.name}`" :aria-valuenow="s.level" aria-valuemin="0" aria-valuemax="100">
+              <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-bg-alt" role="progressbar" :aria-label="(headings.levelAria ?? 'Tingkat {{name}}').replace('{{name}}', s.name)" :aria-valuenow="s.level" aria-valuemin="0" aria-valuemax="100">
                 <div class="skill-bar h-full rounded-full bg-gradient-brand" :style="{ width: `${s.level}%` }" />
               </div>
             </li>

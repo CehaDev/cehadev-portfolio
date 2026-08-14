@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createError } from 'h3'
+import { normalizeLS, normalizeLSArray, normalizeLSObject, deepLS } from './ls'
 
 const siteFile = path.resolve(process.cwd(), 'content/site.json')
 
@@ -20,17 +21,7 @@ export function normalizeSite(body: Record<string, unknown>) {
   const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
   const arr = (v: unknown) => (Array.isArray(v) ? v : [])
 
-  const strings = (v: unknown) => arr(v).map((s) => str(s)).filter(Boolean)
-
-  const obj = (v: unknown, keys: string[]) => {
-    if (!Array.isArray(v)) return []
-    return v.map((x) => {
-      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-      const out: Record<string, string> = {}
-      for (const k of keys) out[k] = str(o[k])
-      return out
-    })
-  }
+  const strings = (v: unknown) => normalizeLSArray(v)
 
   const stats = (v: unknown) =>
     arr(v)
@@ -38,13 +29,13 @@ export function normalizeSite(body: Record<string, unknown>) {
         const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
         return {
           icon: str(o.icon),
-          label: str(o.label),
-          sub: str(o.sub),
+          label: normalizeLS(o.label),
+          sub: normalizeLS(o.sub),
           end: Number(o.end) || 0,
-          suffix: str(o.suffix)
+          suffix: normalizeLS(o.suffix)
         }
       })
-      .filter((i) => i.label)
+      .filter((i) => i.label.id)
 
   const socials = (v: unknown) => {
     const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>
@@ -55,36 +46,38 @@ export function normalizeSite(body: Record<string, unknown>) {
     }
   }
 
-  const faqs = (v: unknown) => obj(v, ['q', 'a'])
+  const faqs = (v: unknown) => normalizeLSObject(v, ['q', 'a'])
 
   const statCards = (v: unknown) =>
     arr(v)
       .map((x) => {
         const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        return { icon: str(o.icon), label: str(o.label), value: str(o.value) }
+        return { icon: str(o.icon), label: normalizeLS(o.label), value: normalizeLS(o.value) }
       })
-      .filter((i) => i.label)
+      .filter((i) => i.label.id)
 
   return {
     name: str(body.name),
-    role: str(body.role),
-    heroBadge: str(body.heroBadge),
-    heroTitle1: str(body.heroTitle1),
-    heroTitleGradient: str(body.heroTitleGradient),
-    heroSubtitle: str(body.heroSubtitle),
-    heroDescription: str(body.heroDescription),
+    role: normalizeLS(body.role),
+    heroBadge: normalizeLS(body.heroBadge),
+    heroTitle1: normalizeLS(body.heroTitle1),
+    heroTitleGradient: normalizeLS(body.heroTitleGradient),
+    heroSubtitle: normalizeLS(body.heroSubtitle),
+    heroDescription: normalizeLS(body.heroDescription),
     aboutIntro: strings(body.aboutIntro),
     aboutChecklist: strings(body.aboutChecklist),
-    quote: str(body.quote),
-    quoteHighlight: str(body.quoteHighlight),
+    quote: normalizeLS(body.quote),
+    quoteHighlight: normalizeLS(body.quoteHighlight),
     stats: stats(body.stats),
     email: str(body.email),
-    location: str(body.location),
+    location: normalizeLS(body.location),
     website: str(body.website),
     phone: str(body.phone),
     socials: socials(body.socials),
     cvUrl: str(body.cvUrl),
     faqs: faqs(body.faqs),
-    projectStats: statCards(body.projectStats)
+    projectStats: statCards(body.projectStats),
+    seo: deepLS(body.seo) as Record<string, unknown> | undefined,
+    headings: deepLS(body.headings) as Record<string, unknown> | undefined
   }
 }

@@ -23,6 +23,7 @@ const props = withDefaults(
 
 const { tiltRef, glareRef, onMove, onLeave } = useTilt(6)
 const { viewsOf, formatCount } = useStats()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -70,7 +71,7 @@ const { viewsOf, formatCount } = useStats()
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1 text-[11px] font-medium text-white/80 backdrop-blur-sm">
           <Eye :size="12" :stroke-width="1.75" aria-hidden="true" />
-          {{ formatCount(viewsOf(project.slug)) }} dilihat
+          {{ formatCount(viewsOf(project.slug)) }} {{ t('common.viewed') }}
         </span>
       </div>
     </div>
@@ -86,7 +87,7 @@ const { viewsOf, formatCount } = useStats()
       v-if="variant === 'large'"
       class="absolute left-5 top-5 rounded-full bg-black/40 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm"
     >
-      Featured
+      {{ t('projectCard.featured') }}
     </span>
   </NuxtLink>
 </template>

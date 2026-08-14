@@ -1,56 +1,69 @@
 {
   "slug": "nutech-api",
-  "title": "NuTech API",
-  "tagline": "REST API cepat dan aman untuk aplikasi mobile & web.",
-  "description": "Backend REST API dengan autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang mudah dikembangkan.",
-  "tags": ["Node.js", "TypeScript", "MySQL"],
+  "title": { "id": "NuTech API", "en": "NuTech API" },
+  "tagline": {
+    "id": "REST API cepat dan aman untuk aplikasi mobile & web.",
+    "en": "A fast and secure REST API for mobile & web apps."
+  },
+  "description": {
+    "id": "Backend REST API dengan autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang mudah dikembangkan.",
+    "en": "A REST API backend with JWT auth, rate limiting, automatic documentation, and a modular structure that's easy to extend."
+  },
+  "tags": [
+    { "id": "Node.js", "en": "Node.js" },
+    { "id": "TypeScript", "en": "TypeScript" },
+    { "id": "MySQL", "en": "MySQL" }
+  ],
   "tech": ["node", "typescript", "mysql", "git"],
-  "category": "Backend",
+  "category": { "id": "Backend", "en": "Backend" },
   "year": "2024",
-  "role": "Backend Developer",
-  "duration": "2 Bulan",
+  "role": { "id": "Backend Developer", "en": "Backend Developer" },
+  "duration": { "id": "2 Bulan", "en": "2 Months" },
   "liveUrl": "https://nutech-api.example.com",
   "githubUrl": "https://github.com/cehadev/nutech-api",
   "detail": {
-    "overview": "NuTech API adalah REST API backend yang dibangun untuk menjadi fondasi aplikasi mobile maupun web. Dilengkapi autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang memudahkan pengembangan serta pemeliharaan.\n\nDitulis menggunakan Node.js dan TypeScript, NuTech API menerapkan pola repository dan middleware yang terisolasi sehingga setiap layanan mudah diuji dan diperluas. Semua data disimpan di MySQL dengan migrasi terkelola.",
+    "overview": {
+      "id": "NuTech API adalah REST API backend yang dibangun untuk menjadi fondasi aplikasi mobile maupun web. Dilengkapi autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang memudahkan pengembangan serta pemeliharaan.\n\nDitulis menggunakan Node.js dan TypeScript, NuTech API menerapkan pola repository dan middleware yang terisolasi sehingga setiap layanan mudah diuji dan diperluas. Semua data disimpan di MySQL dengan migrasi terkelola.",
+      "en": "NuTech API is a REST backend API built to be the foundation of mobile and web apps. It ships with JWT authentication, rate limiting, automatic documentation, and a modular structure that makes development and maintenance easier.\n\nWritten with Node.js and TypeScript, NuTech API uses isolated repository and middleware patterns so each service is easy to test and extend. All data is stored in MySQL with managed migrations."
+    },
     "featureHighlights": [
-      { "icon": "ShieldCheck", "color": "#22C55E", "title": "Autentikasi JWT", "desc": "Login, refresh token, dan proteksi endpoint." },
-      { "icon": "Code2", "color": "#38BDF8", "title": "Dokumentasi Otomatis", "desc": "Dokumentasi OpenAPI yang selalu sinkron dengan kode." },
-      { "icon": "Activity", "color": "#F59E0B", "title": "Rate Limiting", "desc": "Batasi permintaan untuk melindungi dari penyalahgunaan." },
-      { "icon": "FolderKanban", "color": "#8B5CF6", "title": "Arsitektur Modular", "desc": "Struktur yang rapi dan mudah dikembangkan." }
+      { "icon": "ShieldCheck", "color": "#22C55E", "title": { "id": "Autentikasi JWT", "en": "JWT Auth" }, "desc": { "id": "Login, refresh token, dan proteksi endpoint.", "en": "Login, refresh tokens, and endpoint protection." } },
+      { "icon": "Code2", "color": "#38BDF8", "title": { "id": "Dokumentasi Otomatis", "en": "Auto Documentation" }, "desc": { "id": "Dokumentasi OpenAPI yang selalu sinkron dengan kode.", "en": "OpenAPI docs that always stay in sync with the code." } },
+      { "icon": "Activity", "color": "#F59E0B", "title": { "id": "Rate Limiting", "en": "Rate Limiting" }, "desc": { "id": "Batasi permintaan untuk melindungi dari penyalahgunaan.", "en": "Limit requests to protect against abuse." } },
+      { "icon": "FolderKanban", "color": "#8B5CF6", "title": { "id": "Arsitektur Modular", "en": "Modular Architecture" }, "desc": { "id": "Struktur yang rapi dan mudah dikembangkan.", "en": "A clean structure that's easy to extend." } }
     ],
     "mainFeatures": [
-      { "icon": "ShieldCheck", "color": "#22C55E", "title": "Autentikasi & Otorisasi", "desc": "JWT dengan refresh token, role-based access control, dan proteksi CSRF." },
-      { "icon": "Search", "color": "#38BDF8", "title": "Query & Filter", "desc": "Pagination, sorting, dan filter pada seluruh endpoint koleksi." },
-      { "icon": "Code2", "color": "#8B5CF6", "title": "Validasi Input", "desc": "Skema validasi dengan pesan error yang konsisten di semua endpoint." },
-      { "icon": "Activity", "color": "#F59E0B", "title": "Logging & Monitoring", "desc": "Log terstruktur dan metrik request untuk memudahkan debugging." },
-      { "icon": "FolderCheck", "color": "#F43F5E", "title": "Migrasi Database", "desc": "Migrasi MySQL yang dapat dijalankan secara bertahap dan aman." }
+      { "icon": "ShieldCheck", "color": "#22C55E", "title": { "id": "Autentikasi & Otorisasi", "en": "Authentication & Authorization" }, "desc": { "id": "JWT dengan refresh token, role-based access control, dan proteksi CSRF.", "en": "JWT with refresh tokens, role-based access control, and CSRF protection." } },
+      { "icon": "Search", "color": "#38BDF8", "title": { "id": "Query & Filter", "en": "Query & Filter" }, "desc": { "id": "Pagination, sorting, dan filter pada seluruh endpoint koleksi.", "en": "Pagination, sorting, and filtering on all collection endpoints." } },
+      { "icon": "Code2", "color": "#8B5CF6", "title": { "id": "Validasi Input", "en": "Input Validation" }, "desc": { "id": "Skema validasi dengan pesan error yang konsisten di semua endpoint.", "en": "Validation schemas with consistent error messages across all endpoints." } },
+      { "icon": "Activity", "color": "#F59E0B", "title": { "id": "Logging & Monitoring", "en": "Logging & Monitoring" }, "desc": { "id": "Log terstruktur dan metrik request untuk memudahkan debugging.", "en": "Structured logs and request metrics to ease debugging." } },
+      { "icon": "FolderCheck", "color": "#F43F5E", "title": { "id": "Migrasi Database", "en": "Database Migrations" }, "desc": { "id": "Migrasi MySQL yang dapat dijalankan secara bertahap dan aman.", "en": "MySQL migrations that can be run incrementally and safely." } }
     ],
     "techStack": ["node", "typescript", "mysql", "git"],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": "Analisis Kebutuhan", "desc": "Mendefinisikan endpoint, skema data, dan aturan bisnis." },
-      { "num": "02", "icon": "PenTool", "title": "Desain API", "desc": "Merancang kontrak API dengan OpenAPI sebelum implementasi." },
-      { "num": "03", "icon": "Code2", "title": "Pengembangan", "desc": "Implementasi layanan, middleware, dan integrasi database." },
-      { "num": "04", "icon": "Bug", "title": "Pengujian", "desc": "Unit test dan integration test pada seluruh endpoint." },
-      { "num": "05", "icon": "Rocket", "title": "Deployment", "desc": "Deploy dengan CI/CD dan monitoring uptime API." }
+      { "num": "01", "icon": "ClipboardList", "title": { "id": "Analisis Kebutuhan", "en": "Requirements Analysis" }, "desc": { "id": "Mendefinisikan endpoint, skema data, dan aturan bisnis.", "en": "Defining endpoints, data schemas, and business rules." } },
+      { "num": "02", "icon": "PenTool", "title": { "id": "Desain API", "en": "API Design" }, "desc": { "id": "Merancang kontrak API dengan OpenAPI sebelum implementasi.", "en": "Designing the API contract with OpenAPI before implementation." } },
+      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Implementasi layanan, middleware, dan integrasi database.", "en": "Implementing services, middleware, and database integration." } },
+      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Unit test dan integration test pada seluruh endpoint.", "en": "Unit and integration tests on every endpoint." } },
+      { "num": "05", "icon": "Rocket", "title": { "id": "Deployment", "en": "Deployment" }, "desc": { "id": "Deploy dengan CI/CD dan monitoring uptime API.", "en": "Deploying with CI/CD and API uptime monitoring." } }
     ],
     "challenges": [
-      { "title": "Keamanan API", "desc": "Menerapkan JWT, refresh token rotation, dan proteksi terhadap serangan umum seperti brute-force dan injection." },
-      { "title": "Konsistensi dokumentasi", "desc": "Menjaga dokumentasi tetap sinkron dengan kode melalui generate otomatis dari skema." },
-      { "title": "Skalabilitas query", "desc": "Mengoptimalkan indeks dan query untuk mempertahankan respons cepat saat data bertambah." }
+      { "title": { "id": "Keamanan API", "en": "API security" }, "desc": { "id": "Menerapkan JWT, refresh token rotation, dan proteksi terhadap serangan umum seperti brute-force dan injection.", "en": "Implementing JWT, refresh token rotation, and protection against common attacks like brute force and injection." } },
+      { "title": { "id": "Konsistensi dokumentasi", "en": "Documentation consistency" }, "desc": { "id": "Menjaga dokumentasi tetap sinkron dengan kode melalui generate otomatis dari skema.", "en": "Keeping docs in sync with the code by auto-generating them from schemas." } },
+      { "title": { "id": "Skalabilitas query", "en": "Query scalability" }, "desc": { "id": "Mengoptimalkan indeks dan query untuk mempertahankan respons cepat saat data bertambah.", "en": "Optimizing indexes and queries to keep responses fast as data grows." } }
     ],
     "results": [
-      { "icon": "Activity", "value": "200ms", "label": "Waktu Respons Rata-rata" },
-      { "icon": "Users", "value": "10+", "label": "Klien Terhubung" },
-      { "icon": "FolderCheck", "value": "30+", "label": "Endpoint REST" },
-      { "icon": "ShieldCheck", "value": "0", "label": "Insiden Keamanan" }
+      { "icon": "Activity", "value": { "id": "200ms", "en": "200ms" }, "label": { "id": "Waktu Respons Rata-rata", "en": "Average Response Time" } },
+      { "icon": "Users", "value": { "id": "10+", "en": "10+" }, "label": { "id": "Klien Terhubung", "en": "Connected Clients" } },
+      { "icon": "FolderCheck", "value": { "id": "30+", "en": "30+" }, "label": { "id": "Endpoint REST", "en": "REST Endpoints" } },
+      { "icon": "ShieldCheck", "value": { "id": "0", "en": "0" }, "label": { "id": "Insiden Keamanan", "en": "Security Incidents" } }
     ],
     "gallery": [
-      { "label": "Dokumentasi API", "seed": 41 },
-      { "label": "Struktur Kode", "seed": 42 },
-      { "label": "Autentikasi", "seed": 43 },
-      { "label": "Log & Monitoring", "seed": 44 },
-      { "label": "Arsitektur", "seed": 45 }
+      { "label": { "id": "Dokumentasi API", "en": "API Documentation" }, "seed": 41 },
+      { "label": { "id": "Struktur Kode", "en": "Code Structure" }, "seed": 42 },
+      { "label": { "id": "Autentikasi", "en": "Authentication" }, "seed": 43 },
+      { "label": { "id": "Log & Monitoring", "en": "Log & Monitoring" }, "seed": 44 },
+      { "label": { "id": "Arsitektur", "en": "Architecture" }, "seed": 45 }
     ]
   }
 }

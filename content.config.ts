@@ -1,78 +1,81 @@
 import { defineCollection, z } from '@nuxt/content'
 
+const L = z.union([z.string(), z.object({ id: z.string(), en: z.string().optional() })])
+const LArr = z.array(L)
+
 const techItem = z.object({
-  name: z.string(),
+  name: L,
   level: z.number(),
   tech: z.string(),
-  category: z.string().optional()
+  category: L.optional()
 })
 
 const statSchema = z.object({
   icon: z.string(),
-  label: z.string(),
-  sub: z.string(),
+  label: L,
+  sub: L,
   end: z.number(),
-  suffix: z.string().optional()
+  suffix: L.optional()
 })
 
 const featureCard = z.object({
   icon: z.string(),
   color: z.string(),
-  title: z.string(),
-  desc: z.string()
+  title: L,
+  desc: L
 })
 
 const processStep = z.object({
   num: z.string(),
   icon: z.string(),
-  title: z.string(),
-  desc: z.string()
+  title: L,
+  desc: L
 })
 
 const resultItem = z.object({
   icon: z.string(),
-  value: z.string(),
-  label: z.string()
+  value: L,
+  label: L
 })
 
 const galleryItem = z.object({
-  label: z.string(),
+  label: L,
   seed: z.number()
 })
 
 const challengeItem = z.object({
-  title: z.string(),
-  desc: z.string()
+  title: L,
+  desc: L
 })
 
 const faqItem = z.object({
-  q: z.string(),
-  a: z.string()
+  q: L,
+  a: L
 })
 
 const cvExperience = z.object({
-  role: z.string(),
-  company: z.string(),
-  period: z.string(),
-  description: z.string()
+  role: L,
+  company: L,
+  period: L,
+  description: L
 })
 
 const cvEducation = z.object({
-  degree: z.string(),
-  school: z.string(),
-  period: z.string(),
-  description: z.string().optional()
+  degree: L,
+  school: L,
+  period: L,
+  description: L.optional()
 })
 
 const cvLanguage = z.object({
-  name: z.string(),
-  level: z.string()
+  name: L,
+  level: L
 })
 
 const cvCertification = z.object({
-  name: z.string(),
-  issuer: z.string(),
-  year: z.string()
+  name: L,
+  issuer: L,
+  year: L
 })
 
 export const collections = {
@@ -81,18 +84,18 @@ export const collections = {
     source: 'cv.json',
     schema: z.object({
       fullName: z.string(),
-      title: z.string(),
+      title: L,
       photo: z.string().optional(),
       email: z.string(),
       phone: z.string(),
-      location: z.string(),
+      location: L,
       website: z.string(),
       linkedin: z.string(),
       github: z.string(),
-      summary: z.string(),
+      summary: L,
       experiences: z.array(cvExperience),
       education: z.array(cvEducation),
-      skills: z.array(z.string()),
+      skills: LArr,
       languages: z.array(cvLanguage),
       certifications: z.array(cvCertification)
     })
@@ -103,19 +106,19 @@ export const collections = {
     source: 'site.json',
     schema: z.object({
       name: z.string(),
-      role: z.string(),
-      heroBadge: z.string(),
-      heroTitle1: z.string(),
-      heroTitleGradient: z.string(),
-      heroSubtitle: z.string(),
-      heroDescription: z.string(),
-      aboutIntro: z.array(z.string()),
-      aboutChecklist: z.array(z.string()),
-      quote: z.string(),
-      quoteHighlight: z.string(),
+      role: L,
+      heroBadge: L,
+      heroTitle1: L,
+      heroTitleGradient: L,
+      heroSubtitle: L,
+      heroDescription: L,
+      aboutIntro: LArr,
+      aboutChecklist: LArr,
+      quote: L,
+      quoteHighlight: L,
       stats: z.array(statSchema),
       email: z.string(),
-      location: z.string(),
+      location: L,
       website: z.string(),
       phone: z.string(),
       socials: z.object({
@@ -128,10 +131,12 @@ export const collections = {
       projectStats: z
         .array(z.object({
           icon: z.string(),
-          label: z.string(),
-          value: z.string()
+          label: L,
+          value: L
         }))
-        .optional()
+        .optional(),
+      seo: z.record(z.string(), z.any()).optional(),
+      headings: z.record(z.string(), z.any()).optional()
     })
   }),
 
@@ -141,10 +146,10 @@ export const collections = {
     schema: z.object({
       homeSkills: z.array(techItem),
       technicalSkills: z.array(techItem),
-      marqueeTech: z.array(z.string()),
-      skillsSummary: z.array(z.object({ label: z.string(), value: z.string(), icon: z.string() })),
-      toolsList: z.array(z.string()),
-      softSkills: z.array(z.string())
+      marqueeTech: LArr,
+      skillsSummary: z.array(z.object({ label: L, value: L, icon: z.string() })),
+      toolsList: LArr,
+      softSkills: LArr
     })
   }),
 
@@ -153,22 +158,22 @@ export const collections = {
     source: 'projects/*.json',
     schema: z.object({
       slug: z.string(),
-      title: z.string(),
-      tagline: z.string(),
-      description: z.string(),
-      tags: z.array(z.string()),
+      title: L,
+      tagline: L,
+      description: L,
+      tags: LArr,
       tech: z.array(z.string()),
-      category: z.string(),
+      category: L,
       year: z.string(),
-      role: z.string(),
-      duration: z.string(),
+      role: L,
+      duration: L,
       featured: z.boolean().optional(),
       archived: z.boolean().optional(),
       liveUrl: z.string(),
       githubUrl: z.string(),
       detail: z
         .object({
-          overview: z.string(),
+          overview: L,
           featureHighlights: z.array(featureCard).optional(),
           mainFeatures: z.array(featureCard).optional(),
           techStack: z.array(z.string()).optional(),

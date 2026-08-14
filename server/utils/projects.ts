@@ -1,6 +1,7 @@
 import { readdir, readFile, writeFile, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { createError } from 'h3'
+import { normalizeLS, normalizeLSArray } from './ls'
 
 const contentDir = path.resolve(process.cwd(), 'content/projects')
 
@@ -50,21 +51,87 @@ export function normalizeProject(body: Record<string, unknown>) {
   const arr = (v: unknown) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : [])
   const bool = (v: unknown) => v === true || v === 'true' || v === 1
 
+  const featureCards = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return {
+          icon: str(o.icon),
+          color: str(o.color),
+          title: normalizeLS(o.title),
+          desc: normalizeLS(o.desc)
+        }
+      })
+      .filter((f) => f.title.id)
+
+  const processSteps = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return {
+          num: str(o.num),
+          icon: str(o.icon),
+          title: normalizeLS(o.title),
+          desc: normalizeLS(o.desc)
+        }
+      })
+      .filter((p) => p.title.id)
+
+  const challenges = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return { title: normalizeLS(o.title), desc: normalizeLS(o.desc) }
+      })
+      .filter((c) => c.title.id)
+
+  const results = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return { icon: str(o.icon), value: normalizeLS(o.value), label: normalizeLS(o.label) }
+      })
+      .filter((r) => r.label.id)
+
+  const gallery = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return { label: normalizeLS(o.label), seed: Number(o.seed) || 1 }
+      })
+      .filter((g) => g.label.id)
+
+  const rawDetail = body.detail && typeof body.detail === 'object' ? (body.detail as Record<string, unknown>) : undefined
+
+  let detail: Record<string, unknown> | undefined
+  if (rawDetail) {
+    detail = {
+      overview: normalizeLS(rawDetail.overview),
+      featureHighlights: featureCards(rawDetail.featureHighlights),
+      mainFeatures: featureCards(rawDetail.mainFeatures),
+      techStack: arr(rawDetail.techStack),
+      process: processSteps(rawDetail.process),
+      challenges: challenges(rawDetail.challenges),
+      results: results(rawDetail.results),
+      gallery: gallery(rawDetail.gallery)
+    }
+  }
+
   return {
     slug: str(body.slug).toLowerCase(),
-    title: str(body.title),
-    tagline: str(body.tagline),
-    description: str(body.description),
-    tags: arr(body.tags),
+    title: normalizeLS(body.title),
+    tagline: normalizeLS(body.tagline),
+    description: normalizeLS(body.description),
+    tags: normalizeLSArray(body.tags),
     tech: arr(body.tech),
-    category: str(body.category),
+    category: normalizeLS(body.category),
     year: str(body.year),
-    role: str(body.role),
-    duration: str(body.duration),
+    role: normalizeLS(body.role),
+    duration: normalizeLS(body.duration),
     featured: bool(body.featured),
     archived: bool(body.archived),
     liveUrl: str(body.liveUrl),
     githubUrl: str(body.githubUrl),
-    ...(body.detail && typeof body.detail === 'object' ? { detail: body.detail } : {})
+    ...(detail ? { detail } : {})
   }
 }

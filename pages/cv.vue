@@ -2,11 +2,14 @@
 import { ArrowLeft, Download, Printer, Mail, Phone, MapPin, Globe, Linkedin, Github, Briefcase, GraduationCap, Wrench, Languages, Award, Sparkles } from 'lucide-vue-next'
 
 const { data: cv } = await useCvContent()
+const { data: site } = await useSiteSettings()
 
 useSeoMeta({
-  title: 'CV | CehaDev',
-  description: 'Curriculum Vitae CehaDev — Web Developer & Tech Enthusiast.'
+  title: () => site.value?.seo?.cv?.title ?? 'CV | CehaDev',
+  description: () => site.value?.seo?.cv?.description ?? 'Curriculum Vitae CehaDev — Web Developer & Tech Enthusiast.'
 })
+
+const headings = computed(() => site.value?.headings?.cv ?? {})
 
 const route = useRoute()
 
@@ -26,16 +29,16 @@ function printCv() {
     <div class="mb-8 flex flex-wrap items-center justify-between gap-4 print:hidden">
       <NuxtLink to="/" class="inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-text">
         <ArrowLeft :size="16" :stroke-width="2" />
-        Kembali ke Beranda
+        {{ headings.backHome ?? 'Kembali ke Beranda' }}
       </NuxtLink>
       <div class="flex items-center gap-3">
         <button type="button" class="btn-outline !px-4 !py-2.5" @click="printCv">
           <Printer :size="16" :stroke-width="2" />
-          Cetak / Simpan PDF
+          {{ headings.printPdf ?? 'Cetak / Simpan PDF' }}
         </button>
         <a href="/cv?download=1" class="btn-primary !px-4 !py-2.5" @click.prevent="printCv">
           <Download :size="16" :stroke-width="2" />
-          Download PDF
+          {{ headings.downloadPdf ?? 'Download PDF' }}
         </a>
       </div>
     </div>
@@ -50,7 +53,7 @@ function printCv() {
           <img
             v-if="cv.photo"
             :src="cv.photo"
-            :alt="`Foto ${cv.fullName}`"
+            :alt="(headings.photoAlt ?? 'Foto {{name}}').replace('{{name}}', cv.fullName ?? '')"
             class="h-32 w-32 rounded-full border-4 border-white/80 object-cover shadow-lg print:h-28 print:w-28 print:border-2"
           />
           <div v-else class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/80 bg-white/10 text-5xl font-extrabold">
@@ -62,7 +65,7 @@ function printCv() {
 
         <div class="space-y-8 border-t border-white/15 px-8 pb-10 pt-8">
           <section v-if="cv.email || cv.phone || cv.location || cv.website || cv.linkedin || cv.github">
-            <h2 class="cv-sidebar-title">Kontak</h2>
+            <h2 class="cv-sidebar-title">{{ headings.sideContact ?? 'Kontak' }}</h2>
             <ul class="mt-3 space-y-2.5">
               <li v-if="cv.location" class="cv-contact-row"><MapPin :size="15" class="shrink-0" /> <span class="break-words">{{ cv.location }}</span></li>
               <li v-if="cv.email" class="cv-contact-row"><Mail :size="15" class="shrink-0" /> <span class="break-all">{{ cv.email }}</span></li>
@@ -74,7 +77,7 @@ function printCv() {
           </section>
 
           <section v-if="cv.skills?.length">
-            <h2 class="cv-sidebar-title">Keahlian</h2>
+            <h2 class="cv-sidebar-title">{{ headings.sideSkills ?? 'Keahlian' }}</h2>
             <ul class="mt-3 space-y-2">
               <li v-for="s in cv.skills" :key="s" class="flex items-start gap-2 text-sm leading-snug text-white/95 print:text-xs">
                 <span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-white print:mt-[6px]" aria-hidden="true" />
@@ -84,7 +87,7 @@ function printCv() {
           </section>
 
           <section v-if="cv.languages?.length">
-            <h2 class="cv-sidebar-title">Bahasa</h2>
+            <h2 class="cv-sidebar-title">{{ headings.sideLanguages ?? 'Bahasa' }}</h2>
             <ul class="mt-3 space-y-2.5">
               <li v-for="(l, i) in cv.languages" :key="i" class="flex items-center justify-between gap-3 text-sm print:text-xs">
                 <span class="font-medium text-white">{{ l.name }}</span>
@@ -94,7 +97,7 @@ function printCv() {
           </section>
 
           <section v-if="cv.certifications?.length">
-            <h2 class="cv-sidebar-title">Sertifikasi</h2>
+            <h2 class="cv-sidebar-title">{{ headings.sideCerts ?? 'Sertifikasi' }}</h2>
             <ul class="mt-3 space-y-3.5">
               <li v-for="(c, i) in cv.certifications" :key="i">
                 <p class="text-sm font-semibold leading-snug text-white print:text-xs">{{ c.name }}</p>
@@ -108,12 +111,12 @@ function printCv() {
       <!-- MAIN -->
       <main class="space-y-9 bg-white p-10 print:p-8 md:p-12">
         <section v-if="cv.summary">
-          <h2 class="cv-section-title"><span class="cv-section-icon"><Sparkles :size="14" :stroke-width="2" /></span> Profil</h2>
+          <h2 class="cv-section-title"><span class="cv-section-icon"><Sparkles :size="14" :stroke-width="2" /></span> {{ headings.mainProfile ?? 'Profil' }}</h2>
           <p class="mt-3 text-sm leading-relaxed text-gray-700 print:text-[11px] print:leading-relaxed">{{ cv.summary }}</p>
         </section>
 
         <section v-if="cv.experiences?.length">
-          <h2 class="cv-section-title"><span class="cv-section-icon"><Briefcase :size="14" :stroke-width="2" /></span> Pengalaman Kerja</h2>
+          <h2 class="cv-section-title"><span class="cv-section-icon"><Briefcase :size="14" :stroke-width="2" /></span> {{ headings.mainExperience ?? 'Pengalaman Kerja' }}</h2>
           <div class="mt-5 space-y-7">
             <div v-for="(e, i) in cv.experiences" :key="i" class="relative border-l-2 border-violet-200 pl-5">
               <span class="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-violet-600" aria-hidden="true" />
@@ -128,7 +131,7 @@ function printCv() {
         </section>
 
         <section v-if="cv.education?.length">
-          <h2 class="cv-section-title"><span class="cv-section-icon"><GraduationCap :size="14" :stroke-width="2" /></span> Pendidikan</h2>
+          <h2 class="cv-section-title"><span class="cv-section-icon"><GraduationCap :size="14" :stroke-width="2" /></span> {{ headings.mainEducation ?? 'Pendidikan' }}</h2>
           <div class="mt-5 space-y-6">
             <div v-for="(e, i) in cv.education" :key="i" class="relative border-l-2 border-violet-200 pl-5">
               <span class="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-violet-600" aria-hidden="true" />
@@ -144,7 +147,7 @@ function printCv() {
       </main>
     </div>
 
-    <p v-else class="py-20 text-center text-sm text-text-muted">CV sedang disiapkan.</p>
+    <p v-else class="py-20 text-center text-sm text-text-muted">{{ headings.preparing ?? 'CV sedang disiapkan.' }}</p>
   </div>
 </template>
 

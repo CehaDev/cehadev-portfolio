@@ -1,55 +1,136 @@
 {
   "name": "CehaDev",
-  "role": "Web Developer & Tech Enthusiast",
-  "heroBadge": "Available for collaboration",
-  "heroTitle1": "Hi, I'm",
-  "heroTitleGradient": "CehaDev",
-  "heroSubtitle": "Web Developer & Tech Enthusiast",
-  "heroDescription": "Saya membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+  "role": {
+    "id": "Web Developer & Tech Enthusiast",
+    "en": "Web Developer & Tech Enthusiast"
+  },
+  "heroBadge": {
+    "id": "Terbuka untuk kolaborasi",
+    "en": "Available for collaboration"
+  },
+  "heroTitle1": {
+    "id": "Hai, saya",
+    "en": "Hi, I'm"
+  },
+  "heroTitleGradient": {
+    "id": "CehaDev",
+    "en": "CehaDev"
+  },
+  "heroSubtitle": {
+    "id": "Web Developer & Tech Enthusiast",
+    "en": "Web Developer & Tech Enthusiast"
+  },
+  "heroDescription": {
+    "id": "Saya membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+    "en": "I help turn ideas into digital products that are fast, modern, and enjoyable to use. Focused on web development with Nuxt.js, Vue.js, and Node.js."
+  },
   "aboutIntro": [
-    "Halo! Saya seorang web developer yang bersemangat dalam membangun aplikasi web yang cepat, modern, dan memberikan pengalaman terbaik bagi pengguna. Perjalanan saya dimulai dari rasa penasaran terhadap cara kerja sebuah website, yang kemudian berkembang menjadi profesi dan passion.",
-    "Saya percaya bahwa teknologi terbaik adalah yang menyelesaikan masalah nyata dengan cara yang sederhana. Kini saya fokus pada pengembangan frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js."
+    {
+      "id": "Halo! Saya seorang web developer yang bersemangat dalam membangun aplikasi web yang cepat, modern, dan memberikan pengalaman terbaik bagi pengguna. Perjalanan saya dimulai dari rasa penasaran terhadap cara kerja sebuah website, yang kemudian berkembang menjadi profesi dan passion.",
+      "en": "Hi! I'm a passionate web developer who loves building fast, modern web applications that deliver the best experience for users. My journey started from curiosity about how websites work, which grew into a profession and a passion."
+    },
+    {
+      "id": "Saya percaya bahwa teknologi terbaik adalah yang menyelesaikan masalah nyata dengan cara yang sederhana. Kini saya fokus pada pengembangan frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js.",
+      "en": "I believe the best technology is the one that solves real problems in simple ways. I now focus on frontend and backend development using Nuxt.js, Vue.js, and Node.js."
+    }
   ],
   "aboutChecklist": [
-    "Berpengalaman membangun aplikasi web modern dari nol hingga produksi.",
-    "Selalu mengikuti perkembangan teknologi dan best practice terbaru.",
-    "Menulis kode yang bersih, teruji, dan mudah dirawat oleh tim.",
-    "Komunikasi yang baik dengan tim, stakeholder, maupun klien."
+    {
+      "id": "Berpengalaman membangun aplikasi web modern dari nol hingga produksi.",
+      "en": "Experienced in building modern web applications from scratch to production."
+    },
+    {
+      "id": "Selalu mengikuti perkembangan teknologi dan best practice terbaru.",
+      "en": "Always keeping up with the latest technologies and best practices."
+    },
+    {
+      "id": "Menulis kode yang bersih, teruji, dan mudah dirawat oleh tim.",
+      "en": "Writing clean, tested, and maintainable code for the whole team."
+    },
+    {
+      "id": "Komunikasi yang baik dengan tim, stakeholder, maupun klien.",
+      "en": "Great communication with teams, stakeholders, and clients."
+    }
   ],
-  "quote": "Code is not just about how it works, but about",
-  "quoteHighlight": "how it's built.",
+  "quote": {
+    "id": "Kode bukan hanya tentang cara kerjanya, tetapi tentang",
+    "en": "Code is not just about how it works, but about"
+  },
+  "quoteHighlight": {
+    "id": "cara ia dibangun.",
+    "en": "how it's built."
+  },
   "stats": [
     {
       "icon": "Clock",
-      "label": "Years",
-      "sub": "Learning & Building",
+      "label": {
+        "id": "Tahun",
+        "en": "Years"
+      },
+      "sub": {
+        "id": "Belajar & Membangun",
+        "en": "Learning & Building"
+      },
       "end": 2,
-      "suffix": "+"
+      "suffix": {
+        "id": "+",
+        "en": "+"
+      }
     },
     {
       "icon": "FolderGit2",
-      "label": "Projects",
-      "sub": "Completed",
+      "label": {
+        "id": "Proyek",
+        "en": "Projects"
+      },
+      "sub": {
+        "id": "Selesai",
+        "en": "Completed"
+      },
       "end": 10,
-      "suffix": "+"
+      "suffix": {
+        "id": "+",
+        "en": "+"
+      }
     },
     {
       "icon": "Code2",
-      "label": "Hours",
-      "sub": "Coding",
+      "label": {
+        "id": "Jam",
+        "en": "Hours"
+      },
+      "sub": {
+        "id": "Menulis Kode",
+        "en": "Coding"
+      },
       "end": 500,
-      "suffix": "+"
+      "suffix": {
+        "id": "+",
+        "en": "+"
+      }
     },
     {
       "icon": "Target",
-      "label": "Goal",
-      "sub": "To be better every day",
+      "label": {
+        "id": "Tujuan",
+        "en": "Goal"
+      },
+      "sub": {
+        "id": "Menjadi lebih baik setiap hari",
+        "en": "To be better every day"
+      },
       "end": 1,
-      "suffix": ""
+      "suffix": {
+        "id": "",
+        "en": ""
+      }
     }
   ],
   "email": "hello@cehadev.id",
-  "location": "Wirosari, Grobogan, Jawa Tengah",
+  "location": {
+    "id": "Wirosari, Grobogan, Jawa Tengah",
+    "en": "Wirosari, Grobogan, Central Java"
+  },
   "website": "cehadev.id",
   "phone": "+62 812-3456-7890",
   "socials": {
@@ -61,41 +142,577 @@
   "projectStats": [
     {
       "icon": "FolderKanban",
-      "label": "Project",
-      "value": "6"
+      "label": {
+        "id": "Proyek",
+        "en": "Project"
+      },
+      "value": {
+        "id": "6",
+        "en": "6"
+      }
     },
     {
       "icon": "Tag",
-      "label": "Kategori",
-      "value": "6"
+      "label": {
+        "id": "Kategori",
+        "en": "Categories"
+      },
+      "value": {
+        "id": "6",
+        "en": "6"
+      }
     },
     {
       "icon": "CalendarRange",
-      "label": "Tahun",
-      "value": "2024 – 2025"
+      "label": {
+        "id": "Tahun",
+        "en": "Years"
+      },
+      "value": {
+        "id": "2024 – 2025",
+        "en": "2024 – 2025"
+      }
     },
     {
       "icon": "Code2",
-      "label": "Tech",
-      "value": "8"
+      "label": {
+        "id": "Tech",
+        "en": "Tech"
+      },
+      "value": {
+        "id": "8",
+        "en": "8"
+      }
     }
   ],
   "faqs": [
     {
-      "q": "Apakah Anda menerima project freelance?",
-      "a": "Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak."
+      "q": {
+        "id": "Apakah Anda menerima project freelance?",
+        "en": "Do you take freelance projects?"
+      },
+      "a": {
+        "id": "Ya, saya terbuka untuk project freelance dan kolaborasi. Waktu respons biasanya cepat — silakan kirim detail kebutuhan Anda melalui form kontak.",
+        "en": "Yes, I'm open to freelance projects and collaborations. Response time is usually fast — feel free to send your requirements through the contact form."
+      }
     },
     {
-      "q": "Teknologi apa yang Anda kuasai?",
-      "a": "Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD."
+      "q": {
+        "id": "Teknologi apa yang Anda kuasai?",
+        "en": "What technologies do you work with?"
+      },
+      "a": {
+        "id": "Saya fokus pada ekosistem JavaScript: Nuxt.js, Vue.js, Node.js, dan Tailwind CSS. Saya juga terbiasa dengan berbagai tools seperti Docker, Git, dan CI/CD.",
+        "en": "I focus on the JavaScript ecosystem: Nuxt.js, Vue.js, Node.js, and Tailwind CSS. I'm also comfortable with tools like Docker, Git, and CI/CD."
+      }
     },
     {
-      "q": "Bagaimana proses kerja sama berlangsung?",
-      "a": "Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap."
+      "q": {
+        "id": "Bagaimana proses kerja sama berlangsung?",
+        "en": "How does the collaboration process work?"
+      },
+      "a": {
+        "id": "Prosesnya dimulai dari diskusi kebutuhan, estimasi, perencanaan, pengembangan, hingga testing dan deployment. Saya menjaga komunikasi yang jelas di setiap tahap.",
+        "en": "It starts with a requirements discussion, estimation, planning, development, and ends with testing and deployment. I keep communication clear at every stage."
+      }
     },
     {
-      "q": "Berapa lama waktu pengerjaan project?",
-      "a": "Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan."
+      "q": {
+        "id": "Berapa lama waktu pengerjaan project?",
+        "en": "How long does a project take?"
+      },
+      "a": {
+        "id": "Tergantung kompleksitas. Website landing biasanya 1–2 minggu, aplikasi web menengah 1–3 bulan. Estimasi detail diberikan setelah diskusi kebutuhan.",
+        "en": "It depends on complexity. Landing pages usually take 1–2 weeks, medium web apps 1–3 months. A detailed estimate is given after the requirements discussion."
+      }
     }
-  ]
+  ],
+  "seo": {
+    "home": {
+      "title": {
+        "id": "CehaDev — Portofolio Web Developer",
+        "en": "CehaDev — Web Developer Portfolio"
+      },
+      "description": {
+        "id": "Portofolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.",
+        "en": "CehaDev portfolio, a Web Developer & Tech Enthusiast based in Grobogan, Central Java. Building modern digital products with Nuxt.js, Vue.js, and Tailwind CSS."
+      }
+    },
+    "about": {
+      "title": {
+        "id": "Tentang | CehaDev",
+        "en": "About | CehaDev"
+      },
+      "description": {
+        "id": "Kenali lebih dekat CehaDev — Web Developer yang berfokus pada Nuxt.js, Vue.js, dan Node.js.",
+        "en": "Get to know CehaDev — a Web Developer focused on Nuxt.js, Vue.js, and Node.js."
+      }
+    },
+    "skills": {
+      "title": {
+        "id": "Keahlian | CehaDev",
+        "en": "Skills | CehaDev"
+      },
+      "description": {
+        "id": "Keahlian dan teknologi yang dikuasai CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, dan berbagai tools pengembangan lainnya.",
+        "en": "Skills and technologies mastered by CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, and various other development tools."
+      }
+    },
+    "projects": {
+      "title": {
+        "id": "Proyek | CehaDev",
+        "en": "Projects | CehaDev"
+      },
+      "description": {
+        "id": "Kumpulan project yang pernah dikerjakan CehaDev — dari web app, e-commerce, dashboard, hingga backend API.",
+        "en": "A collection of projects built by CehaDev — from web apps, e-commerce, dashboards, to backend APIs."
+      }
+    },
+    "contact": {
+      "title": {
+        "id": "Kontak | CehaDev",
+        "en": "Contact | CehaDev"
+      },
+      "description": {
+        "id": "Hubungi CehaDev untuk kolaborasi, project freelance, atau sekadar menyapa. Respons cepat dan terbuka untuk peluang kerja sama.",
+        "en": "Contact CehaDev for collaborations, freelance projects, or just to say hi. Fast responses and open to partnership opportunities."
+      }
+    },
+    "cv": {
+      "title": {
+        "id": "CV | CehaDev",
+        "en": "CV | CehaDev"
+      },
+      "description": {
+        "id": "Curriculum Vitae CehaDev — Web Developer & Tech Enthusiast.",
+        "en": "CehaDev's Curriculum Vitae — Web Developer & Tech Enthusiast."
+      }
+    }
+  },
+  "headings": {
+    "nav": {
+      "home": {
+        "id": "Beranda",
+        "en": "Home"
+      },
+      "about": {
+        "id": "Tentang",
+        "en": "About"
+      },
+      "projects": {
+        "id": "Proyek",
+        "en": "Projects"
+      },
+      "contact": {
+        "id": "Kontak",
+        "en": "Contact"
+      }
+    },
+    "home": {
+      "viewWork": {
+        "id": "Lihat Karya Saya",
+        "en": "View My Work"
+      },
+      "contactMe": {
+        "id": "Hubungi Saya",
+        "en": "Contact Me"
+      },
+      "openToWork": {
+        "id": "Terbuka untuk kerja",
+        "en": "Open to work"
+      },
+      "buildGreat": {
+        "id": "Mari bangun sesuatu yang hebat",
+        "en": "Let's build something great"
+      },
+      "viewProjectsBtn": {
+        "id": "Lihat project",
+        "en": "View projects"
+      },
+      "contactMeBtn": {
+        "id": "Hubungi saya",
+        "en": "Contact me"
+      },
+      "techMarqueeAria": {
+        "id": "Teknologi yang dikuasai",
+        "en": "Technologies I master"
+      },
+      "featuredWork": {
+        "id": "Karya Unggulan",
+        "en": "Featured Work"
+      },
+      "selectedHead1": {
+        "id": "Terpilih",
+        "en": "Selected"
+      },
+      "selectedHead2": {
+        "id": "Proyek",
+        "en": "Projects"
+      },
+      "featuredDesc": {
+        "id": "Beberapa project yang saya bangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.",
+        "en": "A selection of projects I built with a focus on quality, performance, and user experience."
+      },
+      "viewAllProjects": {
+        "id": "Lihat Semua Proyek",
+        "en": "View All Projects"
+      },
+      "ctaHead1": {
+        "id": "Punya ide?",
+        "en": "Have an idea?"
+      },
+      "ctaHead2": {
+        "id": "Mari wujudkan bersama.",
+        "en": "Let's build it together."
+      },
+      "ctaDesc": {
+        "id": "Saya selalu terbuka untuk kolaborasi, project freelance, atau sekadar diskusi seputar teknologi.",
+        "en": "I'm always open to collaborations, freelance projects, or just tech talk."
+      },
+      "startProject": {
+        "id": "Mulai Project",
+        "en": "Start a Project"
+      },
+      "downloadCv": {
+        "id": "Unduh CV",
+        "en": "Download CV"
+      }
+    },
+    "about": {
+      "downloadCv": {
+        "id": "Unduh CV",
+        "en": "Download CV"
+      },
+      "letsTalk": {
+        "id": "Mari Bicara",
+        "en": "Let's Talk"
+      },
+      "yearsShort": {
+        "id": "thn",
+        "en": "yrs"
+      },
+      "projectsShort": {
+        "id": "proyek",
+        "en": "projects"
+      },
+      "aboutLabel": {
+        "id": "01 · Tentang Saya",
+        "en": "01 · About Me"
+      },
+      "whyHead1": {
+        "id": "Mengapa saya suka",
+        "en": "Why I love"
+      },
+      "whyHead2": {
+        "id": "membangun untuk web",
+        "en": "building for the web"
+      },
+      "techLabel": {
+        "id": "02 · Tech Stack",
+        "en": "02 · Tech Stack"
+      },
+      "toolsHead1": {
+        "id": "Tools yang",
+        "en": "Tools I"
+      },
+      "toolsHead2": {
+        "id": "saya pakai",
+        "en": "work with"
+      },
+      "factLocation": {
+        "id": "Lokasi",
+        "en": "Location"
+      },
+      "factEmail": {
+        "id": "Email",
+        "en": "Email"
+      },
+      "factWebsite": {
+        "id": "Website",
+        "en": "Website"
+      },
+      "factPhone": {
+        "id": "Telepon",
+        "en": "Phone"
+      },
+      "otherCategory": {
+        "id": "Lainnya",
+        "en": "Others"
+      },
+      "levelAria": {
+        "id": "Tingkat {{name}}",
+        "en": "Level {{name}}"
+      }
+    },
+    "skills": {
+      "myHead1": {
+        "id": "Keahlian",
+        "en": "My"
+      },
+      "myHead2": {
+        "id": "Saya",
+        "en": "Skills"
+      },
+      "heroDesc": {
+        "id": "Berikut adalah teknologi dan tools yang saya kuasai untuk membangun aplikasi web modern — dari frontend yang interaktif hingga backend yang handal, serta tools yang mendukung alur kerja yang efisien.",
+        "en": "Here are the technologies and tools I use to build modern web applications — from interactive frontends to reliable backends, plus tools that support an efficient workflow."
+      },
+      "allSkills": {
+        "id": "Semua Skill",
+        "en": "All Skills"
+      },
+      "technicalSkills": {
+        "id": "Keahlian Teknis",
+        "en": "Technical Skills"
+      },
+      "skillsSummary": {
+        "id": "Ringkasan Skill",
+        "en": "Skills Summary"
+      },
+      "toolsOthers": {
+        "id": "Tools & Lainnya",
+        "en": "Tools & Others"
+      },
+      "softSkills": {
+        "id": "Soft Skills",
+        "en": "Soft Skills"
+      },
+      "emptyCategory": {
+        "id": "Belum ada skill pada kategori ini.",
+        "en": "No skills in this category yet."
+      },
+      "wantWork": {
+        "id": "Mau bekerja sama?",
+        "en": "Want to work together?"
+      },
+      "contactMe": {
+        "id": "Hubungi Saya",
+        "en": "Contact Me"
+      },
+      "filterAria": {
+        "id": "Filter kategori skill",
+        "en": "Filter skill categories"
+      }
+    },
+    "projects": {
+      "portfolio": {
+        "id": "Portofolio",
+        "en": "Portfolio"
+      },
+      "myHead1": {
+        "id": "Proyek",
+        "en": "My"
+      },
+      "myHead2": {
+        "id": "Saya",
+        "en": "Projects"
+      },
+      "heroDesc": {
+        "id": "Kumpulan project yang saya kerjakan — dari aplikasi web, e-commerce, dashboard, hingga backend API. Setiap project dibangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.",
+        "en": "A collection of projects I've worked on — from web apps, e-commerce, dashboards, to backend APIs. Every project is built with a focus on quality, performance, and user experience."
+      },
+      "statProject": {
+        "id": "Proyek",
+        "en": "Project"
+      },
+      "statCategory": {
+        "id": "Kategori",
+        "en": "Categories"
+      },
+      "statYear": {
+        "id": "Tahun",
+        "en": "Years"
+      },
+      "statTech": {
+        "id": "Tech",
+        "en": "Tech"
+      },
+      "allCategory": {
+        "id": "Semua",
+        "en": "All"
+      },
+      "filterAria": {
+        "id": "Filter kategori project",
+        "en": "Filter project categories"
+      },
+      "langTechTitle": {
+        "id": "Bahasa & Teknologi",
+        "en": "Languages & Technologies"
+      },
+      "langTechSub": {
+        "id": "Frekuensi pemakaian di seluruh project",
+        "en": "Usage frequency across all projects"
+      }
+    },
+    "projectDetail": {
+      "backToProjects": {
+        "id": "Kembali ke Projects",
+        "en": "Back to Projects"
+      },
+      "featured": {
+        "id": "Proyek Unggulan",
+        "en": "Featured Project"
+      },
+      "metaRole": {
+        "id": "Peran",
+        "en": "Role"
+      },
+      "metaYear": {
+        "id": "Tahun",
+        "en": "Year"
+      },
+      "metaDuration": {
+        "id": "Durasi",
+        "en": "Duration"
+      },
+      "metaCategory": {
+        "id": "Kategori",
+        "en": "Category"
+      },
+      "liveDemo": {
+        "id": "Live Demo",
+        "en": "Live Demo"
+      },
+      "viewGithub": {
+        "id": "Lihat di GitHub",
+        "en": "View on GitHub"
+      },
+      "tabOverview": {
+        "id": "Overview",
+        "en": "Overview"
+      },
+      "tabFeatures": {
+        "id": "Fitur",
+        "en": "Features"
+      },
+      "tabTech": {
+        "id": "Teknologi",
+        "en": "Technology"
+      },
+      "tabProcess": {
+        "id": "Proses",
+        "en": "Process"
+      },
+      "tabChallenges": {
+        "id": "Tantangan",
+        "en": "Challenges"
+      },
+      "tabResults": {
+        "id": "Hasil",
+        "en": "Results"
+      },
+      "tabGallery": {
+        "id": "Galeri",
+        "en": "Gallery"
+      },
+      "tabAria": {
+        "id": "Navigasi konten project",
+        "en": "Project content navigation"
+      },
+      "ctaHead": {
+        "id": "Tertarik untuk bekerja sama?",
+        "en": "Interested in working together?"
+      },
+      "ctaDesc": {
+        "id": "Punya ide atau project yang ingin diwujudkan? Mari diskusikan dan bangun sesuatu yang hebat bersama.",
+        "en": "Have an idea or a project in mind? Let's discuss and build something great together."
+      },
+      "contactMe": {
+        "id": "Hubungi Saya",
+        "en": "Contact Me"
+      },
+      "otherProjects": {
+        "id": "Lihat Project Lainnya",
+        "en": "View Other Projects"
+      },
+      "notFound": {
+        "id": "Project tidak ditemukan",
+        "en": "Project not found"
+      }
+    },
+    "contact": {
+      "letsWork": {
+        "id": "Mari bekerja sama",
+        "en": "Let's work together"
+      },
+      "getIn1": {
+        "id": "Mari",
+        "en": "Get In"
+      },
+      "getIn2": {
+        "id": "Terhubung",
+        "en": "Touch"
+      },
+      "heroDesc": {
+        "id": "Ada pertanyaan, ide, atau project yang ingin dikerjakan? Saya selalu senang berdiskusi tentang teknologi dan peluang baru.",
+        "en": "Have a question, an idea, or a project to work on? I always enjoy discussing technology and new opportunities."
+      },
+      "available": {
+        "id": "Terbuka untuk project baru",
+        "en": "Available for new projects"
+      },
+      "contactEmail": {
+        "id": "Email",
+        "en": "Email"
+      },
+      "contactPhone": {
+        "id": "Telepon",
+        "en": "Phone"
+      },
+      "contactLocation": {
+        "id": "Lokasi",
+        "en": "Location"
+      }
+    },
+    "cv": {
+      "backHome": {
+        "id": "Kembali ke Beranda",
+        "en": "Back to Home"
+      },
+      "printPdf": {
+        "id": "Cetak / Simpan PDF",
+        "en": "Print / Save PDF"
+      },
+      "downloadPdf": {
+        "id": "Unduh PDF",
+        "en": "Download PDF"
+      },
+      "sideContact": {
+        "id": "Kontak",
+        "en": "Contact"
+      },
+      "sideSkills": {
+        "id": "Keahlian",
+        "en": "Skills"
+      },
+      "sideLanguages": {
+        "id": "Bahasa",
+        "en": "Languages"
+      },
+      "sideCerts": {
+        "id": "Sertifikasi",
+        "en": "Certifications"
+      },
+      "mainProfile": {
+        "id": "Profil",
+        "en": "Profile"
+      },
+      "mainExperience": {
+        "id": "Pengalaman Kerja",
+        "en": "Work Experience"
+      },
+      "mainEducation": {
+        "id": "Pendidikan",
+        "en": "Education"
+      },
+      "photoAlt": {
+        "id": "Foto {{name}}",
+        "en": "Photo of {{name}}"
+      },
+      "preparing": {
+        "id": "CV sedang disiapkan.",
+        "en": "CV is being prepared."
+      }
+    }
+  }
 }

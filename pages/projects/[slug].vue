@@ -10,6 +10,10 @@ const route = useRoute()
 const { viewsOf, formatCount } = useStats()
 
 const { data: projects } = await useProjectsContent()
+const { data: site } = await useSiteSettings()
+const { t } = useI18n()
+const headings = computed(() => site.value?.headings?.projectDetail ?? {})
+
 const project = computed(() => (projects.value ?? []).find((p) => p.slug === route.params.slug))
 
 useSeoMeta({
@@ -18,10 +22,20 @@ useSeoMeta({
 })
 
 if (!project.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Project tidak ditemukan', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: headings.value.notFound ?? 'Project tidak ditemukan', fatal: true })
 }
 
 const detail = computed(() => project.value?.detail as Record<string, unknown> | undefined)
+
+const tabLabels = computed<Record<string, string>>(() => ({
+  Overview: headings.value.tabOverview ?? 'Overview',
+  Fitur: headings.value.tabFeatures ?? 'Fitur',
+  Teknologi: headings.value.tabTech ?? 'Teknologi',
+  Proses: headings.value.tabProcess ?? 'Proses',
+  Tantangan: headings.value.tabChallenges ?? 'Tantangan',
+  Hasil: headings.value.tabResults ?? 'Hasil',
+  Galeri: headings.value.tabGallery ?? 'Galeri'
+}))
 
 const tabDefs = [
   { key: 'Overview', has: () => true },
@@ -37,10 +51,10 @@ const tabs = computed(() => tabDefs.filter((t) => t.has()).map((t) => t.key))
 const activeTab = ref<(typeof tabDefs)[number]['key']>('Overview')
 
 const metaItems = computed(() => [
-  { icon: Monitor, label: 'Peran', value: project.value?.role },
-  { icon: Calendar, label: 'Tahun', value: project.value?.year },
-  { icon: Clock3, label: 'Durasi', value: project.value?.duration },
-  { icon: FolderKanban, label: 'Kategori', value: project.value?.category }
+  { icon: Monitor, label: headings.value.metaRole ?? 'Peran', value: project.value?.role },
+  { icon: Calendar, label: headings.value.metaYear ?? 'Tahun', value: project.value?.year },
+  { icon: Clock3, label: headings.value.metaDuration ?? 'Durasi', value: project.value?.duration },
+  { icon: FolderKanban, label: headings.value.metaCategory ?? 'Kategori', value: project.value?.category }
 ])
 
 const featureIcons = {
@@ -59,7 +73,7 @@ const gallery = computed(() => {
   <div v-if="project" class="container-site py-12 md:py-16">
     <NuxtLink to="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-text">
       <ArrowLeft :size="16" :stroke-width="2" />
-      Kembali ke Projects
+      {{ headings.backToProjects ?? 'Kembali ke Projects' }}
     </NuxtLink>
 
     <!-- HEADER -->
@@ -67,11 +81,11 @@ const gallery = computed(() => {
       <div>
         <span v-if="project.featured" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400">
           <Star :size="12" :stroke-width="2" class="fill-amber-400" />
-          Featured Project
+          {{ headings.featured ?? 'Featured Project' }}
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-text-secondary">
           <Eye :size="12" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-          {{ formatCount(viewsOf(project.slug)) }} kali dilihat
+          {{ formatCount(viewsOf(project.slug)) }} {{ t('common.viewed') }}
         </span>
         <h1 class="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">{{ project.title }}</h1>
         <p class="mt-3 max-w-xl text-[15px] leading-relaxed text-text-secondary">{{ project.tagline }}</p>
@@ -94,12 +108,12 @@ const gallery = computed(() => {
 
         <div class="mt-8 flex flex-wrap gap-4">
           <a :href="project.liveUrl" target="_blank" rel="noopener noreferrer" class="btn-primary">
-            Live Demo
+            {{ headings.liveDemo ?? 'Live Demo' }}
             <ExternalLink :size="16" :stroke-width="2" />
           </a>
           <a :href="project.githubUrl" target="_blank" rel="noopener noreferrer" class="btn-outline">
             <Github :size="16" :stroke-width="1.5" />
-            View on GitHub
+            {{ headings.viewGithub ?? 'View on GitHub' }}
           </a>
         </div>
       </div>
@@ -119,7 +133,7 @@ const gallery = computed(() => {
 
     <!-- TABS -->
     <section class="mt-14">
-      <div class="flex gap-1 overflow-x-auto border-b border-border pb-px" role="tablist" aria-label="Navigasi konten project">
+      <div class="flex gap-1 overflow-x-auto border-b border-border pb-px" role="tablist" :aria-label="headings.tabAria ?? 'Navigasi konten project'">
         <button
           v-for="tab in tabs"
           :key="tab"
@@ -131,7 +145,7 @@ const gallery = computed(() => {
           :class="activeTab === tab ? 'text-text' : 'text-text-muted hover:text-text-secondary'"
           @click="activeTab = tab"
         >
-          {{ tab }}
+          {{ tabLabels[tab] }}
           <span
             v-if="activeTab === tab"
             class="absolute inset-x-3 -bottom-px h-0.5 bg-gradient-brand rounded-full"
@@ -276,13 +290,13 @@ const gallery = computed(() => {
 
     <!-- CTA -->
     <section class="mt-16 rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 via-primary/5 to-blue/10 p-8 text-center md:p-12">
-      <h2 class="text-2xl font-extrabold text-text md:text-3xl">Tertarik untuk bekerja sama?</h2>
+      <h2 class="text-2xl font-extrabold text-text md:text-3xl">{{ headings.ctaHead ?? 'Tertarik untuk bekerja sama?' }}</h2>
       <p class="mx-auto mt-3 max-w-md text-[15px] text-text-secondary">
-        Punya ide atau project yang ingin diwujudkan? Mari diskusikan dan bangun sesuatu yang hebat bersama.
+        {{ headings.ctaDesc ?? 'Punya ide atau project yang ingin diwujudkan? Mari diskusikan dan bangun sesuatu yang hebat bersama.' }}
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-4">
-        <NuxtLink to="/contact" class="btn-primary">Hubungi Saya</NuxtLink>
-        <NuxtLink to="/projects" class="btn-outline">Lihat Project Lainnya</NuxtLink>
+        <NuxtLink to="/contact" class="btn-primary">{{ headings.contactMe ?? 'Hubungi Saya' }}</NuxtLink>
+        <NuxtLink to="/projects" class="btn-outline">{{ headings.otherProjects ?? 'Lihat Project Lainnya' }}</NuxtLink>
       </div>
     </section>
   </div>

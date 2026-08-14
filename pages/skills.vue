@@ -2,10 +2,14 @@
 import { Code2, TerminalSquare, Globe2, Clock, FolderGit2, GraduationCap } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
+const { data: site } = await useSiteSettings()
+
 useSeoMeta({
-  title: 'Skills | CehaDev',
-  description: 'Keahlian dan teknologi yang dikuasai CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, dan berbagai tools pengembangan lainnya.'
+  title: () => site.value?.seo?.skills?.title ?? 'Skills | CehaDev',
+  description: () => site.value?.seo?.skills?.description ?? 'Keahlian dan teknologi yang dikuasai CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, dan berbagai tools pengembangan lainnya.'
 })
+
+const headings = computed(() => site.value?.headings?.skills ?? {})
 
 const { data: skills } = await useSkillsContent()
 
@@ -61,10 +65,10 @@ const floatingBoxes = [
     <section class="grid min-h-[calc(100vh-76px)] items-center gap-12 lg:grid-cols-[55fr_45fr]">
       <Reveal>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight md:text-5xl">
-          My <span class="bg-gradient-brand bg-clip-text text-transparent">Skills</span>
+          {{ headings.myHead1 ?? 'My' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.myHead2 ?? 'Skills' }}</span>
         </h1>
         <p class="mt-5 max-w-xl text-[15px] leading-relaxed text-text-secondary">
-          Berikut adalah teknologi dan tools yang saya kuasai untuk membangun aplikasi web modern — dari frontend yang interaktif hingga backend yang handal, serta tools yang mendukung alur kerja yang efisien.
+          {{ headings.heroDesc ?? 'Berikut adalah teknologi dan tools yang saya kuasai untuk membangun aplikasi web modern — dari frontend yang interaktif hingga backend yang handal, serta tools yang mendukung alur kerja yang efisien.' }}
         </p>
       </Reveal>
 
@@ -85,7 +89,7 @@ const floatingBoxes = [
     </section>
 
     <!-- TABS KATEGORI -->
-    <div class="mt-14 flex flex-wrap gap-2.5" role="tablist" aria-label="Filter kategori skill">
+    <div class="mt-14 flex flex-wrap gap-2.5" role="tablist" :aria-label="headings.filterAria ?? 'Filter kategori skill'">
       <button
         v-for="cat in categories"
         :key="cat"
@@ -98,7 +102,7 @@ const floatingBoxes = [
           : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
         @click="activeCat = cat"
       >
-        {{ cat === 'all' ? 'All Skills' : cat }}
+        {{ cat === 'all' ? (headings.allSkills ?? 'All Skills') : cat }}
       </button>
     </div>
 
@@ -107,7 +111,7 @@ const floatingBoxes = [
       <!-- Kolom kiri: Technical Skills + Banner -->
       <div class="space-y-6">
         <Reveal class="card p-7">
-          <h2 class="section-label"><span class="dot" aria-hidden="true" /> Technical Skills</h2>
+          <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.technicalSkills ?? 'Technical Skills' }}</h2>
 
           <div v-if="activeCat === 'all'" class="mt-6 space-y-8">
             <div v-for="[cat, items] in groups" :key="cat">
@@ -168,20 +172,20 @@ const floatingBoxes = [
           </div>
 
           <p v-if="!filteredSkills.length" class="mt-6 rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-text-muted">
-            Belum ada skill pada kategori ini.
+            {{ headings.emptyCategory ?? 'Belum ada skill pada kategori ini.' }}
           </p>
         </Reveal>
 
         <Reveal class="flex flex-col items-center justify-between gap-4 rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 to-blue/10 p-6 sm:flex-row" :delay="100">
-          <p class="text-center font-semibold text-text sm:text-left">Want to work together?</p>
-          <NuxtLink to="/contact" class="btn-primary shrink-0 !py-2.5">Contact Me</NuxtLink>
+          <p class="text-center font-semibold text-text sm:text-left">{{ headings.wantWork ?? 'Want to work together?' }}</p>
+          <NuxtLink to="/contact" class="btn-primary shrink-0 !py-2.5">{{ headings.contactMe ?? 'Contact Me' }}</NuxtLink>
         </Reveal>
       </div>
 
       <!-- Kolom kanan -->
       <div class="space-y-6">
         <Reveal class="card p-6">
-          <h2 class="section-label"><span class="dot" aria-hidden="true" /> Skills Summary</h2>
+          <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.skillsSummary ?? 'Skills Summary' }}</h2>
           <div class="mt-5 grid grid-cols-2 gap-4">
             <div v-for="s in skills?.skillsSummary ?? []" :key="s.label" class="rounded-card border border-border bg-bg p-4">
               <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
@@ -194,7 +198,7 @@ const floatingBoxes = [
         </Reveal>
 
         <Reveal class="card p-6" :delay="80">
-          <h2 class="section-label"><span class="dot" aria-hidden="true" /> Tools &amp; Others</h2>
+          <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.toolsOthers ?? 'Tools & Others' }}</h2>
           <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div
               v-for="tool in skills?.toolsList ?? []"
@@ -210,7 +214,7 @@ const floatingBoxes = [
         </Reveal>
 
         <Reveal class="card p-6" :delay="160">
-          <h2 class="section-label"><span class="dot" aria-hidden="true" /> Soft Skills</h2>
+          <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.softSkills ?? 'Soft Skills' }}</h2>
           <div class="mt-5 flex flex-wrap gap-2">
             <span
               v-for="soft in skills?.softSkills ?? []"

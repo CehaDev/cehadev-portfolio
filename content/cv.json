@@ -1,66 +1,84 @@
 {
   "fullName": "CehaDev",
-  "title": "Web Developer & Tech Enthusiast",
+  "title": {
+    "id": "Web Developer & Tech Enthusiast",
+    "en": "Web Developer & Tech Enthusiast"
+  },
   "photo": "/ch.png",
   "email": "hello@cehadev.id",
   "phone": "+62 812-3456-7890",
-  "location": "Wirosari, Grobogan, Jawa Tengah",
+  "location": {
+    "id": "Wirosari, Grobogan, Jawa Tengah",
+    "en": "Wirosari, Grobogan, Central Java"
+  },
   "website": "cehadev.id",
   "linkedin": "https://linkedin.com/in/cehadev",
   "github": "https://github.com/cehadev",
-  "summary": "Web developer bersemangat yang membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+  "summary": {
+    "id": "Web developer bersemangat yang membantu mengubah ide menjadi produk digital yang cepat, modern, dan menyenangkan untuk digunakan. Fokus pada pengembangan web dengan Nuxt.js, Vue.js, dan Node.js.",
+    "en": "A passionate web developer who helps turn ideas into fast, modern, and enjoyable digital products. Focused on web development with Nuxt.js, Vue.js, and Node.js."
+  },
   "experiences": [
     {
-      "role": "Web Developer",
-      "company": "Freelance / Personal Projects",
-      "period": "2024 — Sekarang",
-      "description": "Membangun aplikasi web modern dari nol hingga produksi: landing page, dashboard, hingga e-commerce. Menangani frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js."
+      "role": { "id": "Web Developer", "en": "Web Developer" },
+      "company": { "id": "Freelance / Personal Projects", "en": "Freelance / Personal Projects" },
+      "period": { "id": "2024 — Sekarang", "en": "2024 — Present" },
+      "description": {
+        "id": "Membangun aplikasi web modern dari nol hingga produksi: landing page, dashboard, hingga e-commerce. Menangani frontend dan backend menggunakan Nuxt.js, Vue.js, dan Node.js.",
+        "en": "Building modern web applications from scratch to production: landing pages, dashboards, and e-commerce. Handling frontend and backend with Nuxt.js, Vue.js, and Node.js."
+      }
     },
     {
-      "role": "Junior Developer",
-      "company": "Tech Community & Open Source",
-      "period": "2023 — 2024",
-      "description": "Berkontribusi pada project open source, belajar best practice pengembangan web, dan berkolaborasi dengan developer lain dalam membangun tools digital."
+      "role": { "id": "Junior Developer", "en": "Junior Developer" },
+      "company": { "id": "Tech Community & Open Source", "en": "Tech Community & Open Source" },
+      "period": { "id": "2023 — 2024", "en": "2023 — 2024" },
+      "description": {
+        "id": "Berkontribusi pada project open source, belajar best practice pengembangan web, dan berkolaborasi dengan developer lain dalam membangun tools digital.",
+        "en": "Contributing to open source projects, learning web development best practices, and collaborating with other developers to build digital tools."
+      }
     }
   ],
   "education": [
     {
-      "degree": "Ilmu Komputer / Teknik Informatika",
-      "school": "Universitas di Jawa Tengah",
-      "period": "2022 — Sekarang",
-      "description": "Fokus pada rekayasa perangkat lunak, struktur data, dan pengembangan aplikasi web."
+      "degree": { "id": "Ilmu Komputer / Teknik Informatika", "en": "Computer Science / Informatics Engineering" },
+      "school": { "id": "Universitas di Jawa Tengah", "en": "University in Central Java" },
+      "period": { "id": "2022 — Sekarang", "en": "2022 — Present" },
+      "description": {
+        "id": "Fokus pada rekayasa perangkat lunak, struktur data, dan pengembangan aplikasi web.",
+        "en": "Focused on software engineering, data structures, and web application development."
+      }
     }
   ],
   "skills": [
-    "Nuxt.js",
-    "Vue.js",
-    "Node.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "JavaScript",
-    "Git",
-    "Docker"
+    { "id": "Nuxt.js", "en": "Nuxt.js" },
+    { "id": "Vue.js", "en": "Vue.js" },
+    { "id": "Node.js", "en": "Node.js" },
+    { "id": "TypeScript", "en": "TypeScript" },
+    { "id": "Tailwind CSS", "en": "Tailwind CSS" },
+    { "id": "JavaScript", "en": "JavaScript" },
+    { "id": "Git", "en": "Git" },
+    { "id": "Docker", "en": "Docker" }
   ],
   "languages": [
     {
-      "name": "Indonesia",
-      "level": "Native"
+      "name": { "id": "Indonesia", "en": "Indonesian" },
+      "level": { "id": "Penutur Asli", "en": "Native" }
     },
     {
-      "name": "English",
-      "level": "Professional"
+      "name": { "id": "Inggris", "en": "English" },
+      "level": { "id": "Profesional", "en": "Professional" }
     }
   ],
   "certifications": [
     {
-      "name": "Full-Stack Web Development",
-      "issuer": "Online Learning Platform",
-      "year": "2023"
+      "name": { "id": "Full-Stack Web Development", "en": "Full-Stack Web Development" },
+      "issuer": { "id": "Platform Belajar Online", "en": "Online Learning Platform" },
+      "year": { "id": "2023", "en": "2023" }
     },
     {
-      "name": "JavaScript & TypeScript Fundamentals",
-      "issuer": "Online Learning Platform",
-      "year": "2022"
+      "name": { "id": "Dasar JavaScript & TypeScript", "en": "JavaScript & TypeScript Fundamentals" },
+      "issuer": { "id": "Platform Belajar Online", "en": "Online Learning Platform" },
+      "year": { "id": "2022", "en": "2022" }
     }
   ]
 }

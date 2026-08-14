@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createError } from 'h3'
+import { normalizeLS, normalizeLSArray, normalizeLSObject } from './ls'
 
 const cvFile = path.resolve(process.cwd(), 'content/cv.json')
 
@@ -20,31 +21,21 @@ export function normalizeCv(body: Record<string, unknown>) {
   const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
   const arr = (v: unknown) => (Array.isArray(v) ? v : [])
 
-  const item = (v: unknown, keys: string[]) => {
-    if (!Array.isArray(v)) return []
-    return v.map((x) => {
-      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-      const out: Record<string, string> = {}
-      for (const k of keys) out[k] = str(o[k])
-      return out
-    })
-  }
-
   return {
     fullName: str(body.fullName),
-    title: str(body.title),
+    title: normalizeLS(body.title),
     photo: str(body.photo),
     email: str(body.email),
     phone: str(body.phone),
-    location: str(body.location),
+    location: normalizeLS(body.location),
     website: str(body.website),
     linkedin: str(body.linkedin),
     github: str(body.github),
-    summary: str(body.summary),
-    experiences: item(body.experiences, ['role', 'company', 'period', 'description']),
-    education: item(body.education, ['degree', 'school', 'period', 'description']),
-    skills: arr(body.skills).map((s) => str(s)).filter(Boolean),
-    languages: item(body.languages, ['name', 'level']),
-    certifications: item(body.certifications, ['name', 'issuer', 'year'])
+    summary: normalizeLS(body.summary),
+    experiences: normalizeLSObject(body.experiences, ['role', 'company', 'period', 'description']),
+    education: normalizeLSObject(body.education, ['degree', 'school', 'period', 'description']),
+    skills: normalizeLSArray(body.skills),
+    languages: normalizeLSObject(body.languages, ['name', 'level']),
+    certifications: normalizeLSObject(body.certifications, ['name', 'issuer', 'year'])
   }
 }
