@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag } from 'lucide-vue-next'
+import { Inbox, Mail, Trash2, MailOpen, LoaderCircle, User, Tag, Send, CheckCircle2, XCircle } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
   adminTitle: 'Messages'
 })
+
+interface MessageReply {
+  id: string
+  text: string
+  at: string
+  status: 'sent' | 'failed'
+  error: string
+}
 
 interface InboxMessage {
   id: string
@@ -15,6 +23,7 @@ interface InboxMessage {
   message: string
   read: boolean
   at: string
+  replies: MessageReply[]
 }
 
 const { data: messages, refresh } = await useAsyncData('admin-messages', () =>
@@ -24,6 +33,9 @@ const { data: messages, refresh } = await useAsyncData('admin-messages', () =>
 const activeId = ref<string | null>(null)
 const detail = ref<InboxMessage | null>(null)
 const busyDelete = ref(false)
+const replyText = ref('')
+const sending = ref(false)
+const replyNotice = ref('')
 
 const unreadCount = computed(() => messages.value?.filter((m) => !m.read).length ?? 0)
 
@@ -73,6 +85,32 @@ async function removeMessage(id: string) {
     await refresh()
   } finally {
     busyDelete.value = false
+  }
+}
+
+async function sendReply() {
+  if (!detail.value || !replyText.value.trim() || sending.value) return
+  sending.value = true
+  replyNotice.value = ''
+  try {
+    const { reply } = await $fetch<{ reply: MessageReply }>(`/api/admin/messages/${detail.value.id}`, {
+      method: 'POST',
+      body: { text: replyText.value }
+    })
+    detail.value.replies = [...(detail.value.replies ?? []), reply]
+    detail.value.read = true
+    replyText.value = ''
+    if (reply.status === 'sent') {
+      replyNotice.value = 'Balasan terkirim via email ke ' + detail.value.email
+    } else {
+      replyNotice.value = 'Balasan disimpan, tetapi email gagal terkirim: ' + (reply.error || 'SMTP belum dikonfigurasi')
+    }
+    await refresh()
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    replyNotice.value = 'Gagal mengirim balasan: ' + (err.data?.statusMessage ?? 'Terjadi kesalahan')
+  } finally {
+    sending.value = false
   }
 }
 
@@ -192,7 +230,65 @@ onMounted(() => {
         </div>
 
         <div class="flex-1 overflow-y-auto p-6">
-          <p class="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{{ detail.message }}</p>
+          <div class="rounded-2xl rounded-tl-sm border border-border bg-card px-4 py-3.5">
+            <p class="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{{ detail.message }}</p>
+            <p class="mt-2 text-right text-[10px] text-text-muted">{{ formatFull(detail.at) }} • {{ detail.name }}</p>
+          </div>
+
+          <div v-if="detail.replies?.length" class="mt-4 space-y-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Riwayat Balasan</p>
+            <div
+              v-for="r in detail.replies"
+              :key="r.id"
+              class="rounded-2xl rounded-tr-sm border border-primary/30 bg-primary/10 px-4 py-3.5"
+            >
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-primary">Balasan kamu</span>
+                <span
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                  :class="r.status === 'sent' ? 'border border-success/30 bg-success/10 text-success' : 'border border-red-500/30 bg-red-500/10 text-red-400'"
+                >
+                  <CheckCircle2 v-if="r.status === 'sent'" :size="10" :stroke-width="2" />
+                  <XCircle v-else :size="10" :stroke-width="2" />
+                  {{ r.status === 'sent' ? 'Terkirim' : 'Gagal' }}
+                </span>
+              </div>
+              <p class="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-text">{{ r.text }}</p>
+              <p v-if="r.error" class="mt-1.5 text-[11px] text-red-400">{{ r.error }}</p>
+              <p class="mt-1 text-right text-[10px] text-text-muted">{{ formatFull(r.at) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-border p-4">
+          <p
+            v-if="replyNotice"
+            class="mb-3 rounded-lg border px-4 py-2.5 text-xs font-medium"
+            :class="replyNotice.startsWith('Balasan terkirim')
+              ? 'border-success/30 bg-success/10 text-success'
+              : 'border-amber-400/30 bg-amber-400/10 text-amber-500'"
+            role="status"
+          >
+            {{ replyNotice }}
+          </p>
+          <div class="flex items-end gap-2.5">
+            <textarea
+              v-model="replyText"
+              rows="2"
+              class="input-field resize-none text-sm"
+              :placeholder="`Balas via email ke ${detail.email}...`"
+              @keydown.enter.exact.prevent="sendReply"
+            />
+            <button
+              type="button"
+              class="btn-primary flex h-11 w-11 shrink-0 items-center justify-center !rounded-xl !p-0"
+              :disabled="sending || !replyText.trim()"
+              :aria-label="'Kirim balasan email'"
+              @click="sendReply"
+            >
+              <Send :size="17" :stroke-width="2" :class="sending ? 'animate-pulse' : ''" />
+            </button>
+          </div>
         </div>
       </div>
 

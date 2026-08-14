@@ -3,6 +3,14 @@ import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { createError } from 'h3'
 
+export interface MessageReply {
+  id: string
+  text: string
+  at: string
+  status: 'sent' | 'failed'
+  error: string
+}
+
 export interface ContactMessage {
   id: string
   name: string
@@ -11,6 +19,7 @@ export interface ContactMessage {
   message: string
   read: boolean
   at: string
+  replies: MessageReply[]
 }
 
 interface MessageStore {
@@ -62,7 +71,16 @@ export async function addContactMessage(input: { name: string; email: string; su
   if (message.length < 10) throw createError({ statusCode: 400, statusMessage: 'Pesan minimal 10 karakter' })
 
   return mutate(async (store) => {
-    const item: ContactMessage = { id: randomUUID(), name, email, subject, message, read: false, at: new Date().toISOString() }
+    const item: ContactMessage = {
+      id: randomUUID(),
+      name,
+      email,
+      subject,
+      message,
+      read: false,
+      at: new Date().toISOString(),
+      replies: []
+    }
     store.messages.push(item)
     return { id: item.id, at: item.at }
   })
@@ -78,7 +96,8 @@ export async function listMessages() {
       subject: m.subject,
       message: m.message,
       read: m.read,
-      at: m.at
+      at: m.at,
+      replies: Array.isArray(m.replies) ? m.replies : []
     }))
     .sort((a, b) => b.at.localeCompare(a.at))
 }
@@ -99,6 +118,36 @@ export async function markMessageRead(id: string) {
   })
 }
 
+export async function addMessageReply(id: string, text: string) {
+  const msg = await getMessage(id)
+  const clean = text.trim().slice(0, 5000)
+  if (!clean) throw createError({ statusCode: 400, statusMessage: 'Balasan tidak boleh kosong' })
+
+  let status: 'sent' | 'failed' = 'failed'
+  let error = ''
+  try {
+    await sendMail({
+      to: msg.email,
+      subject: `Re: ${msg.subject}`,
+      text: clean,
+      html: `<p>Halo <strong>${msg.name}</strong>,</p>\n<p>${clean.replace(/\n/g, '<br />')}</p>\n<br />\n<p>Salam,<br />${'CehaDev'}</p>`
+    })
+    status = 'sent'
+  } catch (e) {
+    error = e instanceof Error ? e.message : String(e)
+  }
+
+  return mutate(async (store) => {
+    const m = store.messages.find((x) => x.id === id)
+    if (!m) throw createError({ statusCode: 404, statusMessage: 'Pesan tidak ditemukan' })
+    if (!m.replies) m.replies = []
+    const reply: MessageReply = { id: randomUUID(), text: clean, at: new Date().toISOString(), status, error }
+    m.replies.push(reply)
+    m.read = true
+    return { reply }
+  })
+}
+
 export async function deleteMessage(id: string) {
   return mutate(async (store) => {
     const idx = store.messages.findIndex((m) => m.id === id)
@@ -111,4 +160,8 @@ export async function deleteMessage(id: string) {
 export async function countUnreadMessages() {
   const store = await readStore()
   return store.messages.filter((m) => !m.read).length
+}
+
+export async function messagesMailConfigured() {
+  return mailConfigured()
 }
