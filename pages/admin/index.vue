@@ -108,6 +108,31 @@ const topPageItems = computed(() =>
 )
 
 const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(b.year).localeCompare(String(a.year))).slice(0, 5))
+
+const demoBadges: Record<string, string> = {
+  store: 'Store',
+  kanban: 'Kanban',
+  dashboard: 'Dashboard',
+  api: 'API',
+  todo: 'Task',
+  code: 'Code',
+  studio: 'Studio'
+}
+
+function demoTypeOf(p: { demo?: { enabled?: boolean; type?: string } }): string | null {
+  const d = p.demo
+  if (!d?.enabled) return null
+  return (d.type && demoBadges[d.type]) || d.type || null
+}
+
+const avatarGradients = [
+  'from-violet-500 to-indigo-600',
+  'from-cyan-500 to-blue-600',
+  'from-emerald-500 to-lime-600',
+  'from-amber-500 to-rose-500',
+  'from-fuchsia-500 to-violet-600',
+  'from-teal-500 to-emerald-600'
+]
 </script>
 
 <template>
@@ -125,15 +150,21 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
           <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-text">Selamat datang kembali 👋</h2>
           <p class="mt-1.5 text-sm text-text-secondary">Pantau performa website, kelola project, dan balas pesan — semua dari sini.</p>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <NuxtLink to="/admin/cv" class="btn-outline !py-2.5">
-            <FileText :size="16" :stroke-width="2" />
-            Kelola CV
-          </NuxtLink>
-          <NuxtLink to="/admin/projects/new" class="btn-primary !py-2.5">
-            <Plus :size="16" :stroke-width="2" />
-            Tambah Project
-          </NuxtLink>
+        <div class="flex flex-wrap items-end gap-5">
+          <div class="flex flex-col items-center gap-1">
+            <NuxtLink to="/admin/cv" class="btn-outline !py-2.5">
+              <FileText :size="16" :stroke-width="2" />
+              Kelola CV
+            </NuxtLink>
+            <span class="text-[10px] text-text-muted">Perbarui CV & unduh</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <NuxtLink to="/admin/projects/new" class="btn-primary !py-2.5">
+              <Plus :size="16" :stroke-width="2" />
+              Tambah Project
+            </NuxtLink>
+            <span class="text-[10px] text-text-muted">Buat project baru</span>
+          </div>
         </div>
       </div>
     </div>
@@ -173,10 +204,13 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
           </h3>
           <p class="mt-1 text-xs text-text-muted">Garis solid = kunjungan, garis putus-putus = pengunjung unik</p>
         </div>
-        <NuxtLink to="/admin/analytics" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
-          Analytics Lengkap
-          <ArrowRight :size="15" :stroke-width="2" />
-        </NuxtLink>
+        <div class="flex flex-col items-end gap-1">
+          <NuxtLink to="/admin/analytics" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
+            Analytics Lengkap
+            <ArrowRight :size="15" :stroke-width="2" />
+          </NuxtLink>
+          <span class="text-[10px] text-text-muted">Detail grafik & metrik kunjungan</span>
+        </div>
       </div>
       <div class="mt-5">
         <AreaChart :labels="chartLabels" :values="chartViews" :secondary="chartVisitors" :height="230" />
@@ -208,87 +242,147 @@ const latest = computed(() => [...(projects.value ?? [])].sort((a, b) => String(
       </div>
     </div>
 
-    <!-- Project terbaru & pesan masuk -->
-    <div class="grid gap-6 lg:grid-cols-2">
-      <div class="card p-7">
-        <div class="flex items-center justify-between">
-          <h3 class="flex items-center gap-2 text-base font-bold text-text">
-            <Layers :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-            Project Terbaru
-          </h3>
-          <NuxtLink to="/admin/projects" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
-            Lihat Semua
-            <ArrowRight :size="15" :stroke-width="2" />
-          </NuxtLink>
-        </div>
-
-        <ul class="mt-5 divide-y divide-border/60">
-          <li v-for="p in latest" :key="p.slug" class="flex items-center justify-between gap-4 py-3.5">
-            <div class="min-w-0">
-              <div class="flex items-center gap-2.5">
-                <p class="truncate text-sm font-semibold text-text">{{ lsId(p.title) }}</p>
-                <span v-if="p.featured" class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
-                  <Star :size="10" :stroke-width="2" class="fill-amber-400" />
-                  Featured
-                </span>
-              </div>
-              <p class="mt-0.5 truncate text-xs text-text-muted">{{ lsId(p.category) }} • {{ p.year }} • {{ p.slug }}</p>
+    <!-- Project terbaru -->
+    <div class="card overflow-hidden p-0">
+      <div class="relative overflow-hidden border-b border-border px-7 py-6">
+        <div class="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-3xl" aria-hidden="true" />
+        <div class="relative flex flex-wrap items-center justify-between gap-5">
+          <div class="flex items-start gap-4">
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+              <Layers :size="22" :stroke-width="1.75" />
+            </span>
+            <div>
+              <h3 class="flex items-center gap-2 text-base font-bold text-text">
+                Project Terbaru
+                <span class="rounded-full border border-border bg-card px-2 py-0.5 font-mono text-[10px] text-text-muted">{{ latest.length }}</span>
+              </h3>
+              <p class="mt-1 text-xs text-text-muted">Tambah, ubah, dan pantau project terbaru Anda dari satu tempat.</p>
             </div>
-            <NuxtLink :to="`/admin/projects/${p.slug}`" class="btn-outline shrink-0 !px-4 !py-2 text-xs">Edit</NuxtLink>
-          </li>
-          <li v-if="!latest.length" class="py-8 text-center text-sm text-text-muted">
-            Belum ada project. Tambahkan project pertama Anda.
-          </li>
-        </ul>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <NuxtLink to="/admin/projects" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
+              Lihat Semua
+              <ArrowRight :size="15" :stroke-width="2" />
+            </NuxtLink>
+            <span class="text-[10px] text-text-muted">Kelola seluruh project</span>
+          </div>
+        </div>
       </div>
 
-      <div class="card p-7">
-        <div class="flex items-center justify-between">
-          <h3 class="flex items-center gap-2 text-base font-bold text-text">
-            <Mail :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-            Pesan Masuk
-            <span
-              v-if="unreadMessages.length > 0"
-              class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white"
-              aria-hidden="true"
-            >
-              {{ unreadMessages.length > 9 ? '9+' : unreadMessages.length }}
-            </span>
-          </h3>
+      <div class="hidden border-b border-border bg-card-alt/50 px-7 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-text-muted md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,220px)_minmax(0,180px)] md:gap-6">
+        <span>Project</span>
+        <span>Detail</span>
+        <span class="text-right">Aksi</span>
+      </div>
+
+      <ul class="divide-y divide-border/60">
+        <li v-for="(p, i) in latest" :key="p.slug" class="px-7 py-5 transition-colors hover:bg-card/40">
+          <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,220px)_minmax(0,180px)] md:items-center md:gap-6">
+            <div class="flex min-w-0 items-center gap-4">
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-sm font-extrabold text-white"
+                :class="avatarGradients[i % avatarGradients.length]"
+                aria-hidden="true"
+              >
+                {{ lsId(p.title).trim().charAt(0).toUpperCase() }}
+              </span>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <p class="truncate text-sm font-semibold text-text">{{ lsId(p.title) }}</p>
+                  <span v-if="p.featured" class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
+                    <Star :size="10" :stroke-width="2" class="fill-amber-400" />
+                    Featured
+                  </span>
+                </div>
+                <p class="mt-1 truncate text-xs text-text-muted">{{ lsId(p.category) }} • {{ p.year }}</p>
+              </div>
+            </div>
+
+            <div class="flex min-w-0 flex-wrap items-center gap-2 md:flex-col md:items-start md:gap-1.5">
+              <code class="truncate rounded-md border border-border bg-bg px-2 py-1 font-mono text-[10px] text-text-muted">{{ p.slug }}</code>
+              <span v-if="demoTypeOf(p)" class="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary">
+                Demo · {{ demoTypeOf(p) }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-start gap-5 md:justify-end">
+              <div class="flex flex-col items-center gap-1">
+                <NuxtLink :to="`/admin/projects/${p.slug}`" class="btn-outline shrink-0 !px-4 !py-2 text-xs">Edit</NuxtLink>
+                <span class="text-[9px] text-text-muted">Ubah isi & pengaturan</span>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <NuxtLink :to="`/projects/${p.slug}`" target="_blank" class="btn-outline shrink-0 !px-4 !py-2 text-xs">
+                  <Eye :size="13" :stroke-width="1.75" />
+                  Lihat
+                </NuxtLink>
+                <span class="text-[9px] text-text-muted">Buka halaman publik</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li v-if="!latest.length" class="px-7 py-10 text-center text-sm text-text-muted">
+          Belum ada project. Tambahkan project pertama Anda.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Pesan masuk -->
+    <div class="card p-7">
+      <div class="flex flex-wrap items-start justify-between gap-5">
+        <div class="flex items-start gap-3">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary" aria-hidden="true">
+            <Mail :size="18" :stroke-width="1.75" />
+          </span>
+          <div>
+            <h3 class="flex items-center gap-2 text-base font-bold text-text">
+              Pesan Masuk
+              <span
+                v-if="unreadMessages.length > 0"
+                class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white"
+                aria-hidden="true"
+              >
+                {{ unreadMessages.length > 9 ? '9+' : unreadMessages.length }}
+              </span>
+            </h3>
+            <p class="mt-1 text-xs text-text-muted">Pesan dari pengunjung via form kontak.</p>
+          </div>
+        </div>
+        <div class="flex flex-col items-end gap-1">
           <NuxtLink to="/admin/messages" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
             Buka Inbox
             <ArrowRight :size="15" :stroke-width="2" />
           </NuxtLink>
+          <span class="text-[10px] text-text-muted">Balas & kelola pesan</span>
         </div>
-
-        <ul v-if="recentMessages.length" class="mt-5 divide-y divide-border/60">
-          <li v-for="m in recentMessages" :key="m.id">
-            <NuxtLink
-              :to="`/admin/messages`"
-              class="flex items-center justify-between gap-4 py-3.5 transition-colors hover:bg-card"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                  :class="m.read ? 'bg-bg-alt text-text-muted' : 'bg-primary/15 text-primary'"
-                  aria-hidden="true"
-                >
-                  <Mail :size="15" :stroke-width="1.5" />
-                </span>
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-text">
-                    <span v-if="!m.read" class="mr-1.5 inline-block h-2 w-2 rounded-full bg-red-500 align-middle" aria-hidden="true" />
-                    {{ m.subject }}
-                  </p>
-                  <p class="mt-0.5 truncate text-xs text-text-muted">{{ m.name }} — {{ m.email }}</p>
-                </div>
-              </div>
-              <span class="shrink-0 text-[10px] text-text-muted">{{ messageTime(m.at) }}</span>
-            </NuxtLink>
-          </li>
-        </ul>
-        <EmptyState v-else title="Belum ada pesan masuk" desc="Pesan dari form kontak akan muncul di sini." />
       </div>
+
+      <ul v-if="recentMessages.length" class="mt-5 divide-y divide-border/60">
+        <li v-for="m in recentMessages" :key="m.id">
+          <NuxtLink
+            :to="`/admin/messages`"
+            class="flex items-center justify-between gap-4 py-3.5 transition-colors hover:bg-card"
+          >
+            <div class="flex min-w-0 items-center gap-3">
+              <span
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                :class="m.read ? 'bg-bg-alt text-text-muted' : 'bg-primary/15 text-primary'"
+                aria-hidden="true"
+              >
+                <Mail :size="15" :stroke-width="1.5" />
+              </span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-text">
+                  <span v-if="!m.read" class="mr-1.5 inline-block h-2 w-2 rounded-full bg-red-500 align-middle" aria-hidden="true" />
+                  {{ m.subject }}
+                </p>
+                <p class="mt-0.5 truncate text-xs text-text-muted">{{ m.name }} — {{ m.email }}</p>
+              </div>
+            </div>
+            <span class="shrink-0 text-[10px] text-text-muted">{{ messageTime(m.at) }}</span>
+          </NuxtLink>
+        </li>
+      </ul>
+      <EmptyState v-else title="Belum ada pesan masuk" desc="Pesan dari form kontak akan muncul di sini." />
     </div>
   </div>
 </template>
