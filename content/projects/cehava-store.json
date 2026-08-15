@@ -23,6 +23,18 @@
   "featured": true,
   "liveUrl": "https://cehava-store.example.com",
   "githubUrl": "https://github.com/cehadev/cehava-store",
+  "demo": {
+    "enabled": true,
+    "type": "store",
+    "title": {
+      "id": "Coba belanja di Cehava Store",
+      "en": "Try shopping on Cehava Store"
+    },
+    "note": {
+      "id": "Katalog, keranjang, dan checkout — semua berjalan di browser Anda.",
+      "en": "Catalog, cart, and checkout — all running in your browser."
+    }
+  },
   "detail": {
     "overview": {
       "id": "Cehava Store adalah aplikasi e-commerce yang dirancang untuk memberikan pengalaman belanja yang mulus dari katalog hingga checkout. Admin dapat mengelola produk, stok, kategori, dan pesanan melalui dashboard yang lengkap namun tetap mudah digunakan.\n\nDibangun dengan Nuxt 3 di sisi frontend dan Node.js di sisi backend, Cehava Store menekankan kecepatan pemuatan halaman dan alur pembelian yang intuitif. Semua data produk dan transaksi tersimpan di MySQL dengan struktur yang teroptimasi.",

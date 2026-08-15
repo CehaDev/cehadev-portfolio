@@ -23,6 +23,18 @@
   "featured": true,
   "liveUrl": "https://magerans.example.com",
   "githubUrl": "https://github.com/cehadev/magerans",
+  "demo": {
+    "enabled": true,
+    "type": "kanban",
+    "title": {
+      "id": "Coba Sprint Board Magerans",
+      "en": "Try the Magerans Sprint Board"
+    },
+    "note": {
+      "id": "Kelola tugas tim lewat kanban — berjalan penuh di browser.",
+      "en": "Manage team tasks on a kanban board — running in your browser."
+    }
+  },
   "detail": {
     "overview": {
       "id": "Magerans adalah platform kolaborasi yang dirancang untuk membantu tim kecil dan menengah bekerja bersama secara lebih terorganisir. Aplikasi ini menggabungkan manajemen project, komunikasi real-time, dan pelacakan tugas dalam satu dashboard yang intuitif dan responsif.\n\nDibangun dengan Nuxt 3 di sisi frontend dan Node.js di sisi backend, Magerans menghadirkan pengalaman yang cepat berkat SSR dan optimasi performa. Desainnya mengutamakan kejelasan, aksesibilitas, dan konsistensi di semua perangkat.",

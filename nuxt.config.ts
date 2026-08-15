@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
+  experimental: {
+    appManifest: false
+  },
   content: {
     experimental: {
       sqliteConnector: 'native'

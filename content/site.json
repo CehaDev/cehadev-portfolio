@@ -573,6 +573,14 @@
         "id": "Live Demo",
         "en": "Live Demo"
       },
+      "tryDemo": {
+        "id": "Coba Demo",
+        "en": "Try Demo"
+      },
+      "tabDemo": {
+        "id": "Demo Interaktif",
+        "en": "Interactive Demo"
+      },
       "viewGithub": {
         "id": "Lihat di GitHub",
         "en": "View on GitHub"
@@ -628,6 +636,44 @@
       "notFound": {
         "id": "Project tidak ditemukan",
         "en": "Project not found"
+      }
+    },
+    "demo": {
+      "title": {
+        "id": "Demo Interaktif",
+        "en": "Interactive Demo"
+      },
+      "note": {
+        "id": "Demo ini berjalan penuh di browser Anda — tanpa perlu server tambahan.",
+        "en": "This demo runs entirely in your browser — no extra server needed."
+      },
+      "runsOffline": {
+        "id": "Berjalan offline",
+        "en": "Runs offline"
+      },
+      "deviceAria": {
+        "id": "Mode tampilan demo",
+        "en": "Demo display mode"
+      },
+      "desktop": {
+        "id": "Desktop",
+        "en": "Desktop"
+      },
+      "mobile": {
+        "id": "HP",
+        "en": "Mobile"
+      },
+      "reset": {
+        "id": "Reset",
+        "en": "Reset"
+      },
+      "fullscreen": {
+        "id": "Layar Penuh",
+        "en": "Fullscreen"
+      },
+      "exitFullscreen": {
+        "id": "Keluar",
+        "en": "Exit"
       }
     },
     "contact": {

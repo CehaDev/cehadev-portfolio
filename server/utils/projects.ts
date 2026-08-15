@@ -101,6 +101,19 @@ export function normalizeProject(body: Record<string, unknown>) {
       })
       .filter((g) => g.label.id)
 
+  const demoRaw = body.demo && typeof body.demo === 'object' ? (body.demo as Record<string, unknown>) : undefined
+
+  let demo: Record<string, unknown> | undefined
+  if (demoRaw) {
+    demo = {
+      enabled: bool(demoRaw.enabled),
+      type: str(demoRaw.type),
+      title: normalizeLS(demoRaw.title),
+      note: normalizeLS(demoRaw.note)
+    }
+    if (!demo.enabled) demo = undefined
+  }
+
   const rawDetail = body.detail && typeof body.detail === 'object' ? (body.detail as Record<string, unknown>) : undefined
 
   let detail: Record<string, unknown> | undefined
@@ -132,6 +145,7 @@ export function normalizeProject(body: Record<string, unknown>) {
     archived: bool(body.archived),
     liveUrl: str(body.liveUrl),
     githubUrl: str(body.githubUrl),
+    ...(demo ? { demo } : {}),
     ...(detail ? { detail } : {})
   }
 }

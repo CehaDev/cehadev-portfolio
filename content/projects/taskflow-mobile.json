@@ -21,6 +21,18 @@
   "duration": { "id": "3 Bulan", "en": "3 Months" },
   "liveUrl": "https://taskflow.example.com",
   "githubUrl": "https://github.com/cehadev/taskflow",
+  "demo": {
+    "enabled": true,
+    "type": "todo",
+    "title": {
+      "id": "Coba TaskFlow Mobile",
+      "en": "Try TaskFlow Mobile"
+    },
+    "note": {
+      "id": "Manajemen tugas harian bergaya mobile, jalan di browser.",
+      "en": "A mobile-style daily task manager, running in your browser."
+    }
+  },
   "detail": {
     "overview": {
       "id": "TaskFlow Mobile adalah aplikasi mobile-first untuk mengelola tugas harian dengan cara yang ringan dan cepat. Dilengkapi notifikasi, tag prioritas, dan sinkronisasi cloud sehingga pengguna tetap produktif di mana pun berada.\n\nDibangun dengan Vue 3 yang dipaket untuk perangkat mobile dan Node.js di sisi backend, TaskFlow Mobile mengutamakan pengalaman pengguna yang mulus dengan navigasi berbasis gesture dan penyimpanan lokal yang cepat.",

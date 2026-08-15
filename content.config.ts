@@ -171,6 +171,14 @@ export const collections = {
       archived: z.boolean().optional(),
       liveUrl: z.string(),
       githubUrl: z.string(),
+      demo: z
+        .object({
+          enabled: z.boolean().optional(),
+          type: z.string().optional(),
+          title: L.optional(),
+          note: L.optional()
+        })
+        .optional(),
       detail: z
         .object({
           overview: L,

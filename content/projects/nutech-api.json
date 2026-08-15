@@ -21,6 +21,18 @@
   "duration": { "id": "2 Bulan", "en": "2 Months" },
   "liveUrl": "https://nutech-api.example.com",
   "githubUrl": "https://github.com/cehadev/nutech-api",
+  "demo": {
+    "enabled": true,
+    "type": "api",
+    "title": {
+      "id": "Coba konsol NuTech API",
+      "en": "Try the NuTech API console"
+    },
+    "note": {
+      "id": "Kirim request dan lihat respons mock — sepenuhnya di browser.",
+      "en": "Send requests and see mock responses — fully in your browser."
+    }
+  },
   "detail": {
     "overview": {
       "id": "NuTech API adalah REST API backend yang dibangun untuk menjadi fondasi aplikasi mobile maupun web. Dilengkapi autentikasi JWT, rate limiting, dokumentasi otomatis, dan struktur modular yang memudahkan pengembangan serta pemeliharaan.\n\nDitulis menggunakan Node.js dan TypeScript, NuTech API menerapkan pola repository dan middleware yang terisolasi sehingga setiap layanan mudah diuji dan diperluas. Semua data disimpan di MySQL dengan migrasi terkelola.",

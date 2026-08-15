@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  ArrowLeft, Star, ExternalLink, Github, Monitor, Calendar, Clock3, FolderKanban, Eye,
+  ArrowLeft, Star, ExternalLink, Github, Monitor, Calendar, Clock3, FolderKanban, Eye, Play,
   Search, LayoutDashboard, MessageSquare, ShieldCheck, Users, FolderCheck, Activity,
   Bug, Code2, ClipboardList, PenTool, Rocket, Bell
 } from 'lucide-vue-next'
@@ -27,7 +27,11 @@ if (!project.value) {
 
 const detail = computed(() => project.value?.detail as Record<string, unknown> | undefined)
 
+const demoConfig = computed(() => (project.value?.demo as { enabled?: boolean; type?: string; title?: string; note?: string } | undefined) ?? {})
+const demoEnabled = computed(() => Boolean(demoConfig.value.enabled))
+
 const tabLabels = computed<Record<string, string>>(() => ({
+  Demo: headings.value.tabDemo ?? 'Demo Interaktif',
   Overview: headings.value.tabOverview ?? 'Overview',
   Fitur: headings.value.tabFeatures ?? 'Fitur',
   Teknologi: headings.value.tabTech ?? 'Teknologi',
@@ -38,6 +42,7 @@ const tabLabels = computed<Record<string, string>>(() => ({
 }))
 
 const tabDefs = [
+  { key: 'Demo', has: () => demoEnabled.value },
   { key: 'Overview', has: () => true },
   { key: 'Fitur', has: () => Boolean(detail.value?.mainFeatures) },
   { key: 'Teknologi', has: () => Boolean(detail.value?.techStack) },
@@ -67,6 +72,19 @@ const gallery = computed(() => {
   const g = detail.value?.gallery as Array<{ label: string; seed: number }> | undefined
   return g?.length ? g : [{ label: project.value?.title ?? 'Preview', seed: 1 }]
 })
+
+const externalLive = computed(() => {
+  const url = project.value?.liveUrl
+  return typeof url === 'string' && /^https?:\/\//.test(url) && !/example\.(com|org|net)/i.test(url)
+})
+
+function openDemo() {
+  activeTab.value = 'Demo'
+  nextTick(() => {
+    const el = document.getElementById('demo-panel')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
 </script>
 
 <template>
@@ -107,7 +125,16 @@ const gallery = computed(() => {
         </div>
 
         <div class="mt-8 flex flex-wrap gap-4">
-          <a :href="project.liveUrl" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          <button
+            v-if="demoEnabled"
+            type="button"
+            class="btn-primary"
+            @click="openDemo"
+          >
+            <Play :size="16" :stroke-width="2" />
+            {{ headings.tryDemo ?? 'Coba Demo' }}
+          </button>
+          <a v-if="externalLive" :href="project.liveUrl" target="_blank" rel="noopener noreferrer" class="btn-primary">
             {{ headings.liveDemo ?? 'Live Demo' }}
             <ExternalLink :size="16" :stroke-width="2" />
           </a>
@@ -155,8 +182,21 @@ const gallery = computed(() => {
       </div>
 
       <div class="mt-10">
+        <!-- DEMO -->
+        <div v-if="activeTab === 'Demo'" id="demo-panel" role="tabpanel">
+          <div class="rounded-card border border-primary/25 bg-gradient-to-r from-primary/10 via-primary/5 to-blue/10 p-6 md:p-8">
+            <DemoRunner
+              :type="demoConfig.type || 'store'"
+              :slug="project.slug"
+              :title="demoConfig.title"
+              :note="demoConfig.note"
+              :url="externalLive ? project.liveUrl : `/demo/${project.slug}`"
+            />
+          </div>
+        </div>
+
         <!-- OVERVIEW -->
-        <div v-if="activeTab === 'Overview'" id="panel-Overview" role="tabpanel">
+        <div v-else-if="activeTab === 'Overview'" id="panel-Overview" role="tabpanel">
           <div class="grid gap-10 lg:grid-cols-[1fr_1fr]">
             <div class="space-y-4 text-[15px] leading-relaxed text-text-secondary">
               <template v-if="(detail?.overview as string | undefined)">

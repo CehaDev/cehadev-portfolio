@@ -22,6 +22,18 @@
   "featured": true,
   "liveUrl": "https://devboard.example.com",
   "githubUrl": "https://github.com/cehadev/devboard",
+  "demo": {
+    "enabled": true,
+    "type": "dashboard",
+    "title": {
+      "id": "Coba dashboard DevBoard",
+      "en": "Try the DevBoard dashboard"
+    },
+    "note": {
+      "id": "Metrik & grafik real-time yang disimulasikan di browser.",
+      "en": "Simulated real-time metrics and charts in your browser."
+    }
+  },
   "detail": {
     "overview": {
       "id": "DevBoard adalah dashboard analitik yang dirancang untuk developer dan tim dalam memantau performa aplikasi secara real-time. Data metrik pengguna, log sistem, dan penggunaan resource divisualisasikan dalam grafik yang interaktif dan mudah dipahami.\n\nDibangun dengan Vue 3 dan Node.js, DevBoard mengagregasi data dari berbagai sumber ke dalam satu tampilan terpadu. Desainnya mengutamakan keterbacaan data dan kecepatan respons saat menangani dataset yang besar.",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { LoaderCircle, Save, Plus, Trash2, Layers, ListChecks, GitBranch, Bug, BarChart3, Images } from 'lucide-vue-next'
+import { LoaderCircle, Save, Plus, Trash2, Layers, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 
 interface LS {
@@ -95,6 +95,22 @@ const detail = reactive<DetailState>({
   gallery: (initialDetail.gallery ?? []).map((g: any) => ({ label: ls(g?.label), seed: Number(g?.seed) || 1 }))
 })
 
+const initialDemo = props.initial?.demo ?? {}
+const demo = reactive({
+  enabled: Boolean(initialDemo.enabled),
+  type: str(initialDemo.type) || 'store',
+  title: ls(initialDemo.title),
+  note: ls(initialDemo.note)
+})
+
+const demoTypeOptions = [
+  { value: 'store', label: 'Toko Online (Cehava Store)', desc: 'Katalog, keranjang, & checkout' },
+  { value: 'kanban', label: 'Kanban Board (Magerans)', desc: 'Manajemen tugas tim' },
+  { value: 'dashboard', label: 'Dashboard Analitik (DevBoard)', desc: 'Metrik & grafik real-time' },
+  { value: 'api', label: 'API Playground (NuTech API)', desc: 'Konsol REST API interaktif' },
+  { value: 'todo', label: 'Task Manager (TaskFlow)', desc: 'Tugas harian gaya mobile' }
+]
+
 const techKeys = Object.keys(techIcons)
 const categoryOptions = ['Web App', 'E-Commerce', 'Dashboard', 'Mobile App', 'Backend API', 'Landing Page']
 const iconOptions = ['Search', 'LayoutDashboard', 'MessageSquare', 'ShieldCheck', 'FolderKanban', 'Star', 'Bell', 'Users', 'FolderCheck', 'Activity', 'Code2', 'ClipboardList', 'PenTool', 'Rocket', 'Bug']
@@ -185,6 +201,12 @@ function payload() {
     githubUrl: form.githubUrl.trim(),
     featured: form.featured,
     archived: form.archived,
+    demo: {
+      enabled: demo.enabled,
+      type: demo.type,
+      title: cleanLs(demo.title),
+      note: cleanLs(demo.note)
+    },
     tags: form.tags.map(cleanLs).filter(hasText),
     tech: form.tech,
     ...(hasDetail ? { detail: detailPayload } : {})
@@ -328,6 +350,50 @@ async function save() {
               <span class="absolute h-3.5 w-3.5 rounded-full bg-white transition-all" :class="form.archived ? 'left-[18px]' : 'left-1'" />
             </span>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-7">
+      <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <MonitorPlay :size="18" :stroke-width="1.75" class="text-primary" />
+          <h3 class="text-base font-bold text-text">Demo Interaktif</h3>
+        </div>
+        <button
+          id="pf-demo-enabled"
+          type="button"
+          role="switch"
+          :aria-checked="demo.enabled"
+          class="flex h-11 items-center gap-2 rounded-btn border px-4 text-sm font-medium transition-colors"
+          :class="demo.enabled ? 'border-success/60 bg-success/10 text-success' : 'border-border bg-bg text-text-secondary'"
+          @click="demo.enabled = !demo.enabled"
+        >
+          {{ demo.enabled ? 'Aktif' : 'Nonaktif' }}
+          <span class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors" :class="demo.enabled ? 'bg-success' : 'bg-border'">
+            <span class="absolute h-3.5 w-3.5 rounded-full bg-white transition-all" :class="demo.enabled ? 'left-[18px]' : 'left-1'" />
+          </span>
+        </button>
+      </div>
+      <p class="mb-5 text-xs text-text-muted">
+        Demo berjalan penuh di browser pengunjung (tanpa server tambahan). Aktifkan agar pengunjung bisa mencoba versi mini aplikasi langsung di halaman project.
+      </p>
+      <div class="grid gap-5 sm:grid-cols-2" :class="!demo.enabled ? 'pointer-events-none opacity-40' : ''">
+        <div class="sm:col-span-2">
+          <label for="pf-demo-type" class="mb-1.5 block text-sm font-medium text-text">Tipe Demo</label>
+          <select id="pf-demo-type" v-model="demo.type" class="input-field">
+            <option v-for="d in demoTypeOptions" :key="d.value" :value="d.value">
+              {{ d.label }} — {{ d.desc }}
+            </option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-text">Judul Demo (opsional)</label>
+          <LocaleInput v-model="demo.title" placeholder="Coba demo aplikasi ini" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-text">Catatan / Keterangan (opsional)</label>
+          <LocaleInput v-model="demo.note" placeholder="Demo berjalan penuh di browser Anda." />
         </div>
       </div>
     </div>
