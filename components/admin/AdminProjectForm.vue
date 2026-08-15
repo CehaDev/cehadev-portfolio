@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
-import { LoaderCircle, Save, Plus, Trash2, Layers, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay } from 'lucide-vue-next'
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { LoaderCircle, Save, Plus, Trash2, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 import { CODE_LANGS } from '~/utils/demoCode'
 import type { CodeFile } from '~/utils/demoCode'
@@ -131,6 +131,35 @@ const iconOptions = ['Search', 'LayoutDashboard', 'MessageSquare', 'ShieldCheck'
 
 const error = ref('')
 const saving = ref(false)
+
+const sectionNav = [
+  { id: 'pf-sec-basic', num: 1, label: 'Informasi Dasar' },
+  { id: 'pf-sec-meta', num: 2, label: 'Metadata & Status' },
+  { id: 'pf-sec-demo', num: 3, label: 'Demo Interaktif' },
+  { id: 'pf-sec-content', num: 4, label: 'Konten & Tech' },
+  { id: 'pf-sec-detail', num: 5, label: 'Detail Halaman' }
+] as const
+const activeSection = ref('pf-sec-basic')
+let observer: IntersectionObserver | null = null
+
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+      if (visible[0]) activeSection.value = visible[0].target.id
+    },
+    { rootMargin: '-12% 0px -68% 0px', threshold: [0, 0.1, 0.25, 0.5] }
+  )
+  sectionNav.forEach((s) => {
+    const el = document.getElementById(s.id)
+    if (el) observer!.observe(el)
+  })
+})
+onBeforeUnmount(() => observer?.disconnect())
 
 function cleanLs(v: LS): { id: string; en: string } {
   return { id: v.id.trim(), en: v.en.trim() }
@@ -279,13 +308,46 @@ async function save() {
 </script>
 
 <template>
-  <form class="space-y-8" novalidate @submit.prevent="save">
-    <div class="card p-7">
-      <div class="mb-5 flex items-center gap-2">
-        <Layers :size="16" :stroke-width="2" class="text-primary" />
-        <h3 class="text-base font-bold text-text">Informasi Dasar</h3>
+  <form novalidate @submit.prevent="save">
+    <div class="lg:grid lg:grid-cols-[230px_1fr] lg:items-start lg:gap-8">
+      <aside class="sticky top-24 mb-8 hidden lg:block" aria-label="Navigasi bagian form">
+        <nav class="card space-y-1 p-4">
+          <p class="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">Isi Project</p>
+          <button
+            v-for="s in sectionNav"
+            :key="s.id"
+            type="button"
+            class="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition-colors"
+            :class="activeSection === s.id ? 'bg-primary/15 text-primary' : 'text-text-secondary hover:bg-card hover:text-text'"
+            :aria-current="activeSection === s.id ? 'step' : undefined"
+            @click="scrollToSection(s.id)"
+          >
+            <span
+              class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
+              :class="activeSection === s.id ? 'bg-primary text-white' : 'bg-bg-alt text-text-muted'"
+              aria-hidden="true"
+            >{{ s.num }}</span>
+            {{ s.label }}
+          </button>
+          <div class="pt-2">
+            <button type="submit" class="btn-primary w-full !py-2.5" :disabled="saving">
+              <LoaderCircle v-if="saving" :size="15" class="animate-spin" />
+              <Save v-else :size="15" :stroke-width="2" />
+              {{ saving ? 'Menyimpan...' : 'Simpan Project' }}
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <div class="space-y-8">
+    <div id="pf-sec-basic" class="card scroll-mt-24 p-7">
+      <div class="mb-5 flex items-center gap-3">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary" aria-hidden="true">1</span>
+        <div>
+          <h3 class="text-base font-bold text-text">Informasi Dasar</h3>
+          <p class="mt-0.5 text-xs text-text-muted">Semua kolom teks dapat diisi dua bahasa. Kosongkan kolom EN agar otomatis memakai teks Indonesia.</p>
+        </div>
       </div>
-      <p class="mb-5 text-xs text-text-muted">Semua kolom teks dapat diisi dua bahasa. Kosongkan kolom EN agar otomatis memakai teks Indonesia.</p>
       <div class="grid gap-5 sm:grid-cols-2">
         <div>
           <label class="mb-1.5 block text-sm font-medium text-text">Judul Project</label>
@@ -306,8 +368,14 @@ async function save() {
       </div>
     </div>
 
-    <div class="card p-7">
-      <h3 class="mb-5 text-base font-bold text-text">Metadata</h3>
+    <div id="pf-sec-meta" class="card scroll-mt-24 p-7">
+      <div class="mb-5 flex items-center gap-3">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary" aria-hidden="true">2</span>
+        <div>
+          <h3 class="text-base font-bold text-text">Metadata &amp; Status</h3>
+          <p class="mt-0.5 text-xs text-text-muted">Kategori, tautan, dan status tampilan project.</p>
+        </div>
+      </div>
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label for="pf-cat" class="mb-1.5 block text-sm font-medium text-text">Kategori</label>
@@ -377,11 +445,14 @@ async function save() {
       </div>
     </div>
 
-    <div class="card p-7">
+    <div id="pf-sec-demo" class="card scroll-mt-24 p-7">
       <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-2">
-          <MonitorPlay :size="18" :stroke-width="1.75" class="text-primary" />
-          <h3 class="text-base font-bold text-text">Demo Interaktif</h3>
+        <div class="flex items-center gap-3">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary" aria-hidden="true">3</span>
+          <div class="flex items-center gap-2">
+            <MonitorPlay :size="18" :stroke-width="1.75" class="text-primary" />
+            <h3 class="text-base font-bold text-text">Demo Interaktif</h3>
+          </div>
         </div>
         <button
           id="pf-demo-enabled"
@@ -481,8 +552,14 @@ async function save() {
       </div>
     </div>
 
-    <div class="card p-7">
-      <h3 class="mb-5 text-base font-bold text-text">Konten</h3>
+    <div id="pf-sec-content" class="card scroll-mt-24 p-7">
+      <div class="mb-5 flex items-center gap-3">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary" aria-hidden="true">4</span>
+        <div>
+          <h3 class="text-base font-bold text-text">Konten &amp; Tech</h3>
+          <p class="mt-0.5 text-xs text-text-muted">Label project dan teknologi yang dipakai.</p>
+        </div>
+      </div>
       <div>
         <div class="mb-3 flex items-center justify-between">
           <p class="text-sm font-medium text-text">Tags (kategori / label project)</p>
@@ -526,14 +603,17 @@ async function save() {
       </div>
     </div>
 
-    <div class="card p-7">
-      <div class="mb-6 flex items-center justify-between gap-4">
-        <div>
-          <h3 class="flex items-center gap-2 text-base font-bold text-text">
-            <ListChecks :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
-            Konten Detail Halaman
-          </h3>
-          <p class="mt-1 text-sm text-text-secondary">Konten tab Overview, Fitur, Teknologi, Proses, Tantangan, Hasil, dan Galeri pada halaman detail project.</p>
+    <div id="pf-sec-detail" class="card scroll-mt-24 p-7">
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary" aria-hidden="true">5</span>
+          <div>
+            <h3 class="flex items-center gap-2 text-base font-bold text-text">
+              <ListChecks :size="18" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
+              Konten Detail Halaman
+            </h3>
+            <p class="mt-1 text-sm text-text-secondary">Konten tab Overview, Fitur, Teknologi, Proses, Tantangan, Hasil, dan Galeri pada halaman detail project.</p>
+          </div>
         </div>
       </div>
 
@@ -819,13 +899,15 @@ async function save() {
 
     <p v-if="error" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">{{ error }}</p>
 
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex flex-wrap items-center justify-end gap-3">
       <NuxtLink to="/admin/projects" class="btn-outline">Batal</NuxtLink>
       <button type="submit" class="btn-primary" :disabled="saving">
         <LoaderCircle v-if="saving" :size="16" class="animate-spin" />
         <Save v-else :size="16" :stroke-width="2" />
         {{ saving ? 'Menyimpan...' : 'Simpan Project' }}
       </button>
+    </div>
+      </div>
     </div>
   </form>
 </template>

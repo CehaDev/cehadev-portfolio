@@ -16,6 +16,21 @@ const tab = ref<'active' | 'archived'>('active')
 const busy = ref<string | null>(null)
 const confirmDelete = ref<string | null>(null)
 
+const demoBadges: Record<string, string> = {
+  store: 'Store',
+  kanban: 'Kanban',
+  dashboard: 'Dashboard',
+  api: 'API',
+  todo: 'Task',
+  code: 'Code'
+}
+
+function demoTypeOf(p: { demo?: { enabled?: boolean; type?: string } }): string | null {
+  const d = p.demo
+  if (!d?.enabled) return null
+  return (d.type && demoBadges[d.type]) || d.type || null
+}
+
 const activeProjects = computed(() => (projects.value ?? []).filter((p) => !p.archived))
 const archivedProjects = computed(() => (projects.value ?? []).filter((p) => p.archived))
 const currentProjects = computed(() => (tab.value === 'active' ? activeProjects.value : archivedProjects.value))
@@ -88,14 +103,22 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
                   <p class="truncate text-sm font-semibold text-text">{{ lsId(p.title) }}</p>
                   <p class="mt-0.5 truncate text-xs text-text-muted">{{ lsId(p.category) }} • {{ p.year }}</p>
                 </div>
-                <span
-                  v-if="p.featured"
-                  class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400"
-                >
-                  <Star :size="10" :stroke-width="2" class="fill-amber-400" />
-                  Featured
-                </span>
-                <span v-else class="shrink-0 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-text-muted">Tidak</span>
+                <div class="flex shrink-0 items-center gap-1.5">
+                  <span
+                    v-if="demoTypeOf(p)"
+                    class="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
+                    :title="'Demo: ' + demoTypeOf(p)"
+                  >
+                    Demo · {{ demoTypeOf(p) }}
+                  </span>
+                  <span
+                    v-if="p.featured"
+                    class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400"
+                  >
+                    <Star :size="10" :stroke-width="2" class="fill-amber-400" />
+                    Featured
+                  </span>
+                </div>
               </div>
               <a :href="p.liveUrl" target="_blank" rel="noopener noreferrer" class="mt-1 flex items-center gap-1 truncate text-xs text-text-muted hover:text-primary">
                 {{ p.liveUrl }}
@@ -156,6 +179,7 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
               <th class="px-5 py-3.5 font-semibold">Project</th>
               <th class="px-5 py-3.5 font-semibold">Kategori</th>
               <th class="px-5 py-3.5 font-semibold">Tahun</th>
+              <th class="px-5 py-3.5 font-semibold">Demo</th>
               <th class="px-5 py-3.5 font-semibold">Featured</th>
               <th class="px-5 py-3.5 text-right font-semibold">Aksi</th>
             </tr>
@@ -176,6 +200,16 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
               </td>
               <td class="px-5 py-4 text-text-secondary">{{ lsId(p.category) }}</td>
               <td class="px-5 py-4 text-text-secondary">{{ p.year }}</td>
+              <td class="px-5 py-4">
+                <span
+                  v-if="demoTypeOf(p)"
+                  class="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary"
+                  :title="'Demo: ' + demoTypeOf(p)"
+                >
+                  {{ demoTypeOf(p) }}
+                </span>
+                <span v-else class="text-xs text-text-muted">—</span>
+              </td>
               <td class="px-5 py-4">
                 <span v-if="p.featured" class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[10px] font-semibold text-amber-400">
                   <Star :size="10" :stroke-width="2" class="fill-amber-400" />
@@ -225,7 +259,7 @@ const removePermanent = (slug: string) => runAction(slug, '?permanent=true')
               </td>
             </tr>
             <tr v-if="!((tab === 'active' ? activeProjects : archivedProjects).length)">
-              <td colspan="5" class="px-5 py-10 text-center text-sm text-text-muted">
+              <td colspan="6" class="px-5 py-10 text-center text-sm text-text-muted">
                 <template v-if="tab === 'active'">Belum ada project. Klik "Tambah Project" untuk mulai.</template>
                 <template v-else>Tidak ada project yang diarsipkan.</template>
               </td>
