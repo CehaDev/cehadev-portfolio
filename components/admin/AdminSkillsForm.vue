@@ -38,27 +38,41 @@ function ls(v: unknown): LS {
   const s = str(v)
   return { id: s, en: s }
 }
+function lsList(v: unknown): LS[] {
+  return Array.isArray(v) ? v.map((x) => ls(x)) : []
+}
+function toHomeSkills(v: unknown): SkillItem[] {
+  return Array.isArray(v)
+    ? v.map((s) => {
+        const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>
+        return { name: ls(o.name), level: Number(o.level) || 0, tech: str(o.tech) }
+      })
+    : []
+}
+function toTechSkills(v: unknown): TechSkillItem[] {
+  return Array.isArray(v)
+    ? v.map((s) => {
+        const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>
+        return { name: ls(o.name), level: Number(o.level) || 0, tech: str(o.tech), category: ls(o.category) }
+      })
+    : []
+}
+function toSummary(v: unknown): SummaryItem[] {
+  return Array.isArray(v)
+    ? v.map((s) => {
+        const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>
+        return { label: ls(o.label), value: ls(o.value), icon: str(o.icon) || 'Code2' }
+      })
+    : []
+}
 
 const form = reactive({
-  homeSkills: (props.initial?.homeSkills ?? []).map((s: any) => ({
-    name: ls(s?.name),
-    level: Number(s?.level) || 0,
-    tech: str(s?.tech)
-  })),
-  technicalSkills: (props.initial?.technicalSkills ?? []).map((s: any) => ({
-    name: ls(s?.name),
-    level: Number(s?.level) || 0,
-    tech: str(s?.tech),
-    category: ls(s?.category)
-  })),
-  marqueeTech: (props.initial?.marqueeTech ?? []).map(ls),
-  skillsSummary: (props.initial?.skillsSummary ?? []).map((s: any) => ({
-    label: ls(s?.label),
-    value: ls(s?.value),
-    icon: str(s?.icon) || 'Code2'
-  })),
-  toolsList: (props.initial?.toolsList ?? []).map(ls),
-  softSkills: (props.initial?.softSkills ?? []).map(ls)
+  homeSkills: toHomeSkills(props.initial?.homeSkills),
+  technicalSkills: toTechSkills(props.initial?.technicalSkills),
+  marqueeTech: lsList(props.initial?.marqueeTech),
+  skillsSummary: toSummary(props.initial?.skillsSummary),
+  toolsList: lsList(props.initial?.toolsList),
+  softSkills: lsList(props.initial?.softSkills)
 })
 
 const error = ref('')

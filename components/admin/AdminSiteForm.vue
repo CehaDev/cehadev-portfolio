@@ -40,6 +40,33 @@ function ls(v: unknown): LS {
   const s = str(v)
   return { id: s, en: s }
 }
+function lsList(v: unknown): LS[] {
+  return Array.isArray(v) ? v.map((x) => ls(x)) : []
+}
+function toStats(v: unknown): StatItem[] {
+  return Array.isArray(v)
+    ? v.map((s) => {
+        const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>
+        return { icon: str(o.icon), label: ls(o.label), sub: ls(o.sub), end: Number(o.end) || 0, suffix: ls(o.suffix) }
+      })
+    : []
+}
+function toProjectStats(v: unknown): ProjectStatItem[] {
+  return Array.isArray(v)
+    ? v.map((s) => {
+        const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>
+        return { icon: str(o.icon), label: ls(o.label), value: ls(o.value) }
+      })
+    : []
+}
+function toFaqs(v: unknown): FaqItem[] {
+  return Array.isArray(v)
+    ? v.map((f) => {
+        const o = (f && typeof f === 'object' ? f : {}) as Record<string, unknown>
+        return { q: ls(o.q), a: ls(o.a) }
+      })
+    : []
+}
 
 const form = reactive({
   name: str(props.initial?.name),
@@ -49,17 +76,11 @@ const form = reactive({
   heroTitleGradient: ls(props.initial?.heroTitleGradient),
   heroSubtitle: ls(props.initial?.heroSubtitle),
   heroDescription: ls(props.initial?.heroDescription),
-  aboutIntro: (props.initial?.aboutIntro ?? []).map(ls),
-  aboutChecklist: (props.initial?.aboutChecklist ?? []).map(ls),
+  aboutIntro: lsList(props.initial?.aboutIntro),
+  aboutChecklist: lsList(props.initial?.aboutChecklist),
   quote: ls(props.initial?.quote),
   quoteHighlight: ls(props.initial?.quoteHighlight),
-  stats: (props.initial?.stats ?? []).map((s: any) => ({
-    icon: str(s?.icon),
-    label: ls(s?.label),
-    sub: ls(s?.sub),
-    end: Number(s?.end) || 0,
-    suffix: ls(s?.suffix)
-  })),
+  stats: toStats(props.initial?.stats),
   email: str(props.initial?.email),
   phone: str(props.initial?.phone),
   location: ls(props.initial?.location),
@@ -70,15 +91,8 @@ const form = reactive({
     linkedin: str(props.initial?.socials?.linkedin),
     instagram: str(props.initial?.socials?.instagram)
   },
-  projectStats: (props.initial?.projectStats ?? []).map((s: any) => ({
-    icon: str(s?.icon),
-    label: ls(s?.label),
-    value: ls(s?.value)
-  })),
-  faqs: (props.initial?.faqs ?? []).map((f: any) => ({
-    q: ls(f?.q),
-    a: ls(f?.a)
-  })),
+  projectStats: toProjectStats(props.initial?.projectStats),
+  faqs: toFaqs(props.initial?.faqs),
   headings: reactive(props.initial?.headings ?? {}),
   seo: reactive(props.initial?.seo ?? {})
 })
