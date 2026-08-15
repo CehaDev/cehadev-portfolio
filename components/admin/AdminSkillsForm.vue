@@ -153,36 +153,46 @@ async function save() {
 
 <template>
   <form class="space-y-8" novalidate @submit.prevent="save">
+    <!-- Bagian 1: Home Skills -->
     <div class="card p-7">
-      <div class="mb-5 flex items-center gap-2">
-        <Code2 :size="16" :stroke-width="2" class="text-primary" />
-        <h3 class="text-base font-bold text-text">Home Skills</h3>
+      <div class="mb-6 flex items-center gap-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+          <Code2 :size="20" :stroke-width="1.75" />
+        </span>
+        <div>
+          <h3 class="flex flex-wrap items-center gap-2 text-base font-bold text-text">
+            Home Skills
+            <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">Bagian 1</span>
+          </h3>
+          <p class="mt-0.5 text-xs text-text-muted">Daftar skill pada bagian skill beranda. Nama dan kategori dapat diisi dua bahasa.</p>
+        </div>
       </div>
-      <p class="mb-5 text-xs text-text-muted">Daftar skill pada bagian skill beranda. Nama dan kategori dapat diisi dua bahasa.</p>
       <div class="mb-3 flex items-center justify-between">
         <p class="text-sm font-medium text-text">Daftar Skill</p>
-        <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.homeSkills, emptySkill)">
-          <Plus :size="14" :stroke-width="2" />
-          Tambah
-        </button>
+        <div class="flex flex-col items-end gap-1">
+          <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.homeSkills, emptySkill)">
+            <Plus :size="14" :stroke-width="2" />
+            Tambah
+          </button>
+          <span class="text-[9px] text-text-muted">Tambah skill baru</span>
+        </div>
       </div>
       <div class="space-y-4">
         <div v-for="(s, i) in form.homeSkills" :key="i" class="rounded-lg border border-border bg-bg p-4">
           <div class="mb-3 flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Skill {{ i + 1 }}</span>
+            <span class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-gradient-brand text-[10px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
+              Skill {{ i + 1 }}
+            </span>
             <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2.5 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10" @click="removeItem(form.homeSkills, i)">
               <Trash2 :size="12" :stroke-width="1.5" />
               Hapus
             </button>
           </div>
-          <div class="grid gap-3 sm:grid-cols-3">
+          <div class="grid gap-3 sm:grid-cols-2">
             <div>
               <label class="mb-1 block text-xs font-medium text-text">Nama</label>
               <LocaleInput :id="`hs-name-${i}`" v-model="s.name" placeholder="JavaScript" />
-            </div>
-            <div>
-              <label :for="`hs-level-${i}`" class="mb-1 block text-xs font-medium text-text">Level (0-100)</label>
-              <input :id="`hs-level-${i}`" v-model.number="s.level" type="number" min="0" max="100" class="input-field !py-2" placeholder="85" />
             </div>
             <div>
               <label :for="`hs-tech-${i}`" class="mb-1 block text-xs font-medium text-text">Tech Key</label>
@@ -191,6 +201,13 @@ async function save() {
               </select>
             </div>
           </div>
+          <div class="mt-3">
+            <div class="mb-1.5 flex items-center justify-between">
+              <label :for="`hs-level-${i}`" class="text-xs font-medium text-text">Level</label>
+              <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">{{ s.level }}%</span>
+            </div>
+            <input :id="`hs-level-${i}`" v-model.number="s.level" type="range" min="0" max="100" step="1" class="w-full cursor-pointer accent-primary" />
+          </div>
         </div>
         <p v-if="!form.homeSkills.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
           Belum ada skill. Klik "Tambah" untuk menambahkan.
@@ -198,36 +215,46 @@ async function save() {
       </div>
     </div>
 
+    <!-- Bagian 2: Technical Skills -->
     <div class="card p-7">
-      <div class="mb-5 flex items-center gap-2">
-        <Wand2 :size="16" :stroke-width="2" class="text-primary" />
-        <h3 class="text-base font-bold text-text">Technical Skills</h3>
+      <div class="mb-6 flex items-center gap-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+          <Wand2 :size="20" :stroke-width="1.75" />
+        </span>
+        <div>
+          <h3 class="flex flex-wrap items-center gap-2 text-base font-bold text-text">
+            Technical Skills
+            <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">Bagian 2</span>
+          </h3>
+          <p class="mt-0.5 text-xs text-text-muted">Skill teknis dengan kategori untuk halaman skill.</p>
+        </div>
       </div>
-      <p class="mb-5 text-xs text-text-muted">Skill teknis dengan kategori untuk halaman skill.</p>
       <div class="mb-3 flex items-center justify-between">
         <p class="text-sm font-medium text-text">Daftar Skill Teknis</p>
-        <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.technicalSkills, emptyTechSkill)">
-          <Plus :size="14" :stroke-width="2" />
-          Tambah
-        </button>
+        <div class="flex flex-col items-end gap-1">
+          <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.technicalSkills, emptyTechSkill)">
+            <Plus :size="14" :stroke-width="2" />
+            Tambah
+          </button>
+          <span class="text-[9px] text-text-muted">Tambah skill teknis</span>
+        </div>
       </div>
       <div class="space-y-4">
         <div v-for="(s, i) in form.technicalSkills" :key="i" class="rounded-lg border border-border bg-bg p-4">
           <div class="mb-3 flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Skill {{ i + 1 }}</span>
+            <span class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-gradient-brand text-[10px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
+              Skill {{ i + 1 }}
+            </span>
             <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2.5 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10" @click="removeItem(form.technicalSkills, i)">
               <Trash2 :size="12" :stroke-width="1.5" />
               Hapus
             </button>
           </div>
-          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label class="mb-1 block text-xs font-medium text-text">Nama</label>
               <LocaleInput :id="`ts-name-${i}`" v-model="s.name" placeholder="Vue.js" />
-            </div>
-            <div>
-              <label :for="`ts-level-${i}`" class="mb-1 block text-xs font-medium text-text">Level (0-100)</label>
-              <input :id="`ts-level-${i}`" v-model.number="s.level" type="number" min="0" max="100" class="input-field !py-2" placeholder="85" />
             </div>
             <div>
               <label :for="`ts-tech-${i}`" class="mb-1 block text-xs font-medium text-text">Tech Key</label>
@@ -240,6 +267,13 @@ async function save() {
               <LocaleInput :id="`ts-category-${i}`" v-model="s.category" placeholder="Framework" />
             </div>
           </div>
+          <div class="mt-3">
+            <div class="mb-1.5 flex items-center justify-between">
+              <label :for="`ts-level-${i}`" class="text-xs font-medium text-text">Level</label>
+              <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">{{ s.level }}%</span>
+            </div>
+            <input :id="`ts-level-${i}`" v-model.number="s.level" type="range" min="0" max="100" step="1" class="w-full cursor-pointer accent-primary" />
+          </div>
         </div>
         <p v-if="!form.technicalSkills.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
           Belum ada skill teknis. Klik "Tambah" untuk menambahkan.
@@ -247,24 +281,39 @@ async function save() {
       </div>
     </div>
 
+    <!-- Bagian 3: Skills Summary & Marquee -->
     <div class="card p-7">
-      <div class="mb-5 flex items-center gap-2">
-        <Star :size="16" :stroke-width="2" class="text-primary" />
-        <h3 class="text-base font-bold text-text">Skills Summary & Marquee</h3>
+      <div class="mb-6 flex items-center gap-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+          <Star :size="20" :stroke-width="1.75" />
+        </span>
+        <div>
+          <h3 class="flex flex-wrap items-center gap-2 text-base font-bold text-text">
+            Skills Summary &amp; Marquee
+            <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">Bagian 3</span>
+          </h3>
+          <p class="mt-0.5 text-xs text-text-muted">Kartu ringkasan angka dan teks berjalan di halaman skill.</p>
+        </div>
       </div>
       <div class="grid gap-6 lg:grid-cols-2">
         <div>
           <div class="mb-3 flex items-center justify-between">
             <p class="text-sm font-medium text-text">Kartu Ringkasan</p>
-            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.skillsSummary, emptySummary)">
-              <Plus :size="14" :stroke-width="2" />
-              Tambah
-            </button>
+            <div class="flex flex-col items-end gap-1">
+              <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.skillsSummary, emptySummary)">
+                <Plus :size="14" :stroke-width="2" />
+                Tambah
+              </button>
+              <span class="text-[9px] text-text-muted">Tambah kartu</span>
+            </div>
           </div>
           <div class="space-y-4">
             <div v-for="(s, i) in form.skillsSummary" :key="i" class="rounded-lg border border-border bg-bg p-4">
               <div class="mb-3 flex items-center justify-between">
-                <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Kartu {{ i + 1 }}</span>
+                <span class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-gradient-brand text-[10px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
+                  Kartu {{ i + 1 }}
+                </span>
                 <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2.5 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10" @click="removeItem(form.skillsSummary, i)">
                   <Trash2 :size="12" :stroke-width="1.5" />
                   Hapus
@@ -296,13 +345,17 @@ async function save() {
         <div>
           <div class="mb-3 flex items-center justify-between">
             <p class="text-sm font-medium text-text">Marquee Tech</p>
-            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.marqueeTech, emptyLS)">
-              <Plus :size="14" :stroke-width="2" />
-              Tambah
-            </button>
+            <div class="flex flex-col items-end gap-1">
+              <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.marqueeTech, emptyLS)">
+                <Plus :size="14" :stroke-width="2" />
+                Tambah
+              </button>
+              <span class="text-[9px] text-text-muted">Tambah tech</span>
+            </div>
           </div>
           <ul class="space-y-2">
-            <li v-for="(m, i) in form.marqueeTech" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-2.5">
+            <li v-for="(m, i) in form.marqueeTech" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-3 py-2.5">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-brand text-[11px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
               <div class="min-w-0 flex-1">
                 <LocaleInput v-model="form.marqueeTech[i]" placeholder="Vue.js" />
               </div>
@@ -318,22 +371,35 @@ async function save() {
       </div>
     </div>
 
+    <!-- Bagian 4: Soft Skills & Tools -->
     <div class="card p-7">
-      <div class="mb-5 flex items-center gap-2">
-        <ListChecks :size="16" :stroke-width="2" class="text-primary" />
-        <h3 class="text-base font-bold text-text">Soft Skills & Tools</h3>
+      <div class="mb-6 flex items-center gap-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-btn-glow" aria-hidden="true">
+          <ListChecks :size="20" :stroke-width="1.75" />
+        </span>
+        <div>
+          <h3 class="flex flex-wrap items-center gap-2 text-base font-bold text-text">
+            Soft Skills &amp; Tools
+            <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">Bagian 4</span>
+          </h3>
+          <p class="mt-0.5 text-xs text-text-muted">Kemampuan non-teknis dan perangkat yang biasa dipakai.</p>
+        </div>
       </div>
       <div class="grid gap-6 lg:grid-cols-2">
         <div>
           <div class="mb-3 flex items-center justify-between">
             <p class="text-sm font-medium text-text">Soft Skills</p>
-            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.softSkills, emptyLS)">
-              <Plus :size="14" :stroke-width="2" />
-              Tambah
-            </button>
+            <div class="flex flex-col items-end gap-1">
+              <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.softSkills, emptyLS)">
+                <Plus :size="14" :stroke-width="2" />
+                Tambah
+              </button>
+              <span class="text-[9px] text-text-muted">Tambah soft skill</span>
+            </div>
           </div>
           <ul class="space-y-2">
-            <li v-for="(s, i) in form.softSkills" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-2.5">
+            <li v-for="(s, i) in form.softSkills" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-3 py-2.5">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-brand text-[11px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
               <div class="min-w-0 flex-1">
                 <LocaleInput v-model="form.softSkills[i]" placeholder="Komunikasi" />
               </div>
@@ -353,13 +419,17 @@ async function save() {
               <Wrench :size="16" :stroke-width="1.75" class="text-primary" aria-hidden="true" />
               Tools
             </p>
-            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.toolsList, emptyLS)">
-              <Plus :size="14" :stroke-width="2" />
-              Tambah
-            </button>
+            <div class="flex flex-col items-end gap-1">
+              <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addItem(form.toolsList, emptyLS)">
+                <Plus :size="14" :stroke-width="2" />
+                Tambah
+              </button>
+              <span class="text-[9px] text-text-muted">Tambah tool</span>
+            </div>
           </div>
           <ul class="space-y-2">
-            <li v-for="(t, i) in form.toolsList" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-2.5">
+            <li v-for="(t, i) in form.toolsList" :key="i" class="flex items-center gap-3 rounded-lg border border-border bg-bg px-3 py-2.5">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-brand text-[11px] font-bold text-white" aria-hidden="true">{{ i + 1 }}</span>
               <div class="min-w-0 flex-1">
                 <LocaleInput v-model="form.toolsList[i]" placeholder="VS Code" />
               </div>
@@ -377,13 +447,21 @@ async function save() {
 
     <p v-if="error" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">{{ error }}</p>
 
-    <div class="flex items-center justify-end gap-3">
-      <NuxtLink to="/admin" class="btn-outline">Batal</NuxtLink>
-      <button type="submit" class="btn-primary" :disabled="saving">
-        <LoaderCircle v-if="saving" :size="16" class="animate-spin" />
-        <Save v-else :size="16" :stroke-width="2" />
-        {{ saving ? 'Menyimpan...' : 'Simpan Skill' }}
-      </button>
+    <div class="sticky bottom-4 z-20 rounded-card border border-border bg-card/95 p-4 shadow-card backdrop-blur lg:static lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+      <div class="flex flex-wrap items-center justify-end gap-6">
+        <div class="flex flex-col items-center gap-1">
+          <NuxtLink to="/admin" class="btn-outline">Batal</NuxtLink>
+          <span class="text-[9px] text-text-muted">Batalkan &amp; kembali</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <button type="submit" class="btn-primary" :disabled="saving">
+            <LoaderCircle v-if="saving" :size="16" class="animate-spin" />
+            <Save v-else :size="16" :stroke-width="2" />
+            {{ saving ? 'Menyimpan...' : 'Simpan Skill' }}
+          </button>
+          <span class="text-[9px] text-text-muted">Simpan perubahan ke content/skills.json</span>
+        </div>
+      </div>
     </div>
   </form>
 </template>
