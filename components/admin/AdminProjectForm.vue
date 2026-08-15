@@ -413,7 +413,7 @@ async function save() {
             <div class="min-w-0 flex-1">
               <LocaleInput v-model="form.tags[i]" placeholder="Nama tag..." />
             </div>
-            <button type="button" class="rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus tag ${i + 1}`" @click="removeItem(form.tags, i)">
+            <button type="button" class="rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus tag ${Number(i) + 1}`" @click="removeItem(form.tags, Number(i))">
               <Trash2 :size="14" :stroke-width="1.5" />
             </button>
           </li>
