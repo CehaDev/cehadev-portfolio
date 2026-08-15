@@ -37,3 +37,23 @@ export function codeLangClass(id: string): string {
     : id === 'json' || id === 'html' || id === 'css' ? 'bg-orange-400/15 text-orange-400'
     : 'bg-primary/15 text-primary'
 }
+
+const EXT_LANGS: Record<string, string> = {
+  js: 'javascript', mjs: 'javascript', cjs: 'javascript', jsx: 'javascript',
+  ts: 'typescript', mts: 'typescript', cts: 'typescript', tsx: 'typescript',
+  py: 'python', php: 'php', sql: 'sql',
+  sh: 'bash', bash: 'bash', zsh: 'bash',
+  json: 'json', html: 'html', htm: 'html', vue: 'html',
+  css: 'css', scss: 'css', sass: 'css', less: 'css',
+  java: 'java', go: 'go', rs: 'rust', rb: 'ruby', dart: 'dart',
+  yml: 'yaml', yaml: 'yaml', md: 'markdown', markdown: 'markdown'
+}
+
+export function detectLangFromName(name: string): string | null {
+  const base = name.trim().toLowerCase()
+  if (!base) return null
+  const seg = base.split('/').pop() ?? base
+  const dot = seg.lastIndexOf('.')
+  if (dot <= 0 || dot === seg.length - 1) return null
+  return EXT_LANGS[seg.slice(dot + 1)] ?? null
+}

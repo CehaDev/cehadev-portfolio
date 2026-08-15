@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref, watch, computed } from 'vue'
-import { LoaderCircle, Save, Plus, Trash2, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay, FileText, Settings2, Tags, Check } from 'lucide-vue-next'
+import { LoaderCircle, Save, Plus, Trash2, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay, FileText, Settings2, Tags, Check, FileCode2, ChevronUp, ChevronDown } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
-import { CODE_LANGS } from '~/utils/demoCode'
+import { CODE_LANGS, detectLangFromName } from '~/utils/demoCode'
 import type { CodeFile } from '~/utils/demoCode'
 
 interface LS {
@@ -119,11 +119,39 @@ const demoTypeOptions = [
   { value: 'studio', label: 'Studio Live Preview', desc: 'File tree + editor + hasil project berjalan (HTML/CSS/JS)' }
 ]
 
+const activeFileIndex = ref(0)
+const activeFile = computed(() => demo.files[activeFileIndex.value])
+
+function ensureIndexHtmlFirst() {
+  const idx = demo.files.findIndex((f) => f.name.trim().toLowerCase() === 'index.html')
+  if (idx > 0) {
+    const [f] = demo.files.splice(idx, 1)
+    demo.files.unshift(f)
+    activeFileIndex.value = 0
+  }
+}
+
 function addDemoFile() {
   demo.files.push({ name: '', language: 'javascript', content: '' })
+  activeFileIndex.value = demo.files.length - 1
+  ensureIndexHtmlFirst()
 }
 function removeDemoFile(i: number) {
   demo.files.splice(i, 1)
+  if (activeFileIndex.value >= demo.files.length) activeFileIndex.value = Math.max(0, demo.files.length - 1)
+}
+function moveDemoFile(i: number, dir: -1 | 1) {
+  const j = i + dir
+  if (j < 0 || j >= demo.files.length) return
+  const tmp = demo.files[i]
+  demo.files[i] = demo.files[j]
+  demo.files[j] = tmp
+  activeFileIndex.value = j
+}
+function onFileNameChange(i: number) {
+  const lang = detectLangFromName(demo.files[i].name)
+  if (lang) demo.files[i].language = lang
+  ensureIndexHtmlFirst()
 }
 
 const techKeys = Object.keys(techIcons)
@@ -164,6 +192,7 @@ function scrollToSection(id: string) {
 }
 
 onMounted(() => {
+  ensureIndexHtmlFirst()
   observer = new IntersectionObserver(
     (entries) => {
       const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)
@@ -523,66 +552,104 @@ async function save() {
           <LocaleInput v-model="demo.note" placeholder="Demo berjalan penuh di browser Anda." />
         </div>
         <div v-if="demo.type === 'code' || demo.type === 'studio'" class="sm:col-span-2">
-          <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p class="text-sm font-medium text-text">File Kode</p>
-              <p v-if="demo.type === 'studio'" class="mt-0.5 text-xs text-text-muted">Upload project web Anda (index.html + CSS + JS). Pengunjung bisa menjelajah file & melihat hasilnya berjalan langsung di Live Preview.</p>
-              <p v-else class="mt-0.5 text-xs text-text-muted">Tampilkan potongan kode project dalam berbagai bahasa pemrograman.</p>
-            </div>
-            <div class="flex flex-col items-end gap-1">
-              <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addDemoFile">
-                <Plus :size="14" :stroke-width="2" />
-                Tambah File
-              </button>
-              <span class="text-[9px] text-text-muted">Tambah file kode baru</span>
-            </div>
+          <div class="mb-3">
+            <p class="text-sm font-medium text-text">File Kode</p>
+            <p v-if="demo.type === 'studio'" class="mt-0.5 text-xs text-text-muted">Upload project web Anda (index.html + CSS + JS). Pengunjung bisa menjelajah file & melihat hasilnya berjalan langsung di Live Preview. Bahasa terdeteksi otomatis dari ekstensi file.</p>
+            <p v-else class="mt-0.5 text-xs text-text-muted">Tampilkan potongan kode project dalam berbagai bahasa pemrograman. Bahasa terdeteksi otomatis dari ekstensi file.</p>
           </div>
-          <div v-if="demo.files.length" class="space-y-3">
-            <div
-              v-for="(f, i) in demo.files"
-              :key="i"
-              class="rounded-lg border border-border bg-bg p-4"
-            >
-              <div class="mb-3 flex flex-wrap items-center gap-3">
-                <div class="min-w-0 flex-1">
-                  <label :for="`pf-demo-file-name-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Nama File</label>
-                  <input
-                    :id="`pf-demo-file-name-${i}`"
-                    v-model="f.name"
-                    type="text"
-                    class="input-field font-mono !py-2 !text-xs"
-                    placeholder="src/middleware/auth.ts"
-                  />
+          <div v-if="demo.files.length" class="overflow-hidden rounded-lg border border-border bg-bg">
+            <div class="md:grid md:grid-cols-[230px_minmax(0,1fr)]">
+              <div class="border-b border-border bg-card/50 md:border-b-0 md:border-r">
+                <div class="flex items-center justify-between border-b border-border px-3 py-2.5">
+                  <p class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+                    <FileCode2 :size="12" :stroke-width="2" aria-hidden="true" />
+                    Explorer
+                  </p>
+                  <span class="rounded-full bg-bg-alt px-1.5 py-0.5 text-[10px] font-bold text-text-muted">{{ demo.files.length }} file</span>
                 </div>
-                <div class="w-40">
-                  <label :for="`pf-demo-file-lang-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Bahasa</label>
-                  <select :id="`pf-demo-file-lang-${i}`" v-model="f.language" class="input-field !py-2 !text-xs">
-                    <option v-for="l in CODE_LANGS" :key="l.id" :value="l.id">{{ l.label }}</option>
-                  </select>
+                <ul class="max-h-80 divide-y divide-border/40 overflow-y-auto">
+                  <li v-for="(f, i) in demo.files" :key="i">
+                    <div
+                      class="group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
+                      :class="activeFileIndex === i ? 'bg-primary/15 text-primary' : 'text-text-secondary hover:bg-card hover:text-text'"
+                      @click="activeFileIndex = i"
+                    >
+                      <FileCode2 :size="13" :stroke-width="1.75" class="shrink-0" :class="activeFileIndex === i ? 'text-primary' : 'text-text-muted'" aria-hidden="true" />
+                      <span class="min-w-0 flex-1 truncate font-mono">{{ f.name || `file-${i + 1}` }}</span>
+                      <span class="hidden shrink-0 items-center gap-0.5 sm:flex">
+                        <button
+                          type="button"
+                          class="rounded p-1 text-text-muted transition-colors hover:bg-bg-alt hover:text-text disabled:opacity-30"
+                          :disabled="i === 0"
+                          :aria-label="`Naikkan file ${f.name || i + 1}`"
+                          title="Pindah ke atas"
+                          @click.stop="moveDemoFile(i, -1)"
+                        >
+                          <ChevronUp :size="12" :stroke-width="2" />
+                        </button>
+                        <button
+                          type="button"
+                          class="rounded p-1 text-text-muted transition-colors hover:bg-bg-alt hover:text-text disabled:opacity-30"
+                          :disabled="i === demo.files.length - 1"
+                          :aria-label="`Turunkan file ${f.name || i + 1}`"
+                          title="Pindah ke bawah"
+                          @click.stop="moveDemoFile(i, 1)"
+                        >
+                          <ChevronDown :size="12" :stroke-width="2" />
+                        </button>
+                        <button
+                          type="button"
+                          class="rounded p-1 text-red-400/70 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                          :aria-label="`Hapus file ${f.name || i + 1}`"
+                          title="Hapus file"
+                          @click.stop="removeDemoFile(i)"
+                        >
+                          <Trash2 :size="12" :stroke-width="1.75" />
+                        </button>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <div class="flex flex-col items-center gap-1 border-t border-border p-2.5">
+                  <button type="button" class="btn-outline w-full !py-2 text-xs" @click="addDemoFile">
+                    <Plus :size="14" :stroke-width="2" />
+                    Tambah File
+                  </button>
+                  <span class="text-[9px] text-text-muted">Tambah file kode baru</span>
                 </div>
-                <button
-                  type="button"
-                  class="mt-5 rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10"
-                  :aria-label="`Hapus file ${f.name || i + 1}`"
-                  @click="removeDemoFile(i)"
-                >
-                  <Trash2 :size="14" :stroke-width="1.5" />
-                </button>
               </div>
-              <div>
-                <label :for="`pf-demo-file-content-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Isi Kode</label>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-3 border-b border-border px-4 py-2.5">
+                  <div class="min-w-0 flex-1">
+                    <label :for="`pf-demo-file-name-${activeFileIndex}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Nama File</label>
+                    <input
+                      :id="`pf-demo-file-name-${activeFileIndex}`"
+                      v-model="activeFile.name"
+                      type="text"
+                      class="input-field w-full font-mono !py-2 !text-xs"
+                      placeholder="src/middleware/auth.ts"
+                      @change="onFileNameChange(activeFileIndex)"
+                    />
+                  </div>
+                  <div class="w-40">
+                    <label :for="`pf-demo-file-lang-${activeFileIndex}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Bahasa</label>
+                    <select :id="`pf-demo-file-lang-${activeFileIndex}`" v-model="activeFile.language" class="input-field w-full !py-2 !text-xs">
+                      <option v-for="l in CODE_LANGS" :key="l.id" :value="l.id">{{ l.label }}</option>
+                    </select>
+                  </div>
+                </div>
                 <textarea
-                  :id="`pf-demo-file-content-${i}`"
-                  v-model="f.content"
-                  rows="8"
+                  :key="activeFileIndex"
+                  v-model="activeFile.content"
+                  rows="10"
                   spellcheck="false"
-                  class="input-field w-full resize-y font-mono !text-xs"
+                  class="block w-full resize-y px-4 py-3 font-mono !text-xs text-text placeholder:text-text-muted focus:outline-none"
                   placeholder="Tulis kode di sini..."
                 ></textarea>
               </div>
             </div>
           </div>
-          <p v-else class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-xs text-text-muted">
+          <p v-else class="rounded-lg border border-dashed border-border px-4 py-8 text-center text-xs text-text-muted">
             Belum ada file kode. Klik "Tambah File" untuk menambahkan.
           </p>
         </div>
