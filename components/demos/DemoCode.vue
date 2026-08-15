@@ -1,26 +1,9 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { Check, Copy, FileCode2, LoaderCircle } from 'lucide-vue-next'
-import { createHighlighterCore } from 'shiki/core'
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
-import langJavascript from 'shiki/dist/langs/javascript.mjs'
-import langTypeScript from 'shiki/dist/langs/typescript.mjs'
-import langPython from 'shiki/dist/langs/python.mjs'
-import langPhp from 'shiki/dist/langs/php.mjs'
-import langSql from 'shiki/dist/langs/sql.mjs'
-import langBash from 'shiki/dist/langs/bash.mjs'
-import langJson from 'shiki/dist/langs/json.mjs'
-import langHtml from 'shiki/dist/langs/html.mjs'
-import langCss from 'shiki/dist/langs/css.mjs'
-import langJava from 'shiki/dist/langs/java.mjs'
-import langGo from 'shiki/dist/langs/go.mjs'
-import langRust from 'shiki/dist/langs/rust.mjs'
-import langRuby from 'shiki/dist/langs/ruby.mjs'
-import langDart from 'shiki/dist/langs/dart.mjs'
-import langYaml from 'shiki/dist/langs/yaml.mjs'
-import langGithubDark from 'shiki/dist/themes/github-dark.mjs'
+import { codeToHtml, isShikiLang } from '~/utils/shiki'
 import type { CodeFile } from '~/utils/demoCode'
-import { codeLangLabel } from '~/utils/demoCode'
+import { codeLangLabel, codeLangClass } from '~/utils/demoCode'
 
 const props = withDefaults(
   defineProps<{
@@ -29,38 +12,6 @@ const props = withDefaults(
   }>(),
   { files: () => [], storageKey: '' }
 )
-
-type ShikiLang = typeof langJavascript
-const shikiLangs: Record<string, ShikiLang> = {
-  javascript: langJavascript,
-  typescript: langTypeScript,
-  python: langPython,
-  php: langPhp,
-  sql: langSql,
-  bash: langBash,
-  json: langJson,
-  html: langHtml,
-  css: langCss,
-  java: langJava,
-  go: langGo,
-  rust: langRust,
-  ruby: langRuby,
-  dart: langDart,
-  yaml: langYaml
-}
-
-const engine = createJavaScriptRegexEngine()
-let highlighterPromise: Promise<Awaited<ReturnType<typeof createHighlighterCore>>> | null = null
-function getHighlighter() {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighterCore({
-      themes: [langGithubDark],
-      langs: Object.values(shikiLangs),
-      engine
-    })
-  }
-  return highlighterPromise
-}
 
 const files = computed(() => (props.files ?? []).filter((f) => f.name && f.content))
 const activeIdx = ref(0)
@@ -73,15 +24,6 @@ let copyTimer: ReturnType<typeof setTimeout> | null = null
 const activeFile = computed(() => files.value[activeIdx.value])
 const lineCount = computed(() => (activeFile.value?.content ?? '').split('\n').length)
 
-function langClass(lang: string): string {
-  return lang === 'javascript' || lang === 'typescript' ? 'bg-amber-400/15 text-amber-400'
-    : lang === 'python' ? 'bg-sky-400/15 text-sky-400'
-    : lang === 'sql' ? 'bg-fuchsia-400/15 text-fuchsia-400'
-    : lang === 'bash' ? 'bg-emerald-400/15 text-emerald-400'
-    : lang === 'json' || lang === 'html' || lang === 'css' ? 'bg-orange-400/15 text-orange-400'
-    : 'bg-primary/15 text-primary'
-}
-
 async function highlight() {
   if (!activeFile.value) return
   const idx = activeIdx.value
@@ -90,9 +32,8 @@ async function highlight() {
   loading.value = true
   error.value = ''
   try {
-    const hl = await getHighlighter()
-    const lang = activeFile.value.language && shikiLangs[activeFile.value.language] ? activeFile.value.language : 'text'
-    const html = await hl.codeToHtml(code, { lang, theme: 'github-dark' })
+    const lang = isShikiLang(activeFile.value.language) ? activeFile.value.language : 'text'
+    const html = await codeToHtml(code, lang)
     highlighted.value[idx] = html
   } catch (e) {
     highlighted.value[idx] = ''
@@ -148,7 +89,7 @@ onUnmounted(() => {
       >
         <FileCode2 :size="13" :stroke-width="1.75" />
         <span class="max-w-44 truncate font-mono">{{ f.name }}</span>
-        <span class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="langClass(f.language)">
+        <span class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(f.language)">
           {{ codeLangLabel(f.language) }}
         </span>
       </button>

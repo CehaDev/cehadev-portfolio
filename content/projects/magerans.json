@@ -1,6 +1,9 @@
 {
   "slug": "magerans",
-  "title": { "id": "Magerans", "en": "Magerans" },
+  "title": {
+    "id": "Magerans",
+    "en": "Magerans"
+  },
   "tagline": {
     "id": "Platform kolaborasi project & manajemen kerja tim secara real-time.",
     "en": "A project collaboration & team work management platform in real-time."
@@ -10,29 +13,83 @@
     "en": "A collaboration platform that helps teams manage projects, communicate in real-time, and get work done more efficiently in one place."
   },
   "tags": [
-    { "id": "Nuxt.js", "en": "Nuxt.js" },
-    { "id": "Vue.js", "en": "Vue.js" },
-    { "id": "Tailwind CSS", "en": "Tailwind CSS" },
-    { "id": "TypeScript", "en": "TypeScript" }
+    {
+      "id": "Nuxt.js",
+      "en": "Nuxt.js"
+    },
+    {
+      "id": "Vue.js",
+      "en": "Vue.js"
+    },
+    {
+      "id": "Tailwind CSS",
+      "en": "Tailwind CSS"
+    },
+    {
+      "id": "TypeScript",
+      "en": "TypeScript"
+    }
   ],
-  "tech": ["nuxt", "vue", "tailwind", "typescript", "node", "mysql", "git", "linux"],
-  "category": { "id": "Aplikasi Web", "en": "Web App" },
+  "tech": [
+    "nuxt",
+    "vue",
+    "tailwind",
+    "typescript",
+    "node",
+    "mysql",
+    "git",
+    "linux"
+  ],
+  "category": {
+    "id": "Aplikasi Web",
+    "en": "Web App"
+  },
   "year": "2025",
-  "role": { "id": "Full-Stack Developer", "en": "Full-Stack Developer" },
-  "duration": { "id": "4 Bulan", "en": "4 Months" },
+  "role": {
+    "id": "Full-Stack Developer",
+    "en": "Full-Stack Developer"
+  },
+  "duration": {
+    "id": "4 Bulan",
+    "en": "4 Months"
+  },
   "featured": true,
   "liveUrl": "https://magerans.example.com",
   "githubUrl": "https://github.com/cehadev/magerans",
   "demo": {
     "enabled": true,
-    "type": "kanban",
+    "type": "studio",
     "title": {
-      "id": "Coba Sprint Board Magerans",
-      "en": "Try the Magerans Sprint Board"
+      "id": "Jelajahi source & coba Kanban Magerans",
+      "en": "Explore the source & try the Magerans Kanban"
     },
     "note": {
-      "id": "Kelola tugas tim lewat kanban — berjalan penuh di browser.",
-      "en": "Manage team tasks on a kanban board — running in your browser."
+      "id": "Project web HTML/CSS/JS yang berjalan langsung — jelajahi file di sebelah kiri, hasilnya tampil di Live Preview.",
+      "en": "A web project (HTML/CSS/JS) running live — explore files on the left, the result shows in the Live Preview."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "index.html",
+          "language": "html",
+          "content": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Magerans — Kanban</title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n</head>\n<body>\n  <header class=\"topbar\">\n    <span class=\"brand\">📋 Magerans Kanban</span>\n    <form id=\"addForm\">\n      <input id=\"newTask\" placeholder=\"Judul tugas baru...\" maxlength=\"40\">\n      <button class=\"btn\">+ Tugas</button>\n    </form>\n  </header>\n  <p class=\"hint\">Tarik kartu antar kolom, atau klik kartu untuk memindahkannya.</p>\n  <main id=\"board\" class=\"board\"></main>\n  <script src=\"js/app.js\"></script>\n</body>\n</html>"
+        },
+        {
+          "name": "css/style.css",
+          "language": "css",
+          "content": "* { margin: 0; padding: 0; box-sizing: border-box; }\nbody {\n  font-family: system-ui, -apple-system, sans-serif;\n  background: #f8fafc; color: #0f172a; min-height: 100vh;\n}\n.topbar {\n  background: #0f172a; color: #fff; padding: 14px 18px;\n  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;\n}\n.brand { font-weight: 800; font-size: 16px; }\n#addForm { display: flex; gap: 8px; }\n#newTask {\n  padding: 8px 12px; border-radius: 8px; border: 1px solid #334155;\n  background: #1e293b; color: #fff; font-size: 13px; width: 220px;\n}\n.btn { background: #f59e0b; color: #0f172a; border: 0; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }\n.hint { font-size: 12px; color: #94a3b8; padding: 12px 18px 0; }\n.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 18px; }\n.column { background: #e2e8f0; border-radius: 14px; padding: 12px; min-height: 260px; }\n.column h3 {\n  font-size: 12px; text-transform: uppercase; letter-spacing: .05em;\n  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;\n}\n.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }\n.column em { font-style: normal; background: #fff; border-radius: 99px; padding: 1px 8px; font-size: 11px; margin-left: auto; }\n.card {\n  background: #fff; border-radius: 10px; padding: 10px; margin-bottom: 10px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, .1); cursor: grab; border: 1px solid #f1f5f9;\n}\n.card:active { cursor: grabbing; }\n.card p { font-size: 13px; font-weight: 600; margin-bottom: 6px; }\n.tag { font-size: 10px; background: #fef3c7; color: #92400e; border-radius: 99px; padding: 2px 8px; }"
+        },
+        {
+          "name": "js/app.js",
+          "language": "javascript",
+          "content": "const columns = [\n  { id: 'todo', title: 'To Do', color: '#f59e0b' },\n  { id: 'doing', title: 'In Progress', color: '#3b82f6' },\n  { id: 'done', title: 'Done', color: '#22c55e' }\n]\nlet tasks = [\n  { id: 1, col: 'todo', text: 'Riset kebutuhan klien', tag: 'Analisis' },\n  { id: 2, col: 'todo', text: 'Wireframe halaman utama', tag: 'Desain' },\n  { id: 3, col: 'doing', text: 'Kembangkan API login', tag: 'Backend' },\n  { id: 4, col: 'doing', text: 'Perbaiki bug responsif', tag: 'Frontend' },\n  { id: 5, col: 'done', text: 'Desain logo brand', tag: 'Desain' }\n]\nlet seq = 6\nlet dragging = null\n\nconst board = document.getElementById('board')\n\nfunction render() {\n  board.innerHTML = ''\n  columns.forEach((col) => {\n    const colEl = document.createElement('section')\n    colEl.className = 'column'\n    colEl.dataset.col = col.id\n    colEl.innerHTML = `<h3><span class=\"dot\" style=\"background:${col.color}\"></span>${col.title} <em>${tasks.filter((t) => t.col === col.id).length}</em></h3>`\n    tasks.filter((t) => t.col === col.id).forEach((task) => {\n      const card = document.createElement('article')\n      card.className = 'card'\n      card.draggable = true\n      card.dataset.id = task.id\n      card.innerHTML = `<p>${task.text}</p><span class=\"tag\">${task.tag}</span>`\n      card.addEventListener('dragstart', () => { dragging = task.id })\n      card.addEventListener('click', () => cycle(task.id))\n      colEl.appendChild(card)\n    })\n    colEl.addEventListener('dragover', (e) => e.preventDefault())\n    colEl.addEventListener('drop', () => { if (dragging) moveTo(dragging, col.id) })\n    board.appendChild(colEl)\n  })\n}\n\nfunction moveTo(id, col) {\n  tasks = tasks.map((t) => (t.id === id ? { ...t, col } : t))\n  dragging = null\n  render()\n}\nfunction cycle(id) {\n  const order = ['todo', 'doing', 'done']\n  const t = tasks.find((x) => x.id === id)\n  const next = order[(order.indexOf(t.col) + 1) % order.length]\n  moveTo(id, next)\n}\nfunction addTask() {\n  const text = document.getElementById('newTask').value.trim()\n  if (!text) return\n  tasks.push({ id: seq++, col: 'todo', text, tag: 'Baru' })\n  document.getElementById('newTask').value = ''\n  render()\n}\ndocument.getElementById('addForm').addEventListener('submit', (e) => { e.preventDefault(); addTask() })\nrender()"
+        },
+        {
+          "name": "README.md",
+          "language": "markdown",
+          "content": "# Magerans — Mini Kanban\n\nKanban board sederhana dengan HTML + CSS + JavaScript murni.\n\n## Fitur\n- Tiga kolom: To Do, In Progress, Done\n- Tarik & lepas kartu antar kolom\n- Klik kartu untuk pindah ke kolom berikutnya\n- Tambah tugas baru lewat form\n\n## Cara menjalankan\nBuka `index.html` di browser mana pun."
+        }
+      ]
     }
   },
   "detail": {
@@ -41,44 +98,313 @@
       "en": "Magerans is a collaboration platform designed to help small and medium teams work together in a more organized way. The app combines project management, real-time communication, and task tracking in one intuitive, responsive dashboard.\n\nBuilt with Nuxt 3 on the frontend and Node.js on the backend, Magerans delivers a fast experience thanks to SSR and performance optimizations. Its design prioritizes clarity, accessibility, and consistency across all devices."
     },
     "featureHighlights": [
-      { "icon": "Search", "color": "#38BDF8", "title": { "id": "Pencarian Cepat", "en": "Quick Search" }, "desc": { "id": "Temukan project dan tugas dengan pencarian instan.", "en": "Find projects and tasks with instant search." } },
-      { "icon": "LayoutDashboard", "color": "#8B5CF6", "title": { "id": "Dashboard Intuitif", "en": "Intuitive Dashboard" }, "desc": { "id": "Semua informasi penting dalam satu tampilan.", "en": "All the important information in one view." } },
-      { "icon": "MessageSquare", "color": "#22C55E", "title": { "id": "Kolaborasi Tim", "en": "Team Collaboration" }, "desc": { "id": "Diskusi dan komentar di setiap tugas.", "en": "Discussions and comments on every task." } },
-      { "icon": "ShieldCheck", "color": "#F59E0B", "title": { "id": "Keamanan Terjamin", "en": "Guaranteed Security" }, "desc": { "id": "Autentikasi aman dan proteksi data lengkap.", "en": "Secure authentication and full data protection." } }
+      {
+        "icon": "Search",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Pencarian Cepat",
+          "en": "Quick Search"
+        },
+        "desc": {
+          "id": "Temukan project dan tugas dengan pencarian instan.",
+          "en": "Find projects and tasks with instant search."
+        }
+      },
+      {
+        "icon": "LayoutDashboard",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Dashboard Intuitif",
+          "en": "Intuitive Dashboard"
+        },
+        "desc": {
+          "id": "Semua informasi penting dalam satu tampilan.",
+          "en": "All the important information in one view."
+        }
+      },
+      {
+        "icon": "MessageSquare",
+        "color": "#22C55E",
+        "title": {
+          "id": "Kolaborasi Tim",
+          "en": "Team Collaboration"
+        },
+        "desc": {
+          "id": "Diskusi dan komentar di setiap tugas.",
+          "en": "Discussions and comments on every task."
+        }
+      },
+      {
+        "icon": "ShieldCheck",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Keamanan Terjamin",
+          "en": "Guaranteed Security"
+        },
+        "desc": {
+          "id": "Autentikasi aman dan proteksi data lengkap.",
+          "en": "Secure authentication and full data protection."
+        }
+      }
     ],
     "mainFeatures": [
-      { "icon": "Search", "color": "#38BDF8", "title": { "id": "Pencarian Layanan", "en": "Service Search" }, "desc": { "id": "Cari layanan dan project dengan cepat menggunakan pencarian cerdas dengan filter kategori.", "en": "Search services and projects fast with smart search and category filters." } },
-      { "icon": "FolderKanban", "color": "#8B5CF6", "title": { "id": "Manajemen Project", "en": "Project Management" }, "desc": { "id": "Kelola project dari perencanaan hingga selesai dengan kanban board yang fleksibel.", "en": "Manage projects from planning to completion with a flexible kanban board." } },
-      { "icon": "MessageSquare", "color": "#22C55E", "title": { "id": "Chat Real-time", "en": "Real-time Chat" }, "desc": { "id": "Komunikasi tim real-time dengan pesan, reaksi, dan mention antar anggota.", "en": "Real-time team chat with messages, reactions, and mentions between members." } },
-      { "icon": "Star", "color": "#F59E0B", "title": { "id": "Sistem Review", "en": "Review System" }, "desc": { "id": "Berikan dan terima ulasan untuk menjaga kualitas hasil kerja.", "en": "Give and receive reviews to keep work quality high." } },
-      { "icon": "Bell", "color": "#F43F5E", "title": { "id": "Notifikasi", "en": "Notifications" }, "desc": { "id": "Notifikasi otomatis untuk setiap update tugas, pesan, dan aktivitas tim.", "en": "Automatic notifications for every task update, message, and team activity." } }
+      {
+        "icon": "Search",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Pencarian Layanan",
+          "en": "Service Search"
+        },
+        "desc": {
+          "id": "Cari layanan dan project dengan cepat menggunakan pencarian cerdas dengan filter kategori.",
+          "en": "Search services and projects fast with smart search and category filters."
+        }
+      },
+      {
+        "icon": "FolderKanban",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Manajemen Project",
+          "en": "Project Management"
+        },
+        "desc": {
+          "id": "Kelola project dari perencanaan hingga selesai dengan kanban board yang fleksibel.",
+          "en": "Manage projects from planning to completion with a flexible kanban board."
+        }
+      },
+      {
+        "icon": "MessageSquare",
+        "color": "#22C55E",
+        "title": {
+          "id": "Chat Real-time",
+          "en": "Real-time Chat"
+        },
+        "desc": {
+          "id": "Komunikasi tim real-time dengan pesan, reaksi, dan mention antar anggota.",
+          "en": "Real-time team chat with messages, reactions, and mentions between members."
+        }
+      },
+      {
+        "icon": "Star",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Sistem Review",
+          "en": "Review System"
+        },
+        "desc": {
+          "id": "Berikan dan terima ulasan untuk menjaga kualitas hasil kerja.",
+          "en": "Give and receive reviews to keep work quality high."
+        }
+      },
+      {
+        "icon": "Bell",
+        "color": "#F43F5E",
+        "title": {
+          "id": "Notifikasi",
+          "en": "Notifications"
+        },
+        "desc": {
+          "id": "Notifikasi otomatis untuk setiap update tugas, pesan, dan aktivitas tim.",
+          "en": "Automatic notifications for every task update, message, and team activity."
+        }
+      }
     ],
-    "techStack": ["nuxt", "vue", "tailwind", "typescript", "node", "mysql", "git", "linux"],
+    "techStack": [
+      "nuxt",
+      "vue",
+      "tailwind",
+      "typescript",
+      "node",
+      "mysql",
+      "git",
+      "linux"
+    ],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": { "id": "Perencanaan", "en": "Planning" }, "desc": { "id": "Menentukan kebutuhan, scope, dan roadmap fitur.", "en": "Defining requirements, scope, and the feature roadmap." } },
-      { "num": "02", "icon": "PenTool", "title": { "id": "Desain UI/UX", "en": "UI/UX Design" }, "desc": { "id": "Membuat wireframe hingga hi-fi mockup di Figma.", "en": "Creating wireframes through hi-fi mockups in Figma." } },
-      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Implementasi frontend & backend dengan best practice.", "en": "Implementing the frontend & backend with best practices." } },
-      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Unit test, integration test, dan manual QA.", "en": "Unit tests, integration tests, and manual QA." } },
-      { "num": "05", "icon": "Rocket", "title": { "id": "Deployment", "en": "Deployment" }, "desc": { "id": "Deploy ke produksi dengan CI/CD dan monitoring.", "en": "Deploying to production with CI/CD and monitoring." } }
+      {
+        "num": "01",
+        "icon": "ClipboardList",
+        "title": {
+          "id": "Perencanaan",
+          "en": "Planning"
+        },
+        "desc": {
+          "id": "Menentukan kebutuhan, scope, dan roadmap fitur.",
+          "en": "Defining requirements, scope, and the feature roadmap."
+        }
+      },
+      {
+        "num": "02",
+        "icon": "PenTool",
+        "title": {
+          "id": "Desain UI/UX",
+          "en": "UI/UX Design"
+        },
+        "desc": {
+          "id": "Membuat wireframe hingga hi-fi mockup di Figma.",
+          "en": "Creating wireframes through hi-fi mockups in Figma."
+        }
+      },
+      {
+        "num": "03",
+        "icon": "Code2",
+        "title": {
+          "id": "Pengembangan",
+          "en": "Development"
+        },
+        "desc": {
+          "id": "Implementasi frontend & backend dengan best practice.",
+          "en": "Implementing the frontend & backend with best practices."
+        }
+      },
+      {
+        "num": "04",
+        "icon": "Bug",
+        "title": {
+          "id": "Pengujian",
+          "en": "Testing"
+        },
+        "desc": {
+          "id": "Unit test, integration test, dan manual QA.",
+          "en": "Unit tests, integration tests, and manual QA."
+        }
+      },
+      {
+        "num": "05",
+        "icon": "Rocket",
+        "title": {
+          "id": "Deployment",
+          "en": "Deployment"
+        },
+        "desc": {
+          "id": "Deploy ke produksi dengan CI/CD dan monitoring.",
+          "en": "Deploying to production with CI/CD and monitoring."
+        }
+      }
     ],
     "challenges": [
-      { "title": { "id": "Sinkronisasi data real-time", "en": "Real-time data sync" }, "desc": { "id": "Memastikan pesan dan update status tim tampil hampir instan di semua perangkat menggunakan WebSocket dan optimasi payload.", "en": "Making messages and team status updates appear almost instantly across devices using WebSockets and payload optimizations." } },
-      { "title": { "id": "Performa pada data besar", "en": "Performance with large data" }, "desc": { "id": "Mengatasi kelambatan saat dataset besar dengan pagination, virtual scrolling, dan indeks database yang tepat.", "en": "Avoiding slowdowns with large datasets using pagination, virtual scrolling, and proper database indexes." } },
-      { "title": { "id": "Keamanan autentikasi", "en": "Authentication security" }, "desc": { "id": "Menerapkan JWT dengan refresh token, proteksi CSRF, dan enkripsi data sensitif untuk menjaga keamanan akun.", "en": "Implementing JWT with refresh tokens, CSRF protection, and sensitive-data encryption to keep accounts secure." } },
-      { "title": { "id": "Skalabilitas & maintenance", "en": "Scalability & maintenance" }, "desc": { "id": "Arsitektur modular dengan code splitting dan dokumentasi yang jelas agar mudah dikembangkan tim lain.", "en": "A modular architecture with code splitting and clear documentation so other teams can extend it easily." } }
+      {
+        "title": {
+          "id": "Sinkronisasi data real-time",
+          "en": "Real-time data sync"
+        },
+        "desc": {
+          "id": "Memastikan pesan dan update status tim tampil hampir instan di semua perangkat menggunakan WebSocket dan optimasi payload.",
+          "en": "Making messages and team status updates appear almost instantly across devices using WebSockets and payload optimizations."
+        }
+      },
+      {
+        "title": {
+          "id": "Performa pada data besar",
+          "en": "Performance with large data"
+        },
+        "desc": {
+          "id": "Mengatasi kelambatan saat dataset besar dengan pagination, virtual scrolling, dan indeks database yang tepat.",
+          "en": "Avoiding slowdowns with large datasets using pagination, virtual scrolling, and proper database indexes."
+        }
+      },
+      {
+        "title": {
+          "id": "Keamanan autentikasi",
+          "en": "Authentication security"
+        },
+        "desc": {
+          "id": "Menerapkan JWT dengan refresh token, proteksi CSRF, dan enkripsi data sensitif untuk menjaga keamanan akun.",
+          "en": "Implementing JWT with refresh tokens, CSRF protection, and sensitive-data encryption to keep accounts secure."
+        }
+      },
+      {
+        "title": {
+          "id": "Skalabilitas & maintenance",
+          "en": "Scalability & maintenance"
+        },
+        "desc": {
+          "id": "Arsitektur modular dengan code splitting dan dokumentasi yang jelas agar mudah dikembangkan tim lain.",
+          "en": "A modular architecture with code splitting and clear documentation so other teams can extend it easily."
+        }
+      }
     ],
     "results": [
-      { "icon": "Users", "value": { "id": "1.000+", "en": "1,000+" }, "label": { "id": "Pengguna Terdaftar", "en": "Registered Users" } },
-      { "icon": "FolderCheck", "value": { "id": "500+", "en": "500+" }, "label": { "id": "Project Selesai", "en": "Completed Projects" } },
-      { "icon": "Star", "value": { "id": "4.8/5", "en": "4.8/5" }, "label": { "id": "Rating Rata-rata", "en": "Average Rating" } },
-      { "icon": "Activity", "value": { "id": "99.9%", "en": "99.9%" }, "label": { "id": "Uptime Aplikasi", "en": "App Uptime" } }
+      {
+        "icon": "Users",
+        "value": {
+          "id": "1.000+",
+          "en": "1,000+"
+        },
+        "label": {
+          "id": "Pengguna Terdaftar",
+          "en": "Registered Users"
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "value": {
+          "id": "500+",
+          "en": "500+"
+        },
+        "label": {
+          "id": "Project Selesai",
+          "en": "Completed Projects"
+        }
+      },
+      {
+        "icon": "Star",
+        "value": {
+          "id": "4.8/5",
+          "en": "4.8/5"
+        },
+        "label": {
+          "id": "Rating Rata-rata",
+          "en": "Average Rating"
+        }
+      },
+      {
+        "icon": "Activity",
+        "value": {
+          "id": "99.9%",
+          "en": "99.9%"
+        },
+        "label": {
+          "id": "Uptime Aplikasi",
+          "en": "App Uptime"
+        }
+      }
     ],
     "gallery": [
-      { "label": { "id": "Dashboard", "en": "Dashboard" }, "seed": 1 },
-      { "label": { "id": "Kanban Board", "en": "Kanban Board" }, "seed": 2 },
-      { "label": { "id": "Chat Real-time", "en": "Real-time Chat" }, "seed": 3 },
-      { "label": { "id": "Detail Project", "en": "Project Detail" }, "seed": 4 },
-      { "label": { "id": "Halaman Auth", "en": "Auth Page" }, "seed": 5 }
+      {
+        "label": {
+          "id": "Dashboard",
+          "en": "Dashboard"
+        },
+        "seed": 1
+      },
+      {
+        "label": {
+          "id": "Kanban Board",
+          "en": "Kanban Board"
+        },
+        "seed": 2
+      },
+      {
+        "label": {
+          "id": "Chat Real-time",
+          "en": "Real-time Chat"
+        },
+        "seed": 3
+      },
+      {
+        "label": {
+          "id": "Detail Project",
+          "en": "Project Detail"
+        },
+        "seed": 4
+      },
+      {
+        "label": {
+          "id": "Halaman Auth",
+          "en": "Auth Page"
+        },
+        "seed": 5
+      }
     ]
   }
 }

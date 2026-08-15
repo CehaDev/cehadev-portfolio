@@ -1,6 +1,9 @@
 {
   "slug": "cehava-store",
-  "title": { "id": "Cehava Store", "en": "Cehava Store" },
+  "title": {
+    "id": "Cehava Store",
+    "en": "Cehava Store"
+  },
   "tagline": {
     "id": "Toko online modern dengan manajemen produk dan checkout yang mulus.",
     "en": "A modern online store with smooth product management and checkout."
@@ -10,29 +13,80 @@
     "en": "An e-commerce app with a product catalog, shopping cart, payments, and an admin dashboard to manage the store."
   },
   "tags": [
-    { "id": "Nuxt.js", "en": "Nuxt.js" },
-    { "id": "Vue.js", "en": "Vue.js" },
-    { "id": "Tailwind CSS", "en": "Tailwind CSS" },
-    { "id": "Node.js", "en": "Node.js" }
+    {
+      "id": "Nuxt.js",
+      "en": "Nuxt.js"
+    },
+    {
+      "id": "Vue.js",
+      "en": "Vue.js"
+    },
+    {
+      "id": "Tailwind CSS",
+      "en": "Tailwind CSS"
+    },
+    {
+      "id": "Node.js",
+      "en": "Node.js"
+    }
   ],
-  "tech": ["nuxt", "vue", "tailwind", "node", "mysql"],
-  "category": { "id": "E-Commerce", "en": "E-Commerce" },
+  "tech": [
+    "nuxt",
+    "vue",
+    "tailwind",
+    "node",
+    "mysql"
+  ],
+  "category": {
+    "id": "E-Commerce",
+    "en": "E-Commerce"
+  },
   "year": "2025",
-  "role": { "id": "Full-Stack Developer", "en": "Full-Stack Developer" },
-  "duration": { "id": "3 Bulan", "en": "3 Months" },
+  "role": {
+    "id": "Full-Stack Developer",
+    "en": "Full-Stack Developer"
+  },
+  "duration": {
+    "id": "3 Bulan",
+    "en": "3 Months"
+  },
   "featured": true,
   "liveUrl": "https://cehava-store.example.com",
   "githubUrl": "https://github.com/cehadev/cehava-store",
   "demo": {
     "enabled": true,
-    "type": "store",
+    "type": "studio",
     "title": {
-      "id": "Coba belanja di Cehava Store",
-      "en": "Try shopping on Cehava Store"
+      "id": "Jelajahi source & coba toko Cehava Store",
+      "en": "Explore the source & try the Cehava Store"
     },
     "note": {
-      "id": "Katalog, keranjang, dan checkout — semua berjalan di browser Anda.",
-      "en": "Catalog, cart, and checkout — all running in your browser."
+      "id": "Project web HTML/CSS/JS yang berjalan langsung — jelajahi file di sebelah kiri, hasilnya tampil di Live Preview.",
+      "en": "A web project (HTML/CSS/JS) running live — explore files on the left, the result shows in the Live Preview."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "index.html",
+          "language": "html",
+          "content": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Cehava Store — Demo</title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n</head>\n<body>\n  <header class=\"topbar\">\n    <div class=\"brand\"><span class=\"logo\">C</span> Cehava Store</div>\n    <button id=\"cartBtn\" class=\"cart\">Keranjang (<b id=\"cartCount\">0</b>)</button>\n  </header>\n  <div class=\"layout\">\n    <main>\n      <h2>Katalog Produk</h2>\n      <div id=\"products\" class=\"products\"></div>\n    </main>\n    <aside id=\"cartPanel\" class=\"cart-panel hidden\">\n      <h3>Keranjang Anda</h3>\n      <ul id=\"cartList\"></ul>\n      <p class=\"total\"><span>Total</span><b id=\"total\">Rp 0</b></p>\n      <button id=\"checkoutBtn\" class=\"btn checkout\">Checkout Sekarang</button>\n    </aside>\n  </div>\n  <div id=\"toast\" class=\"toast hidden\"></div>\n  <script src=\"js/app.js\"></script>\n</body>\n</html>"
+        },
+        {
+          "name": "css/style.css",
+          "language": "css",
+          "content": "* { margin: 0; padding: 0; box-sizing: border-box; }\nbody {\n  font-family: system-ui, -apple-system, sans-serif;\n  background: #f1f5f9;\n  color: #0f172a;\n  min-height: 100vh;\n}\n.topbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  background: #0f172a;\n  color: #fff;\n  padding: 14px 18px;\n}\n.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; }\n.logo {\n  background: #f59e0b; color: #0f172a;\n  width: 28px; height: 28px; border-radius: 8px;\n  display: grid; place-items: center; font-weight: 900;\n}\n.cart {\n  background: #f59e0b; border: 0; color: #0f172a;\n  padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;\n}\n.layout { display: grid; grid-template-columns: 1fr 320px; gap: 18px; padding: 18px; align-items: start; }\nh2 { font-size: 18px; margin-bottom: 12px; }\n.products { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }\n.product {\n  background: #fff; border-radius: 14px; padding: 14px;\n  text-align: center; border: 1px solid #e2e8f0;\n}\n.emoji { font-size: 34px; }\n.name { font-weight: 600; font-size: 13px; margin: 6px 0; }\n.price { color: #f59e0b; font-weight: 800; margin-bottom: 8px; }\n.btn { background: #0f172a; color: #fff; border: 0; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }\n.cart-panel {\n  background: #fff; border-radius: 14px; padding: 16px;\n  border: 1px solid #e2e8f0; position: sticky; top: 18px;\n}\n.cart-panel h3 { margin-bottom: 10px; font-size: 16px; }\nul { list-style: none; }\nli {\n  display: flex; align-items: center; justify-content: space-between;\n  gap: 8px; font-size: 13px; padding: 8px 0; border-bottom: 1px solid #e2e8f0;\n}\nli .name { margin: 0; font-weight: 500; }\nli button {\n  border: 1px solid #cbd5e1; background: #fff;\n  width: 22px; height: 22px; border-radius: 6px; cursor: pointer; font-weight: 700;\n}\nli .empty { border: 0; color: #94a3b8; }\n.total { margin-top: 12px; font-size: 15px; display: flex; justify-content: space-between; }\n.checkout {\n  width: 100%; background: #22c55e; color: #fff;\n  border: 0; padding: 11px; border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 10px;\n}\n.toast {\n  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);\n  background: #0f172a; color: #fff; padding: 10px 18px;\n  border-radius: 10px; font-size: 13px; z-index: 10;\n}\n.hidden { display: none; }"
+        },
+        {
+          "name": "js/app.js",
+          "language": "javascript",
+          "content": "const products = [\n  { id: 1, name: 'Kaos Polos Premium', price: 85000, emoji: '👕' },\n  { id: 2, name: 'Hoodie Oversize', price: 165000, emoji: '🧥' },\n  { id: 3, name: 'Tote Bag Kanvas', price: 45000, emoji: '👜' },\n  { id: 4, name: 'Topi Snapback', price: 65000, emoji: '🧢' },\n  { id: 5, name: 'Botol Minum 500ml', price: 55000, emoji: '🍶' },\n  { id: 6, name: 'Gantungan Kunci', price: 15000, emoji: '🔑' }\n]\nlet cart = []\nconst fmt = (n) => 'Rp ' + n.toLocaleString('id-ID')\n\nconst grid = document.getElementById('products')\ngrid.innerHTML = products.map((p) => `\n  <div class=\"product\">\n    <span class=\"emoji\">${p.emoji}</span>\n    <p class=\"name\">${p.name}</p>\n    <p class=\"price\">${fmt(p.price)}</p>\n    <button class=\"btn\" onclick=\"addToCart(${p.id})\">Tambah</button>\n  </div>`).join('')\n\nfunction addToCart(id) {\n  const p = products.find((x) => x.id === id)\n  const item = cart.find((c) => c.id === id)\n  if (item) item.qty++\n  else cart.push({ ...p, qty: 1 })\n  render()\n  toast(p.name + ' ditambahkan ke keranjang')\n}\n\nfunction changeQty(id, delta) {\n  const item = cart.find((c) => c.id === id)\n  if (!item) return\n  item.qty += delta\n  if (item.qty <= 0) cart = cart.filter((c) => c.id !== id)\n  render()\n}\n\nfunction render() {\n  document.getElementById('cartCount').textContent = cart.reduce((s, c) => s + c.qty, 0)\n  document.getElementById('total').textContent = fmt(cart.reduce((s, c) => s + c.qty * c.price, 0))\n  document.getElementById('cartList').innerHTML = cart.length\n    ? cart.map((c) => `<li><span class=\"name\">${c.emoji} ${c.name}</span><span><button onclick=\"changeQty(${c.id},-1)\">−</button> ${c.qty} <button onclick=\"changeQty(${c.id},1)\">+</button></span><b>${fmt(c.qty * c.price)}</b></li>`).join('')\n    : '<li class=\"empty\">Keranjang masih kosong</li>'\n}\n\ndocument.getElementById('cartBtn').addEventListener('click', () => {\n  document.getElementById('cartPanel').classList.toggle('hidden')\n})\ndocument.getElementById('checkoutBtn').addEventListener('click', () => {\n  if (!cart.length) return toast('Keranjang masih kosong')\n  cart = []\n  render()\n  document.getElementById('cartPanel').classList.add('hidden')\n  toast('Checkout berhasil! Terima kasih 🙌')\n})\n\nlet toastTimer\nfunction toast(msg) {\n  const t = document.getElementById('toast')\n  t.textContent = msg\n  t.classList.remove('hidden')\n  clearTimeout(toastTimer)\n  toastTimer = setTimeout(() => t.classList.add('hidden'), 2200)\n}\n\nrender()"
+        },
+        {
+          "name": "README.md",
+          "language": "markdown",
+          "content": "# Cehava Store — Mini\n\nVersi demo toko online dengan HTML + CSS + JavaScript murni (tanpa framework).\n\n## Fitur\n- Katalog produk dalam bentuk grid\n- Keranjang belanja (tambah / kurangi jumlah)\n- Total harga dihitung otomatis\n- Checkout simulasi\n\n## Cara menjalankan\nBuka `index.html` di browser mana pun."
+        }
+      ]
     }
   },
   "detail": {
@@ -41,43 +95,300 @@
       "en": "Cehava Store is an e-commerce app designed to deliver a seamless shopping experience from catalog to checkout. Admins can manage products, stock, categories, and orders through a complete yet easy-to-use dashboard.\n\nBuilt with Nuxt 3 on the frontend and Node.js on the backend, Cehava Store emphasizes fast page loads and an intuitive buying flow. All product and transaction data is stored in MySQL with an optimized structure."
     },
     "featureHighlights": [
-      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": { "id": "Katalog Produk", "en": "Product Catalog" }, "desc": { "id": "Kelola produk, stok, dan kategori dalam satu dashboard.", "en": "Manage products, stock, and categories in one dashboard." } },
-      { "icon": "ShieldCheck", "color": "#22C55E", "title": { "id": "Checkout Aman", "en": "Secure Checkout" }, "desc": { "id": "Alur pembayaran dengan validasi dan proteksi data lengkap.", "en": "Payment flow with full validation and data protection." } },
-      { "icon": "Search", "color": "#8B5CF6", "title": { "id": "Pencarian & Filter", "en": "Search & Filter" }, "desc": { "id": "Temukan produk cepat dengan filter harga, kategori, dan rating.", "en": "Find products fast with price, category, and rating filters." } },
-      { "icon": "Activity", "color": "#F59E0B", "title": { "id": "Laporan Penjualan", "en": "Sales Reports" }, "desc": { "id": "Pantau performa toko dengan grafik dan rekap transaksi.", "en": "Monitor store performance with charts and transaction summaries." } }
+      {
+        "icon": "LayoutDashboard",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Katalog Produk",
+          "en": "Product Catalog"
+        },
+        "desc": {
+          "id": "Kelola produk, stok, dan kategori dalam satu dashboard.",
+          "en": "Manage products, stock, and categories in one dashboard."
+        }
+      },
+      {
+        "icon": "ShieldCheck",
+        "color": "#22C55E",
+        "title": {
+          "id": "Checkout Aman",
+          "en": "Secure Checkout"
+        },
+        "desc": {
+          "id": "Alur pembayaran dengan validasi dan proteksi data lengkap.",
+          "en": "Payment flow with full validation and data protection."
+        }
+      },
+      {
+        "icon": "Search",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Pencarian & Filter",
+          "en": "Search & Filter"
+        },
+        "desc": {
+          "id": "Temukan produk cepat dengan filter harga, kategori, dan rating.",
+          "en": "Find products fast with price, category, and rating filters."
+        }
+      },
+      {
+        "icon": "Activity",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Laporan Penjualan",
+          "en": "Sales Reports"
+        },
+        "desc": {
+          "id": "Pantau performa toko dengan grafik dan rekap transaksi.",
+          "en": "Monitor store performance with charts and transaction summaries."
+        }
+      }
     ],
     "mainFeatures": [
-      { "icon": "FolderKanban", "color": "#38BDF8", "title": { "id": "Manajemen Produk", "en": "Product Management" }, "desc": { "id": "Tambah, ubah, dan hapus produk lengkap dengan gambar, varian, dan harga.", "en": "Add, edit, and remove products with images, variants, and pricing." } },
-      { "icon": "Search", "color": "#8B5CF6", "title": { "id": "Pencarian Cerdas", "en": "Smart Search" }, "desc": { "id": "Pencarian produk instan dengan filter kategori, harga, dan ketersediaan stok.", "en": "Instant product search with category, price, and stock filters." } },
-      { "icon": "FolderCheck", "color": "#22C55E", "title": { "id": "Keranjang Belanja", "en": "Shopping Cart" }, "desc": { "id": "Keranjang yang sinkron antar perangkat dengan perhitungan ongkir otomatis.", "en": "A cart that syncs across devices with automatic shipping calculation." } },
-      { "icon": "ShieldCheck", "color": "#F59E0B", "title": { "id": "Pembayaran Aman", "en": "Secure Payments" }, "desc": { "id": "Integrasi pembayaran dengan validasi transaksi dan status pesanan real-time.", "en": "Payment integration with transaction validation and real-time order status." } },
-      { "icon": "Bell", "color": "#F43F5E", "title": { "id": "Notifikasi Pesanan", "en": "Order Notifications" }, "desc": { "id": "Notifikasi otomatis untuk pesanan baru, pembayaran, dan pengiriman.", "en": "Automatic notifications for new orders, payments, and shipping." } }
+      {
+        "icon": "FolderKanban",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Manajemen Produk",
+          "en": "Product Management"
+        },
+        "desc": {
+          "id": "Tambah, ubah, dan hapus produk lengkap dengan gambar, varian, dan harga.",
+          "en": "Add, edit, and remove products with images, variants, and pricing."
+        }
+      },
+      {
+        "icon": "Search",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Pencarian Cerdas",
+          "en": "Smart Search"
+        },
+        "desc": {
+          "id": "Pencarian produk instan dengan filter kategori, harga, dan ketersediaan stok.",
+          "en": "Instant product search with category, price, and stock filters."
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "color": "#22C55E",
+        "title": {
+          "id": "Keranjang Belanja",
+          "en": "Shopping Cart"
+        },
+        "desc": {
+          "id": "Keranjang yang sinkron antar perangkat dengan perhitungan ongkir otomatis.",
+          "en": "A cart that syncs across devices with automatic shipping calculation."
+        }
+      },
+      {
+        "icon": "ShieldCheck",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Pembayaran Aman",
+          "en": "Secure Payments"
+        },
+        "desc": {
+          "id": "Integrasi pembayaran dengan validasi transaksi dan status pesanan real-time.",
+          "en": "Payment integration with transaction validation and real-time order status."
+        }
+      },
+      {
+        "icon": "Bell",
+        "color": "#F43F5E",
+        "title": {
+          "id": "Notifikasi Pesanan",
+          "en": "Order Notifications"
+        },
+        "desc": {
+          "id": "Notifikasi otomatis untuk pesanan baru, pembayaran, dan pengiriman.",
+          "en": "Automatic notifications for new orders, payments, and shipping."
+        }
+      }
     ],
-    "techStack": ["nuxt", "vue", "tailwind", "node", "mysql"],
+    "techStack": [
+      "nuxt",
+      "vue",
+      "tailwind",
+      "node",
+      "mysql"
+    ],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": { "id": "Perencanaan", "en": "Planning" }, "desc": { "id": "Menentukan kebutuhan toko, alur belanja, dan struktur produk.", "en": "Defining store requirements, shopping flow, and product structure." } },
-      { "num": "02", "icon": "PenTool", "title": { "id": "Desain UI/UX", "en": "UI/UX Design" }, "desc": { "id": "Wireframe dan mockup untuk katalog, keranjang, dan checkout.", "en": "Wireframes and mockups for the catalog, cart, and checkout." } },
-      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Implementasi frontend, backend, dan integrasi pembayaran.", "en": "Implementing the frontend, backend, and payment integration." } },
-      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Uji alur pembelian dari katalog hingga konfirmasi pesanan.", "en": "Testing the purchase flow from catalog to order confirmation." } },
-      { "num": "05", "icon": "Rocket", "title": { "id": "Deployment", "en": "Deployment" }, "desc": { "id": "Deploy ke produksi dengan monitoring transaksi dan performa.", "en": "Deploying to production with transaction and performance monitoring." } }
+      {
+        "num": "01",
+        "icon": "ClipboardList",
+        "title": {
+          "id": "Perencanaan",
+          "en": "Planning"
+        },
+        "desc": {
+          "id": "Menentukan kebutuhan toko, alur belanja, dan struktur produk.",
+          "en": "Defining store requirements, shopping flow, and product structure."
+        }
+      },
+      {
+        "num": "02",
+        "icon": "PenTool",
+        "title": {
+          "id": "Desain UI/UX",
+          "en": "UI/UX Design"
+        },
+        "desc": {
+          "id": "Wireframe dan mockup untuk katalog, keranjang, dan checkout.",
+          "en": "Wireframes and mockups for the catalog, cart, and checkout."
+        }
+      },
+      {
+        "num": "03",
+        "icon": "Code2",
+        "title": {
+          "id": "Pengembangan",
+          "en": "Development"
+        },
+        "desc": {
+          "id": "Implementasi frontend, backend, dan integrasi pembayaran.",
+          "en": "Implementing the frontend, backend, and payment integration."
+        }
+      },
+      {
+        "num": "04",
+        "icon": "Bug",
+        "title": {
+          "id": "Pengujian",
+          "en": "Testing"
+        },
+        "desc": {
+          "id": "Uji alur pembelian dari katalog hingga konfirmasi pesanan.",
+          "en": "Testing the purchase flow from catalog to order confirmation."
+        }
+      },
+      {
+        "num": "05",
+        "icon": "Rocket",
+        "title": {
+          "id": "Deployment",
+          "en": "Deployment"
+        },
+        "desc": {
+          "id": "Deploy ke produksi dengan monitoring transaksi dan performa.",
+          "en": "Deploying to production with transaction and performance monitoring."
+        }
+      }
     ],
     "challenges": [
-      { "title": { "id": "Sinkronisasi keranjang", "en": "Cart synchronization" }, "desc": { "id": "Memastikan isi keranjang tetap konsisten saat user berpindah perangkat dengan penyimpanan cloud dan token yang valid.", "en": "Keeping the cart consistent when users switch devices using cloud storage and valid tokens." } },
-      { "title": { "id": "Performa katalog besar", "en": "Large catalog performance" }, "desc": { "id": "Mengoptimalkan query produk dengan indeks, pagination, dan lazy-loading gambar.", "en": "Optimizing product queries with indexes, pagination, and lazy-loaded images." } },
-      { "title": { "id": "Validasi transaksi", "en": "Transaction validation" }, "desc": { "id": "Menjaga keakuratan status pesanan dengan state machine dan proteksi duplikasi pembayaran.", "en": "Keeping order status accurate with a state machine and duplicate-payment protection." } }
+      {
+        "title": {
+          "id": "Sinkronisasi keranjang",
+          "en": "Cart synchronization"
+        },
+        "desc": {
+          "id": "Memastikan isi keranjang tetap konsisten saat user berpindah perangkat dengan penyimpanan cloud dan token yang valid.",
+          "en": "Keeping the cart consistent when users switch devices using cloud storage and valid tokens."
+        }
+      },
+      {
+        "title": {
+          "id": "Performa katalog besar",
+          "en": "Large catalog performance"
+        },
+        "desc": {
+          "id": "Mengoptimalkan query produk dengan indeks, pagination, dan lazy-loading gambar.",
+          "en": "Optimizing product queries with indexes, pagination, and lazy-loaded images."
+        }
+      },
+      {
+        "title": {
+          "id": "Validasi transaksi",
+          "en": "Transaction validation"
+        },
+        "desc": {
+          "id": "Menjaga keakuratan status pesanan dengan state machine dan proteksi duplikasi pembayaran.",
+          "en": "Keeping order status accurate with a state machine and duplicate-payment protection."
+        }
+      }
     ],
     "results": [
-      { "icon": "Users", "value": { "id": "500+", "en": "500+" }, "label": { "id": "Pengguna Aktif", "en": "Active Users" } },
-      { "icon": "FolderCheck", "value": { "id": "2.000+", "en": "2,000+" }, "label": { "id": "Transaksi Selesai", "en": "Completed Transactions" } },
-      { "icon": "Star", "value": { "id": "4.7/5", "en": "4.7/5" }, "label": { "id": "Rating Pelanggan", "en": "Customer Rating" } },
-      { "icon": "Activity", "value": { "id": "99.5%", "en": "99.5%" }, "label": { "id": "Uptime Aplikasi", "en": "App Uptime" } }
+      {
+        "icon": "Users",
+        "value": {
+          "id": "500+",
+          "en": "500+"
+        },
+        "label": {
+          "id": "Pengguna Aktif",
+          "en": "Active Users"
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "value": {
+          "id": "2.000+",
+          "en": "2,000+"
+        },
+        "label": {
+          "id": "Transaksi Selesai",
+          "en": "Completed Transactions"
+        }
+      },
+      {
+        "icon": "Star",
+        "value": {
+          "id": "4.7/5",
+          "en": "4.7/5"
+        },
+        "label": {
+          "id": "Rating Pelanggan",
+          "en": "Customer Rating"
+        }
+      },
+      {
+        "icon": "Activity",
+        "value": {
+          "id": "99.5%",
+          "en": "99.5%"
+        },
+        "label": {
+          "id": "Uptime Aplikasi",
+          "en": "App Uptime"
+        }
+      }
     ],
     "gallery": [
-      { "label": { "id": "Katalog Produk", "en": "Product Catalog" }, "seed": 21 },
-      { "label": { "id": "Detail Produk", "en": "Product Detail" }, "seed": 22 },
-      { "label": { "id": "Keranjang", "en": "Cart" }, "seed": 23 },
-      { "label": { "id": "Dashboard Admin", "en": "Admin Dashboard" }, "seed": 24 },
-      { "label": { "id": "Checkout", "en": "Checkout" }, "seed": 25 }
+      {
+        "label": {
+          "id": "Katalog Produk",
+          "en": "Product Catalog"
+        },
+        "seed": 21
+      },
+      {
+        "label": {
+          "id": "Detail Produk",
+          "en": "Product Detail"
+        },
+        "seed": 22
+      },
+      {
+        "label": {
+          "id": "Keranjang",
+          "en": "Cart"
+        },
+        "seed": 23
+      },
+      {
+        "label": {
+          "id": "Dashboard Admin",
+          "en": "Admin Dashboard"
+        },
+        "seed": 24
+      },
+      {
+        "label": {
+          "id": "Checkout",
+          "en": "Checkout"
+        },
+        "seed": 25
+      }
     ]
   }
 }

@@ -22,7 +22,8 @@ const demoBadges: Record<string, string> = {
   dashboard: 'Dashboard',
   api: 'API',
   todo: 'Task',
-  code: 'Code'
+  code: 'Code',
+  studio: 'Studio'
 }
 
 function demoTypeOf(p: { demo?: { enabled?: boolean; type?: string } }): string | null {

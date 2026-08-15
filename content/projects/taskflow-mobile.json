@@ -1,6 +1,9 @@
 {
   "slug": "taskflow-mobile",
-  "title": { "id": "TaskFlow Mobile", "en": "TaskFlow Mobile" },
+  "title": {
+    "id": "TaskFlow Mobile",
+    "en": "TaskFlow Mobile"
+  },
   "tagline": {
     "id": "Aplikasi manajemen tugas harian yang ringan dan cepat.",
     "en": "A lightweight and fast daily task management app."
@@ -10,27 +13,74 @@
     "en": "A mobile-first app to manage daily tasks with notifications, priority tags, and cloud sync."
   },
   "tags": [
-    { "id": "Vue.js", "en": "Vue.js" },
-    { "id": "Node.js", "en": "Node.js" },
-    { "id": "Tailwind CSS", "en": "Tailwind CSS" }
+    {
+      "id": "Vue.js",
+      "en": "Vue.js"
+    },
+    {
+      "id": "Node.js",
+      "en": "Node.js"
+    },
+    {
+      "id": "Tailwind CSS",
+      "en": "Tailwind CSS"
+    }
   ],
-  "tech": ["vue", "node", "tailwind", "mysql"],
-  "category": { "id": "Aplikasi Mobile", "en": "Mobile App" },
+  "tech": [
+    "vue",
+    "node",
+    "tailwind",
+    "mysql"
+  ],
+  "category": {
+    "id": "Aplikasi Mobile",
+    "en": "Mobile App"
+  },
   "year": "2024",
-  "role": { "id": "Full-Stack Developer", "en": "Full-Stack Developer" },
-  "duration": { "id": "3 Bulan", "en": "3 Months" },
+  "role": {
+    "id": "Full-Stack Developer",
+    "en": "Full-Stack Developer"
+  },
+  "duration": {
+    "id": "3 Bulan",
+    "en": "3 Months"
+  },
   "liveUrl": "https://taskflow.example.com",
   "githubUrl": "https://github.com/cehadev/taskflow",
   "demo": {
     "enabled": true,
-    "type": "todo",
+    "type": "studio",
     "title": {
-      "id": "Coba TaskFlow Mobile",
-      "en": "Try TaskFlow Mobile"
+      "id": "Jelajahi source & coba TaskFlow Mobile",
+      "en": "Explore the source & try the TaskFlow Mobile"
     },
     "note": {
-      "id": "Manajemen tugas harian bergaya mobile, jalan di browser.",
-      "en": "A mobile-style daily task manager, running in your browser."
+      "id": "Project web HTML/CSS/JS yang berjalan langsung — jelajahi file di sebelah kiri, hasilnya tampil di Live Preview.",
+      "en": "A web project (HTML/CSS/JS) running live — explore files on the left, the result shows in the Live Preview."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "index.html",
+          "language": "html",
+          "content": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>TaskFlow — Mini</title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n</head>\n<body>\n  <div class=\"phone\">\n    <header>\n      <div>\n        <h1>TaskFlow</h1>\n        <p id=\"dateLabel\">Hari ini</p>\n      </div>\n      <span id=\"pct\" class=\"pct\">0%</span>\n    </header>\n    <div class=\"progress\"><span id=\"bar\"></span></div>\n    <form id=\"form\">\n      <input id=\"input\" placeholder=\"Tambahkan tugas...\" maxlength=\"60\">\n      <button>+</button>\n    </form>\n    <ul id=\"list\"></ul>\n    <footer>\n      <button id=\"clearBtn\">Hapus yang selesai</button>\n    </footer>\n  </div>\n  <script src=\"js/app.js\"></script>\n</body>\n</html>"
+        },
+        {
+          "name": "css/style.css",
+          "language": "css",
+          "content": "* { margin: 0; padding: 0; box-sizing: border-box; }\nbody {\n  font-family: system-ui, -apple-system, sans-serif;\n  background: #e2e8f0; min-height: 100vh;\n  display: grid; place-items: center; padding: 20px;\n}\n.phone {\n  width: 100%; max-width: 380px; background: #0f172a; border-radius: 28px;\n  padding: 22px; color: #fff; box-shadow: 0 12px 30px rgba(0, 0, 0, .25);\n}\nheader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }\nh1 { font-size: 20px; font-weight: 800; }\nheader p { font-size: 11px; color: #94a3b8; margin-top: 2px; }\n.pct { font-size: 18px; font-weight: 800; color: #38bdf8; }\n.progress {\n  height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-bottom: 16px;\n}\n#bar {\n  display: block; height: 100%; width: 0%;\n  background: linear-gradient(90deg, #38bdf8, #22c55e);\n  transition: width .3s; border-radius: 99px;\n}\nform { display: flex; gap: 8px; margin-bottom: 14px; }\ninput {\n  flex: 1; background: #1e293b; border: 1px solid #334155; color: #fff;\n  border-radius: 10px; padding: 11px 12px; font-size: 14px;\n}\nform button {\n  width: 44px; border: 0; border-radius: 10px; background: #38bdf8;\n  color: #0f172a; font-size: 20px; font-weight: 800; cursor: pointer;\n}\nul { list-style: none; }\nli {\n  display: flex; align-items: center; gap: 10px; background: #1e293b;\n  border: 1px solid #334155; border-radius: 12px; padding: 10px 12px;\n  margin-bottom: 8px; font-size: 14px;\n}\nli.done span { text-decoration: line-through; color: #64748b; }\n.check {\n  width: 24px; height: 24px; border-radius: 7px; border: 2px solid #38bdf8;\n  background: transparent; color: #0f172a; font-weight: 900; cursor: pointer;\n  display: grid; place-items: center;\n}\nli.done .check { background: #22c55e; border-color: #22c55e; color: #0f172a; }\n.del { margin-left: auto; background: transparent; border: 0; color: #64748b; font-size: 18px; cursor: pointer; }\nfooter { margin-top: 14px; text-align: center; }\n#clearBtn {\n  background: transparent; border: 1px solid #334155; color: #94a3b8;\n  border-radius: 10px; padding: 8px 14px; font-size: 12px; cursor: pointer;\n}"
+        },
+        {
+          "name": "js/app.js",
+          "language": "javascript",
+          "content": "let tasks = [\n  { id: 1, text: 'Review desain landing page', done: false },\n  { id: 2, text: 'Panggilan tim produk', done: true },\n  { id: 3, text: 'Siapkan laporan mingguan', done: false },\n  { id: 4, text: 'Update dokumentasi API', done: false }\n]\nlet seq = 5\nconst list = document.getElementById('list')\nconst form = document.getElementById('form')\nconst input = document.getElementById('input')\n\nfunction render() {\n  list.innerHTML = ''\n  tasks.forEach((t) => {\n    const li = document.createElement('li')\n    li.className = t.done ? 'done' : ''\n    li.innerHTML = `<button class=\"check\" data-id=\"${t.id}\">${t.done ? '✓' : ''}</button><span>${t.text}</span><button class=\"del\" data-id=\"${t.id}\">×</button>`\n    list.appendChild(li)\n  })\n  const done = tasks.filter((t) => t.done).length\n  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0\n  document.getElementById('pct').textContent = pct + '%'\n  document.getElementById('bar').style.width = pct + '%'\n  document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })\n}\n\nlist.addEventListener('click', (e) => {\n  const id = Number(e.target.dataset.id)\n  const t = tasks.find((x) => x.id === id)\n  if (!t) return\n  if (e.target.classList.contains('check')) t.done = !t.done\n  if (e.target.classList.contains('del')) tasks = tasks.filter((x) => x.id !== id)\n  render()\n})\n\nform.addEventListener('submit', (e) => {\n  e.preventDefault()\n  const text = input.value.trim()\n  if (!text) return\n  tasks.push({ id: seq++, text, done: false })\n  input.value = ''\n  render()\n})\n\ndocument.getElementById('clearBtn').addEventListener('click', () => {\n  tasks = tasks.filter((t) => !t.done)\n  render()\n})\n\nrender()"
+        },
+        {
+          "name": "README.md",
+          "language": "markdown",
+          "content": "# TaskFlow — Mini\n\nTodo list bergaya mobile dengan HTML + CSS + JavaScript murni.\n\n## Fitur\n- Tambah tugas baru\n- Tandai selesai (persentase progres otomatis)\n- Hapus satu tugas / hapus semua yang selesai\n\n## Cara menjalankan\nBuka `index.html` di browser mana pun."
+        }
+      ]
     }
   },
   "detail": {
@@ -39,43 +89,299 @@
       "en": "TaskFlow Mobile is a mobile-first app for managing daily tasks in a lightweight and fast way. It ships with notifications, priority tags, and cloud sync so users stay productive anywhere.\n\nBuilt with Vue 3 packaged for mobile devices and Node.js on the backend, TaskFlow Mobile prioritizes a smooth user experience with gesture-based navigation and fast local storage."
     },
     "featureHighlights": [
-      { "icon": "Bell", "color": "#F59E0B", "title": { "id": "Notifikasi Cerdas", "en": "Smart Notifications" }, "desc": { "id": "Pengingat otomatis untuk setiap tenggat tugas.", "en": "Automatic reminders for every task deadline." } },
-      { "icon": "Star", "color": "#38BDF8", "title": { "id": "Prioritas & Tag", "en": "Priority & Tags" }, "desc": { "id": "Atur tugas dengan label prioritas dan kategori.", "en": "Organize tasks with priority labels and categories." } },
-      { "icon": "FolderCheck", "color": "#22C55E", "title": { "id": "Sinkronisasi Cloud", "en": "Cloud Sync" }, "desc": { "id": "Data aman dan sinkron di semua perangkat.", "en": "Safe, synced data across all devices." } },
-      { "icon": "Activity", "color": "#8B5CF6", "title": { "id": "Ringan & Cepat", "en": "Light & Fast" }, "desc": { "id": "Ukuran aplikasi kecil dengan waktu muat singkat.", "en": "Small app size with short load times." } }
+      {
+        "icon": "Bell",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Notifikasi Cerdas",
+          "en": "Smart Notifications"
+        },
+        "desc": {
+          "id": "Pengingat otomatis untuk setiap tenggat tugas.",
+          "en": "Automatic reminders for every task deadline."
+        }
+      },
+      {
+        "icon": "Star",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Prioritas & Tag",
+          "en": "Priority & Tags"
+        },
+        "desc": {
+          "id": "Atur tugas dengan label prioritas dan kategori.",
+          "en": "Organize tasks with priority labels and categories."
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "color": "#22C55E",
+        "title": {
+          "id": "Sinkronisasi Cloud",
+          "en": "Cloud Sync"
+        },
+        "desc": {
+          "id": "Data aman dan sinkron di semua perangkat.",
+          "en": "Safe, synced data across all devices."
+        }
+      },
+      {
+        "icon": "Activity",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Ringan & Cepat",
+          "en": "Light & Fast"
+        },
+        "desc": {
+          "id": "Ukuran aplikasi kecil dengan waktu muat singkat.",
+          "en": "Small app size with short load times."
+        }
+      }
     ],
     "mainFeatures": [
-      { "icon": "FolderCheck", "color": "#38BDF8", "title": { "id": "Manajemen Tugas", "en": "Task Management" }, "desc": { "id": "Buat, atur, dan selesaikan tugas dengan tampilan daftar yang rapi.", "en": "Create, organize, and complete tasks with a clean list view." } },
-      { "icon": "Bell", "color": "#F59E0B", "title": { "id": "Pengingat & Notifikasi", "en": "Reminders & Notifications" }, "desc": { "id": "Pengingat berbasis waktu dan lokasi untuk tenggat penting.", "en": "Time- and location-based reminders for important deadlines." } },
-      { "icon": "Star", "color": "#8B5CF6", "title": { "id": "Prioritas & Tag", "en": "Priority & Tags" }, "desc": { "id": "Kategorikan tugas dengan warna prioritas dan tag khusus.", "en": "Categorize tasks with priority colors and custom tags." } },
-      { "icon": "FolderKanban", "color": "#22C55E", "title": { "id": "Sinkronisasi Cloud", "en": "Cloud Sync" }, "desc": { "id": "Backup otomatis dan sinkronisasi real-time antar perangkat.", "en": "Automatic backups and real-time sync between devices." } },
-      { "icon": "Search", "color": "#F43F5E", "title": { "id": "Pencarian Cepat", "en": "Quick Search" }, "desc": { "id": "Temukan tugas dalam hitungan detik dengan pencarian instan.", "en": "Find tasks in seconds with instant search." } }
+      {
+        "icon": "FolderCheck",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Manajemen Tugas",
+          "en": "Task Management"
+        },
+        "desc": {
+          "id": "Buat, atur, dan selesaikan tugas dengan tampilan daftar yang rapi.",
+          "en": "Create, organize, and complete tasks with a clean list view."
+        }
+      },
+      {
+        "icon": "Bell",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Pengingat & Notifikasi",
+          "en": "Reminders & Notifications"
+        },
+        "desc": {
+          "id": "Pengingat berbasis waktu dan lokasi untuk tenggat penting.",
+          "en": "Time- and location-based reminders for important deadlines."
+        }
+      },
+      {
+        "icon": "Star",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Prioritas & Tag",
+          "en": "Priority & Tags"
+        },
+        "desc": {
+          "id": "Kategorikan tugas dengan warna prioritas dan tag khusus.",
+          "en": "Categorize tasks with priority colors and custom tags."
+        }
+      },
+      {
+        "icon": "FolderKanban",
+        "color": "#22C55E",
+        "title": {
+          "id": "Sinkronisasi Cloud",
+          "en": "Cloud Sync"
+        },
+        "desc": {
+          "id": "Backup otomatis dan sinkronisasi real-time antar perangkat.",
+          "en": "Automatic backups and real-time sync between devices."
+        }
+      },
+      {
+        "icon": "Search",
+        "color": "#F43F5E",
+        "title": {
+          "id": "Pencarian Cepat",
+          "en": "Quick Search"
+        },
+        "desc": {
+          "id": "Temukan tugas dalam hitungan detik dengan pencarian instan.",
+          "en": "Find tasks in seconds with instant search."
+        }
+      }
     ],
-    "techStack": ["vue", "node", "tailwind", "mysql"],
+    "techStack": [
+      "vue",
+      "node",
+      "tailwind",
+      "mysql"
+    ],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": { "id": "Perencanaan", "en": "Planning" }, "desc": { "id": "Menentukan alur pengguna dan fitur inti manajemen tugas.", "en": "Defining the user flow and core task management features." } },
-      { "num": "02", "icon": "PenTool", "title": { "id": "Desain UI/UX", "en": "UI/UX Design" }, "desc": { "id": "Merancang antarmuka mobile yang nyaman digunakan satu tangan.", "en": "Designing a mobile interface comfortable to use one-handed." } },
-      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Membangun frontend mobile dan backend sinkronisasi.", "en": "Building the mobile frontend and sync backend." } },
-      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Menguji notifikasi, sinkronisasi, dan performa di berbagai perangkat.", "en": "Testing notifications, sync, and performance across devices." } },
-      { "num": "05", "icon": "Rocket", "title": { "id": "Rilis", "en": "Release" }, "desc": { "id": "Publikasi dan pemantauan crash serta penggunaan aplikasi.", "en": "Publishing and monitoring crashes and app usage." } }
+      {
+        "num": "01",
+        "icon": "ClipboardList",
+        "title": {
+          "id": "Perencanaan",
+          "en": "Planning"
+        },
+        "desc": {
+          "id": "Menentukan alur pengguna dan fitur inti manajemen tugas.",
+          "en": "Defining the user flow and core task management features."
+        }
+      },
+      {
+        "num": "02",
+        "icon": "PenTool",
+        "title": {
+          "id": "Desain UI/UX",
+          "en": "UI/UX Design"
+        },
+        "desc": {
+          "id": "Merancang antarmuka mobile yang nyaman digunakan satu tangan.",
+          "en": "Designing a mobile interface comfortable to use one-handed."
+        }
+      },
+      {
+        "num": "03",
+        "icon": "Code2",
+        "title": {
+          "id": "Pengembangan",
+          "en": "Development"
+        },
+        "desc": {
+          "id": "Membangun frontend mobile dan backend sinkronisasi.",
+          "en": "Building the mobile frontend and sync backend."
+        }
+      },
+      {
+        "num": "04",
+        "icon": "Bug",
+        "title": {
+          "id": "Pengujian",
+          "en": "Testing"
+        },
+        "desc": {
+          "id": "Menguji notifikasi, sinkronisasi, dan performa di berbagai perangkat.",
+          "en": "Testing notifications, sync, and performance across devices."
+        }
+      },
+      {
+        "num": "05",
+        "icon": "Rocket",
+        "title": {
+          "id": "Rilis",
+          "en": "Release"
+        },
+        "desc": {
+          "id": "Publikasi dan pemantauan crash serta penggunaan aplikasi.",
+          "en": "Publishing and monitoring crashes and app usage."
+        }
+      }
     ],
     "challenges": [
-      { "title": { "id": "Sinkronisasi offline", "en": "Offline sync" }, "desc": { "id": "Memastikan tugas tetap bisa dikelola tanpa koneksi dan tersinkron saat kembali online.", "en": "Making sure tasks can still be managed offline and sync when back online." } },
-      { "title": { "id": "Notifikasi tepat waktu", "en": "Timely notifications" }, "desc": { "id": "Menangani perbedaan zona waktu dan ketepatan pengiriman pengingat.", "en": "Handling timezone differences and on-time reminder delivery." } },
-      { "title": { "id": "Performa perangkat rendah", "en": "Low-end device performance" }, "desc": { "id": "Mengoptimalkan penggunaan memori agar tetap lancar di perangkat entry-level.", "en": "Optimizing memory usage to stay smooth on entry-level devices." } }
+      {
+        "title": {
+          "id": "Sinkronisasi offline",
+          "en": "Offline sync"
+        },
+        "desc": {
+          "id": "Memastikan tugas tetap bisa dikelola tanpa koneksi dan tersinkron saat kembali online.",
+          "en": "Making sure tasks can still be managed offline and sync when back online."
+        }
+      },
+      {
+        "title": {
+          "id": "Notifikasi tepat waktu",
+          "en": "Timely notifications"
+        },
+        "desc": {
+          "id": "Menangani perbedaan zona waktu dan ketepatan pengiriman pengingat.",
+          "en": "Handling timezone differences and on-time reminder delivery."
+        }
+      },
+      {
+        "title": {
+          "id": "Performa perangkat rendah",
+          "en": "Low-end device performance"
+        },
+        "desc": {
+          "id": "Mengoptimalkan penggunaan memori agar tetap lancar di perangkat entry-level.",
+          "en": "Optimizing memory usage to stay smooth on entry-level devices."
+        }
+      }
     ],
     "results": [
-      { "icon": "Users", "value": { "id": "1.000+", "en": "1,000+" }, "label": { "id": "Unduhan Aplikasi", "en": "App Downloads" } },
-      { "icon": "Star", "value": { "id": "4.8/5", "en": "4.8/5" }, "label": { "id": "Rating Play Store", "en": "Play Store Rating" } },
-      { "icon": "FolderCheck", "value": { "id": "10K+", "en": "10K+" }, "label": { "id": "Tugas Selesai", "en": "Tasks Completed" } },
-      { "icon": "Activity", "value": { "id": "98%", "en": "98%" }, "label": { "id": "Kepuasan Pengguna", "en": "User Satisfaction" } }
+      {
+        "icon": "Users",
+        "value": {
+          "id": "1.000+",
+          "en": "1,000+"
+        },
+        "label": {
+          "id": "Unduhan Aplikasi",
+          "en": "App Downloads"
+        }
+      },
+      {
+        "icon": "Star",
+        "value": {
+          "id": "4.8/5",
+          "en": "4.8/5"
+        },
+        "label": {
+          "id": "Rating Play Store",
+          "en": "Play Store Rating"
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "value": {
+          "id": "10K+",
+          "en": "10K+"
+        },
+        "label": {
+          "id": "Tugas Selesai",
+          "en": "Tasks Completed"
+        }
+      },
+      {
+        "icon": "Activity",
+        "value": {
+          "id": "98%",
+          "en": "98%"
+        },
+        "label": {
+          "id": "Kepuasan Pengguna",
+          "en": "User Satisfaction"
+        }
+      }
     ],
     "gallery": [
-      { "label": { "id": "Daftar Tugas", "en": "Task List" }, "seed": 61 },
-      { "label": { "id": "Detail Tugas", "en": "Task Detail" }, "seed": 62 },
-      { "label": { "id": "Notifikasi", "en": "Notifications" }, "seed": 63 },
-      { "label": { "id": "Statistik Harian", "en": "Daily Stats" }, "seed": 64 },
-      { "label": { "id": "Pengaturan", "en": "Settings" }, "seed": 65 }
+      {
+        "label": {
+          "id": "Daftar Tugas",
+          "en": "Task List"
+        },
+        "seed": 61
+      },
+      {
+        "label": {
+          "id": "Detail Tugas",
+          "en": "Task Detail"
+        },
+        "seed": 62
+      },
+      {
+        "label": {
+          "id": "Notifikasi",
+          "en": "Notifications"
+        },
+        "seed": 63
+      },
+      {
+        "label": {
+          "id": "Statistik Harian",
+          "en": "Daily Stats"
+        },
+        "seed": 64
+      },
+      {
+        "label": {
+          "id": "Pengaturan",
+          "en": "Settings"
+        },
+        "seed": 65
+      }
     ]
   }
 }

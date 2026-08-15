@@ -9,6 +9,7 @@ import DemoDashboard from '~/components/demos/DemoDashboard.vue'
 import DemoApi from '~/components/demos/DemoApi.vue'
 import DemoTodo from '~/components/demos/DemoTodo.vue'
 import DemoCode from '~/components/demos/DemoCode.vue'
+import DemoStudio from '~/components/demos/DemoStudio.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -31,7 +32,8 @@ const demoComponents: Record<string, Component> = {
   dashboard: DemoDashboard,
   api: DemoApi,
   todo: DemoTodo,
-  code: DemoCode
+  code: DemoCode,
+  studio: DemoStudio
 }
 
 const device = ref<'desktop' | 'phone'>('desktop')

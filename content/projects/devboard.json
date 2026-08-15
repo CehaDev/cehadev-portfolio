@@ -24,14 +24,38 @@
   "githubUrl": "https://github.com/cehadev/devboard",
   "demo": {
     "enabled": true,
-    "type": "dashboard",
+    "type": "studio",
     "title": {
-      "id": "Coba dashboard DevBoard",
-      "en": "Try the DevBoard dashboard"
+      "id": "Jelajahi source & coba dashboard DevBoard",
+      "en": "Explore the source & try the DevBoard dashboard"
     },
     "note": {
-      "id": "Metrik & grafik real-time yang disimulasikan di browser.",
-      "en": "Simulated real-time metrics and charts in your browser."
+      "id": "Project web HTML/CSS/JS yang berjalan langsung — jelajahi file di sebelah kiri, hasilnya tampil di Live Preview.",
+      "en": "A web project (HTML/CSS/JS) running live — explore the files on the left, the result shows in the Live Preview."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "index.html",
+          "language": "html",
+          "content": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>DevBoard — Mini Dashboard</title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n</head>\n<body>\n  <header class=\"topbar\">\n    <div class=\"brand\">\n      <span class=\"dot\"></span>\n      DevBoard\n    </div>\n    <button id=\"addBtn\" class=\"btn\">+ Simulasi Data</button>\n  </header>\n\n  <main>\n    <section class=\"stats\">\n      <div class=\"card\"><span class=\"label\">Pengunjung</span><b id=\"visitors\">1.248</b></div>\n      <div class=\"card\"><span class=\"label\">Transaksi</span><b id=\"orders\">96</b></div>\n      <div class=\"card\"><span class=\"label\">Response</span><b id=\"latency\">212ms</b></div>\n      <div class=\"card up\"><span class=\"label\">Uptime</span><b>99.9%</b></div>\n    </section>\n\n    <section class=\"panel\">\n      <div class=\"card chart\">\n        <h3>Trafik Hari Ini</h3>\n        <div id=\"bars\" class=\"bars\"></div>\n      </div>\n      <div class=\"card feed\">\n        <h3>Aktivitas Terbaru</h3>\n        <ul id=\"feed\"></ul>\n      </div>\n    </section>\n  </main>\n\n  <script src=\"js/app.js\"></script>\n</body>\n</html>"
+        },
+        {
+          "name": "css/style.css",
+          "language": "css",
+          "content": "* { margin: 0; padding: 0; box-sizing: border-box; }\nbody {\n  font-family: 'Segoe UI', system-ui, sans-serif;\n  background: #0f172a;\n  color: #e2e8f0;\n  padding: 16px;\n}\n.topbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 16px;\n}\n.brand {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-weight: 800;\n  font-size: 18px;\n}\n.dot {\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background: #38bdf8;\n  box-shadow: 0 0 12px #38bdf8;\n}\n.btn {\n  background: #38bdf8;\n  color: #0f172a;\n  border: 0;\n  padding: 8px 14px;\n  border-radius: 8px;\n  font-weight: 700;\n  cursor: pointer;\n}\n.stats {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 12px;\n}\n.card {\n  background: #1e293b;\n  border-radius: 12px;\n  padding: 16px;\n  border: 1px solid #334155;\n}\n.card.up b { color: #4ade80; }\n.label {\n  display: block;\n  font-size: 12px;\n  color: #94a3b8;\n  margin-bottom: 6px;\n}\nb { font-size: 26px; }\n.panel {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  gap: 12px;\n  margin-top: 12px;\n}\nh3 {\n  font-size: 14px;\n  margin-bottom: 10px;\n  color: #94a3b8;\n}\n.bars {\n  display: flex;\n  align-items: flex-end;\n  gap: 6px;\n  height: 120px;\n}\n.bars div {\n  flex: 1;\n  border-radius: 4px 4px 0 0;\n  background: linear-gradient(#38bdf8, #1d4ed8);\n  transition: height .4s;\n}\nul { list-style: none; }\nli {\n  font-size: 12px;\n  color: #cbd5e1;\n  padding: 6px 0;\n  border-bottom: 1px solid #334155;\n}\nli b { font-size: 12px; }"
+        },
+        {
+          "name": "js/app.js",
+          "language": "javascript",
+          "content": "const visitors = document.getElementById('visitors')\nconst orders = document.getElementById('orders')\nconst latency = document.getElementById('latency')\nconst bars = document.getElementById('bars')\nconst feed = document.getElementById('feed')\nconst addBtn = document.getElementById('addBtn')\n\nlet current = [320, 410, 380, 540, 610, 720, 580]\nconst actions = [\n  'membuka halaman produk',\n  'menambahkan item ke keranjang',\n  'menyelesaikan transaksi',\n  'melihat laporan analitik',\n  'masuk melalui aplikasi mobile'\n]\n\nfunction renderBars() {\n  const max = Math.max(...current, 1)\n  bars.innerHTML = ''\n  current.forEach((v) => {\n    const el = document.createElement('div')\n    el.style.height = `${(v / max) * 100}%`\n    bars.appendChild(el)\n  })\n}\n\nfunction addActivity() {\n  const action = actions[Math.floor(Math.random() * actions.length)]\n  const li = document.createElement('li')\n  li.innerHTML = `<b>${(Math.random() * 1.2 + 0.2).toFixed(2)}s lalu</b> — pengunjung ${action}`\n  feed.prepend(li)\n  while (feed.children.length > 6) feed.lastChild.remove()\n}\n\nfunction simulate() {\n  visitors.textContent = (Number(visitors.textContent.replace(/\\D/g, '')) + Math.floor(Math.random() * 40 + 10)).toLocaleString('id-ID')\n  orders.textContent = String(Number(orders.textContent) + Math.floor(Math.random() * 6 + 1))\n  latency.textContent = `${Math.floor(Math.random() * 120 + 90)}ms`\n  current = current.map((v) => Math.max(60, v + Math.floor(Math.random() * 90 - 30)))\n  renderBars()\n  addActivity()\n}\n\naddBtn.addEventListener('click', simulate)\nrenderBars()\nfor (let i = 0; i < 5; i++) addActivity()"
+        },
+        {
+          "name": "README.md",
+          "language": "markdown",
+          "content": "# DevBoard Mini\n\nDashboard analitik sederhana dengan **HTML + CSS + JavaScript** murni (tanpa framework).\n\n## Cara menjalankan\n\n1. Simpan ketiga file dalam satu folder.\n2. Buka `index.html` di browser mana pun.\n\n## Fitur\n\n- Kartu statistik (pengunjung, transaksi, latency, uptime)\n- Grafik batang trafik harian\n- Aktivitas pengunjung real-time\n- Tombol **Simulasi Data** untuk melihat perubahan langsung"
+        }
+      ]
     }
   },
   "detail": {

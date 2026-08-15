@@ -100,7 +100,7 @@ const detail = reactive<DetailState>({
 const initialDemo = props.initial?.demo ?? {}
 const demo = reactive({
   enabled: Boolean(initialDemo.enabled),
-  type: str(initialDemo.type) || 'store',
+  type: str(initialDemo.type) || 'studio',
   title: ls(initialDemo.title),
   note: ls(initialDemo.note),
   files: ((initialDemo.code as { files?: unknown[] } | undefined)?.files ?? []).map((f) => {
@@ -115,7 +115,8 @@ const demoTypeOptions = [
   { value: 'dashboard', label: 'Dashboard Analitik (DevBoard)', desc: 'Metrik & grafik real-time' },
   { value: 'api', label: 'API Playground (NuTech API)', desc: 'Konsol REST API interaktif' },
   { value: 'todo', label: 'Task Manager (TaskFlow)', desc: 'Tugas harian gaya mobile' },
-  { value: 'code', label: 'Code Viewer', desc: 'File kode berbagai bahasa pemrograman' }
+  { value: 'code', label: 'Code Viewer', desc: 'File kode berbagai bahasa pemrograman' },
+  { value: 'studio', label: 'Studio Live Preview', desc: 'File tree + editor + hasil project berjalan (HTML/CSS/JS)' }
 ]
 
 function addDemoFile() {
@@ -249,7 +250,7 @@ function payload() {
       type: demo.type,
       title: cleanLs(demo.title),
       note: cleanLs(demo.note),
-      ...(demo.type === 'code'
+      ...(demo.type === 'code' || demo.type === 'studio'
         ? {
             code: {
               files: demo.files
@@ -489,11 +490,12 @@ async function save() {
           <label class="mb-1.5 block text-sm font-medium text-text">Catatan / Keterangan (opsional)</label>
           <LocaleInput v-model="demo.note" placeholder="Demo berjalan penuh di browser Anda." />
         </div>
-        <div v-if="demo.type === 'code'" class="sm:col-span-2">
+        <div v-if="demo.type === 'code' || demo.type === 'studio'" class="sm:col-span-2">
           <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
             <div>
               <p class="text-sm font-medium text-text">File Kode</p>
-              <p class="mt-0.5 text-xs text-text-muted">Tampilkan potongan kode project dalam berbagai bahasa pemrograman.</p>
+              <p v-if="demo.type === 'studio'" class="mt-0.5 text-xs text-text-muted">Upload project web Anda (index.html + CSS + JS). Pengunjung bisa menjelajah file & melihat hasilnya berjalan langsung di Live Preview.</p>
+              <p v-else class="mt-0.5 text-xs text-text-muted">Tampilkan potongan kode project dalam berbagai bahasa pemrograman.</p>
             </div>
             <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addDemoFile">
               <Plus :size="14" :stroke-width="2" />
