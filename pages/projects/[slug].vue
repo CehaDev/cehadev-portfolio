@@ -27,8 +27,13 @@ if (!project.value) {
 
 const detail = computed(() => project.value?.detail as Record<string, unknown> | undefined)
 
-const demoConfig = computed(() => (project.value?.demo as { enabled?: boolean; type?: string; title?: string; note?: string } | undefined) ?? {})
+const demoConfig = computed(
+  () =>
+    (project.value?.demo as { enabled?: boolean; type?: string; title?: string; note?: string; code?: { files?: Array<{ name: string; language: string; content: string }> } } | undefined) ??
+    {}
+)
 const demoEnabled = computed(() => Boolean(demoConfig.value.enabled))
+const demoFiles = computed(() => demoConfig.value.code?.files ?? [])
 
 const tabLabels = computed<Record<string, string>>(() => ({
   Demo: headings.value.tabDemo ?? 'Demo Interaktif',
@@ -191,6 +196,7 @@ function openDemo() {
               :title="demoConfig.title"
               :note="demoConfig.note"
               :url="externalLive ? project.liveUrl : `/demo/${project.slug}`"
+              :files="demoFiles"
             />
           </div>
         </div>

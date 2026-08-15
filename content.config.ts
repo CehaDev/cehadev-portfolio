@@ -176,7 +176,20 @@ export const collections = {
           enabled: z.boolean().optional(),
           type: z.string().optional(),
           title: L.optional(),
-          note: L.optional()
+          note: L.optional(),
+          code: z
+            .object({
+              files: z
+                .array(
+                  z.object({
+                    name: z.string(),
+                    language: z.string(),
+                    content: z.string()
+                  })
+                )
+                .optional()
+            })
+            .optional()
         })
         .optional(),
       detail: z

@@ -23,14 +23,38 @@
   "githubUrl": "https://github.com/cehadev/nutech-api",
   "demo": {
     "enabled": true,
-    "type": "api",
+    "type": "code",
     "title": {
-      "id": "Coba konsol NuTech API",
-      "en": "Try the NuTech API console"
+      "id": "Jelajahi kode NuTech API",
+      "en": "Explore the NuTech API code"
     },
     "note": {
-      "id": "Kirim request dan lihat respons mock — sepenuhnya di browser.",
-      "en": "Send requests and see mock responses — fully in your browser."
+      "id": "File kode di berbagai bahasa — lihat, salin, dan pelajari strukturnya.",
+      "en": "Code files in various languages — view, copy, and learn the structure."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "src/middleware/auth.ts",
+          "language": "typescript",
+          "content": "import type { Handler } from 'express'\nimport jwt from 'jsonwebtoken'\n\ninterface AuthPayload {\n  id: number\n  role: 'admin' | 'user'\n}\n\nexport function requireAuth(): Handler {\n  return (req, res, next) => {\n    const header = req.headers.authorization\n    if (!header?.startsWith('Bearer ')) {\n      return res.status(401).json({\n        error: 'Unauthorized',\n        message: 'Token tidak ditemukan.'\n      })\n    }\n\n    try {\n      const token = header.slice(7)\n      const payload = jwt.verify(token, process.env.JWT_SECRET!) as AuthPayload\n      res.locals.user = payload\n      next()\n    } catch {\n      res.status(401).json({\n        error: 'Unauthorized',\n        message: 'Token tidak valid atau sudah kedaluwarsa.'\n      })\n    }\n  }\n}"
+        },
+        {
+          "name": "src/db/schema.sql",
+          "language": "sql",
+          "content": "-- Struktur tabel utama NuTech API\nCREATE TABLE users (\n  id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n  name        VARCHAR(100) NOT NULL,\n  email       VARCHAR(255) NOT NULL UNIQUE,\n  password    VARCHAR(255) NOT NULL,\n  role        ENUM('admin', 'user') DEFAULT 'user',\n  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n) ENGINE = InnoDB;\n\nCREATE TABLE products (\n  id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n  name        VARCHAR(255) NOT NULL,\n  price       DECIMAL(12, 2) NOT NULL,\n  stock       INT UNSIGNED DEFAULT 0,\n  is_active   BOOLEAN DEFAULT TRUE,\n  INDEX idx_products_name (name)\n) ENGINE = InnoDB;\n\nCREATE TABLE orders (\n  id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n  user_id     INT UNSIGNED NOT NULL,\n  total       DECIMAL(12, 2) NOT NULL,\n  status      ENUM('PENDING', 'PAID', 'SHIPPED', 'CANCELLED') DEFAULT 'PENDING',\n  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id)\n) ENGINE = InnoDB;"
+        },
+        {
+          "name": "scripts/seed.py",
+          "language": "python",
+          "content": "#!/usr/bin/env python3\n\"\"\"Isi data awal ke database NuTech API.\"\"\"\nimport os\nimport requests\n\nAPI = os.getenv('API_URL', 'http://localhost:3000/api/v1')\n\n\ndef seed_products():\n    products = [\n        {\"name\": \"Kopi Arabika Premium\", \"price\": 65000, \"stock\": 24},\n        {\"name\": \"Headset Wireless Pro\", \"price\": 249000, \"stock\": 9},\n    ]\n    for p in products:\n        resp = requests.post(f\"{API}/products\", json=p, timeout=5)\n        print(f\"{resp.status_code} - {p['name']}\")\n\n\nif __name__ == \"__main__\":\n    seed_products()"
+        },
+        {
+          "name": "docs/curl-examples.sh",
+          "language": "bash",
+          "content": "#!/usr/bin/env bash\n# Contoh pemakaian NuTech API via curl\n\n# 1. Login dan simpan token\nTOKEN=$(curl -s -X POST http://localhost:3000/api/v1/auth/login \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"email\":\"user@example.com\",\"password\":\"secret123\"}' \\\n  | jq -r .token)\n\n# 2. Ambil daftar user dengan token\necho \"Token: ${TOKEN:0:20}...\"\ncurl -s http://localhost:3000/api/v1/users?limit=10 \\\n  -H \"Authorization: Bearer $TOKEN\" | jq .\n\n# 3. Buat pesanan\ncurl -s -X POST http://localhost:3000/api/v1/orders \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"productId\":102,\"qty\":1}' | jq ."
+        }
+      ]
     }
   },
   "detail": {

@@ -13,7 +13,8 @@
     "@nuxt/content": "^3.15.2",
     "better-sqlite3": "^12.11.1",
     "lucide-vue-next": "^1.0.0",
-    "nodemailer": "^9.0.5"
+    "nodemailer": "^9.0.5",
+    "shiki": "^4.4.3"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.14.0",

@@ -2,6 +2,8 @@
 import { reactive, ref, watch } from 'vue'
 import { LoaderCircle, Save, Plus, Trash2, Layers, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
+import { CODE_LANGS } from '~/utils/demoCode'
+import type { CodeFile } from '~/utils/demoCode'
 
 interface LS {
   id: string
@@ -100,7 +102,11 @@ const demo = reactive({
   enabled: Boolean(initialDemo.enabled),
   type: str(initialDemo.type) || 'store',
   title: ls(initialDemo.title),
-  note: ls(initialDemo.note)
+  note: ls(initialDemo.note),
+  files: ((initialDemo.code as { files?: unknown[] } | undefined)?.files ?? []).map((f) => {
+    const o = (f && typeof f === 'object' ? f : {}) as Record<string, unknown>
+    return { name: str(o.name), language: str(o.language) || 'javascript', content: str(o.content) }
+  }) as CodeFile[]
 })
 
 const demoTypeOptions = [
@@ -108,8 +114,16 @@ const demoTypeOptions = [
   { value: 'kanban', label: 'Kanban Board (Magerans)', desc: 'Manajemen tugas tim' },
   { value: 'dashboard', label: 'Dashboard Analitik (DevBoard)', desc: 'Metrik & grafik real-time' },
   { value: 'api', label: 'API Playground (NuTech API)', desc: 'Konsol REST API interaktif' },
-  { value: 'todo', label: 'Task Manager (TaskFlow)', desc: 'Tugas harian gaya mobile' }
+  { value: 'todo', label: 'Task Manager (TaskFlow)', desc: 'Tugas harian gaya mobile' },
+  { value: 'code', label: 'Code Viewer', desc: 'File kode berbagai bahasa pemrograman' }
 ]
+
+function addDemoFile() {
+  demo.files.push({ name: '', language: 'javascript', content: '' })
+}
+function removeDemoFile(i: number) {
+  demo.files.splice(i, 1)
+}
 
 const techKeys = Object.keys(techIcons)
 const categoryOptions = ['Web App', 'E-Commerce', 'Dashboard', 'Mobile App', 'Backend API', 'Landing Page']
@@ -205,7 +219,16 @@ function payload() {
       enabled: demo.enabled,
       type: demo.type,
       title: cleanLs(demo.title),
-      note: cleanLs(demo.note)
+      note: cleanLs(demo.note),
+      ...(demo.type === 'code'
+        ? {
+            code: {
+              files: demo.files
+                .map((f) => ({ name: f.name.trim(), language: f.language, content: f.content }))
+                .filter((f) => f.name && f.content)
+            }
+          }
+        : {})
     },
     tags: form.tags.map(cleanLs).filter(hasText),
     tech: form.tech,
@@ -394,6 +417,66 @@ async function save() {
         <div class="sm:col-span-2">
           <label class="mb-1.5 block text-sm font-medium text-text">Catatan / Keterangan (opsional)</label>
           <LocaleInput v-model="demo.note" placeholder="Demo berjalan penuh di browser Anda." />
+        </div>
+        <div v-if="demo.type === 'code'" class="sm:col-span-2">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="text-sm font-medium text-text">File Kode</p>
+              <p class="mt-0.5 text-xs text-text-muted">Tampilkan potongan kode project dalam berbagai bahasa pemrograman.</p>
+            </div>
+            <button type="button" class="btn-outline !px-3 !py-2 text-xs" @click="addDemoFile">
+              <Plus :size="14" :stroke-width="2" />
+              Tambah File
+            </button>
+          </div>
+          <div v-if="demo.files.length" class="space-y-3">
+            <div
+              v-for="(f, i) in demo.files"
+              :key="i"
+              class="rounded-lg border border-border bg-bg p-4"
+            >
+              <div class="mb-3 flex flex-wrap items-center gap-3">
+                <div class="min-w-0 flex-1">
+                  <label :for="`pf-demo-file-name-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Nama File</label>
+                  <input
+                    :id="`pf-demo-file-name-${i}`"
+                    v-model="f.name"
+                    type="text"
+                    class="input-field font-mono !py-2 !text-xs"
+                    placeholder="src/middleware/auth.ts"
+                  />
+                </div>
+                <div class="w-40">
+                  <label :for="`pf-demo-file-lang-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Bahasa</label>
+                  <select :id="`pf-demo-file-lang-${i}`" v-model="f.language" class="input-field !py-2 !text-xs">
+                    <option v-for="l in CODE_LANGS" :key="l.id" :value="l.id">{{ l.label }}</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  class="mt-5 rounded-md border border-red-500/30 p-1.5 text-red-400 transition-colors hover:bg-red-500/10"
+                  :aria-label="`Hapus file ${f.name || i + 1}`"
+                  @click="removeDemoFile(i)"
+                >
+                  <Trash2 :size="14" :stroke-width="1.5" />
+                </button>
+              </div>
+              <div>
+                <label :for="`pf-demo-file-content-${i}`" class="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-text-muted">Isi Kode</label>
+                <textarea
+                  :id="`pf-demo-file-content-${i}`"
+                  v-model="f.content"
+                  rows="8"
+                  spellcheck="false"
+                  class="input-field w-full resize-y font-mono !text-xs"
+                  placeholder="Tulis kode di sini..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <p v-else class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-xs text-text-muted">
+            Belum ada file kode. Klik "Tambah File" untuk menambahkan.
+          </p>
         </div>
       </div>
     </div>

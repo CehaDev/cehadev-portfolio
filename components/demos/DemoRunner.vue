@@ -8,6 +8,7 @@ import DemoKanban from '~/components/demos/DemoKanban.vue'
 import DemoDashboard from '~/components/demos/DemoDashboard.vue'
 import DemoApi from '~/components/demos/DemoApi.vue'
 import DemoTodo from '~/components/demos/DemoTodo.vue'
+import DemoCode from '~/components/demos/DemoCode.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -16,8 +17,9 @@ const props = withDefaults(
     title?: string
     url?: string
     note?: string
+    files?: Array<{ name: string; language: string; content: string }>
   }>(),
-  { title: '', url: '', note: '' }
+  { title: '', url: '', note: '', files: () => [] }
 )
 
 const { data: site } = await useSiteSettings()
@@ -28,7 +30,8 @@ const demoComponents: Record<string, Component> = {
   kanban: DemoKanban,
   dashboard: DemoDashboard,
   api: DemoApi,
-  todo: DemoTodo
+  todo: DemoTodo,
+  code: DemoCode
 }
 
 const device = ref<'desktop' | 'phone'>('desktop')
@@ -127,7 +130,7 @@ onUnmounted(() => {
         </span>
       </div>
       <div class="h-[540px] overflow-y-auto bg-bg">
-        <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" />
+        <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" />
       </div>
     </div>
 
@@ -140,7 +143,7 @@ onUnmounted(() => {
             <span class="h-2 w-24 rounded-full bg-border" />
           </div>
           <div class="h-[540px] overflow-y-auto bg-bg">
-            <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" />
+            <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" />
           </div>
           <div class="flex h-7 items-center justify-center gap-8 border-t border-border bg-bg text-text-muted" aria-hidden="true">
             <span class="h-1.5 w-1.5 rounded-full bg-border" />

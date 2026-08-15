@@ -101,15 +101,26 @@ export function normalizeProject(body: Record<string, unknown>) {
       })
       .filter((g) => g.label.id)
 
+  const codeFiles = (v: unknown) =>
+    (Array.isArray(v) ? v : [])
+      .map((x) => {
+        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+        return { name: str(o.name), language: str(o.language), content: str(o.content) }
+      })
+      .filter((f) => f.name && f.content)
+
   const demoRaw = body.demo && typeof body.demo === 'object' ? (body.demo as Record<string, unknown>) : undefined
 
   let demo: Record<string, unknown> | undefined
   if (demoRaw) {
+    const codeRaw = demoRaw.code && typeof demoRaw.code === 'object' ? (demoRaw.code as Record<string, unknown>) : undefined
+    const files = codeRaw ? codeFiles(codeRaw.files) : []
     demo = {
       enabled: bool(demoRaw.enabled),
       type: str(demoRaw.type),
       title: normalizeLS(demoRaw.title),
-      note: normalizeLS(demoRaw.note)
+      note: normalizeLS(demoRaw.note),
+      ...(files.length ? { code: { files } } : {})
     }
     if (!demo.enabled) demo = undefined
   }
