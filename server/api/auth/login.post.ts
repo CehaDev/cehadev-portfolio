@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto'
 import { createError } from 'h3'
 import { issueOtp, getAdminEmail } from '../../utils/otp'
 import { mailConfigured, sendMail } from '../../utils/mailer'
@@ -27,7 +28,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Password admin belum dikonfigurasi (NUXT_ADMIN_PASSWORD)' })
   }
   const body = await readBody<{ password?: string }>(event)
-  if (!body.password || body.password !== expected) {
+  const input = body.password ?? ''
+  const len = Math.max(input.length, expected.length)
+  const inputBuf = Buffer.alloc(len, 0)
+  const expectedBuf = Buffer.alloc(len, 0)
+  inputBuf.write(input)
+  expectedBuf.write(expected)
+  if (!input || !timingSafeEqual(inputBuf, expectedBuf)) {
     await logSecurityEvent('login_failed', { ip: event.node?.req?.socket?.remoteAddress })
     throw createError({ statusCode: 401, statusMessage: 'Password salah' })
   }

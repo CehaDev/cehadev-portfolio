@@ -25,8 +25,7 @@ const Icon = props.icon || Quote
     <h1
       v-if="title"
       class="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl"
-      v-html="title"
-    />
+    >{{ title }}</h1>
     <p v-if="description" class="mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary" :class="align === 'center' ? 'mx-auto' : ''">
       {{ description }}
     </p>
