@@ -87,59 +87,52 @@ onUnmounted(() => {
 <template>
   <div class="demo-runner">
     <!-- Header Controls -->
-    <div class="mb-3 flex items-center justify-between gap-2 sm:mb-4 sm:flex-col sm:items-start sm:gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <!-- Title: hidden on mobile -->
-      <div class="hidden min-w-0 sm:block">
-        <h3 class="text-xl font-extrabold tracking-tight text-text md:text-2xl">{{ title || h.title || 'Demo Interaktif' }}</h3>
-        <p v-if="note || h.note" class="mt-1 text-sm text-text-secondary">{{ note || h.note || 'Demo berjalan penuh di browser — tanpa perlu server.' }}</p>
+    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div class="min-w-0">
+        <h3 class="text-lg font-extrabold tracking-tight text-text sm:text-xl md:text-2xl">{{ title || h.title || 'Demo Interaktif' }}</h3>
+        <p v-if="note || h.note" class="mt-1 text-xs text-text-secondary sm:text-sm">{{ note || h.note || 'Demo berjalan penuh di browser — tanpa perlu server.' }}</p>
       </div>
-      <div class="flex flex-wrap items-center gap-1 sm:gap-2">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
         <!-- Device Toggle -->
         <div class="flex rounded-xl border border-border bg-bg p-0.5 sm:p-1" role="group">
           <button
             type="button"
-            class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
+            class="flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'desktop' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'desktop'"
           >
-            <Monitor :size="12" :stroke-width="1.75" class="sm:hidden" />
-            <Monitor :size="14" :stroke-width="1.75" class="hidden sm:block" />
+            <Monitor :size="13" :stroke-width="1.75" />
             <span class="hidden sm:inline">{{ h.desktop || 'Desktop' }}</span>
           </button>
           <button
             type="button"
-            class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
+            class="flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'phone' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'phone'"
           >
-            <Smartphone :size="12" :stroke-width="1.75" class="sm:hidden" />
-            <Smartphone :size="14" :stroke-width="1.75" class="hidden sm:block" />
+            <Smartphone :size="13" :stroke-width="1.75" />
             <span class="hidden sm:inline">{{ h.mobile || 'HP' }}</span>
           </button>
         </div>
         <!-- Reset -->
-        <button type="button" class="flex items-center justify-center gap-1 rounded-lg border border-border bg-bg px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs" @click="resetDemo">
-          <RotateCcw :size="12" :stroke-width="1.75" class="sm:hidden" />
-          <RotateCcw :size="14" :stroke-width="1.75" class="hidden sm:block" />
+        <button type="button" class="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs" @click="resetDemo">
+          <RotateCcw :size="13" :stroke-width="1.75" />
           <span class="hidden sm:inline">{{ h.reset || 'Reset' }}</span>
         </button>
         <!-- Fullscreen -->
         <button
           type="button"
-          class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
+          class="flex items-center justify-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:px-3 sm:py-2 sm:text-xs"
           :class="isFullscreen ? 'border border-primary/40 bg-primary/10 text-primary' : 'border border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text'"
           @click="toggleFullscreen"
         >
-          <Minimize2 v-if="isFullscreen" :size="12" :stroke-width="1.75" class="sm:hidden" />
-          <Maximize2 v-else :size="12" :stroke-width="1.75" class="sm:hidden" />
-          <Minimize2 v-if="isFullscreen" :size="14" :stroke-width="1.75" class="hidden sm:block" />
-          <Maximize2 v-else :size="14" :stroke-width="1.75" class="hidden sm:block" />
+          <Minimize2 v-if="isFullscreen" :size="13" :stroke-width="1.75" />
+          <Maximize2 v-else :size="13" :stroke-width="1.75" />
           <span class="hidden sm:inline">{{ isFullscreen ? 'Keluar' : 'Layar Penuh' }}</span>
         </button>
         <!-- External -->
-        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center rounded-lg border border-border bg-bg px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs">
-          <ExternalLink :size="12" :stroke-width="1.75" class="sm:hidden" />
-          <ExternalLink :size="14" :stroke-width="1.75" class="hidden sm:block" />
+        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs">
+          <ExternalLink :size="13" :stroke-width="1.75" />
         </a>
       </div>
     </div>
