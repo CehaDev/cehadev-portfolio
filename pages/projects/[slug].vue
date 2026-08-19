@@ -189,7 +189,7 @@ function openDemo() {
       <div class="mt-10">
         <!-- DEMO -->
         <div v-if="activeTab === 'Demo'" id="demo-panel" role="tabpanel">
-          <div class="rounded-card border border-primary/25 bg-gradient-to-r from-primary/10 via-primary/5 to-blue/10 p-6 md:p-8">
+          <div class="rounded-card border border-primary/25 bg-gradient-to-r from-primary/10 via-primary/5 to-blue/10 p-3 sm:p-6 md:p-8">
             <DemoRunner
               :type="demoConfig.type || 'store'"
               :slug="project.slug"

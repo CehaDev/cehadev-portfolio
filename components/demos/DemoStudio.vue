@@ -212,13 +212,13 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
       :srcdoc="previewDoc"
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       title="Live preview project"
-      class="h-full w-full flex-1 border-0 bg-white"
+      class="h-full min-h-0 w-full flex-1 border-0 bg-white"
     />
-    <div v-else class="flex h-full flex-1 items-center justify-center bg-bg p-4 sm:p-6">
-      <div class="max-w-xs rounded-xl border border-border bg-card/60 p-3 text-center sm:p-4">
+    <div v-else class="flex h-full min-h-0 flex-1 items-center justify-center bg-bg p-4">
+      <div class="max-w-xs rounded-xl border border-border bg-card/60 p-3 text-center">
         <AlertCircle :size="20" :stroke-width="1.75" class="mx-auto text-amber-400" />
-        <p class="mt-2 text-[11px] font-semibold text-text-secondary sm:text-xs">Tidak bisa dijalankan</p>
-        <p class="mt-1 text-[10px] leading-relaxed text-text-muted sm:text-[11px]">{{ previewNote }}</p>
+        <p class="mt-2 text-[11px] font-semibold text-text-secondary">Tidak bisa dijalankan</p>
+        <p class="mt-1 text-[10px] leading-relaxed text-text-muted">{{ previewNote }}</p>
       </div>
     </div>
   </div>

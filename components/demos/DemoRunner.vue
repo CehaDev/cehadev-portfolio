@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Monitor, Smartphone, RotateCcw, Maximize2, Minimize2, ExternalLink } from 'lucide-vue-next'
-import { computed, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { Component } from 'vue'
 import { clearDemo } from '~/utils/demoStorage'
 import DemoStore from '~/components/demos/DemoStore.vue'
@@ -45,6 +45,15 @@ const storageKey = computed(() => `cehadev-demo-${props.slug}-${props.type}`)
 const demoComponent = computed(() => demoComponents[props.type] ?? DemoStore)
 const displayUrl = computed(() => props.url || `/demo/${props.slug}`)
 
+function isMobileViewport() {
+  if (typeof window === 'undefined') return false
+  return window.innerWidth < 768
+}
+
+onMounted(() => {
+  if (isMobileViewport()) device.value = 'phone'
+})
+
 function resetDemo() {
   clearDemo(storageKey.value)
   resetKey.value++
@@ -78,52 +87,59 @@ onUnmounted(() => {
 <template>
   <div class="demo-runner">
     <!-- Header Controls -->
-    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div class="min-w-0">
+    <div class="mb-3 flex items-center justify-between gap-2 sm:mb-4 sm:flex-col sm:items-start sm:gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <!-- Title: hidden on mobile -->
+      <div class="hidden min-w-0 sm:block">
         <h3 class="text-xl font-extrabold tracking-tight text-text md:text-2xl">{{ title || h.title || 'Demo Interaktif' }}</h3>
         <p v-if="note || h.note" class="mt-1 text-sm text-text-secondary">{{ note || h.note || 'Demo berjalan penuh di browser — tanpa perlu server.' }}</p>
       </div>
-      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+      <div class="flex flex-wrap items-center gap-1 sm:gap-2">
         <!-- Device Toggle -->
         <div class="flex rounded-xl border border-border bg-bg p-0.5 sm:p-1" role="group">
           <button
             type="button"
-            class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:flex-initial sm:px-3 sm:py-2 sm:text-xs"
+            class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'desktop' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'desktop'"
           >
-            <Monitor :size="13" :stroke-width="1.75" />
+            <Monitor :size="12" :stroke-width="1.75" class="sm:hidden" />
+            <Monitor :size="14" :stroke-width="1.75" class="hidden sm:block" />
             <span class="hidden sm:inline">{{ h.desktop || 'Desktop' }}</span>
           </button>
           <button
             type="button"
-            class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:flex-initial sm:px-3 sm:py-2 sm:text-xs"
+            class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'phone' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'phone'"
           >
-            <Smartphone :size="13" :stroke-width="1.75" />
+            <Smartphone :size="12" :stroke-width="1.75" class="sm:hidden" />
+            <Smartphone :size="14" :stroke-width="1.75" class="hidden sm:block" />
             <span class="hidden sm:inline">{{ h.mobile || 'HP' }}</span>
           </button>
         </div>
         <!-- Reset -->
-        <button type="button" class="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs" @click="resetDemo">
-          <RotateCcw :size="13" :stroke-width="1.75" />
+        <button type="button" class="flex items-center justify-center gap-1 rounded-lg border border-border bg-bg px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs" @click="resetDemo">
+          <RotateCcw :size="12" :stroke-width="1.75" class="sm:hidden" />
+          <RotateCcw :size="14" :stroke-width="1.75" class="hidden sm:block" />
           <span class="hidden sm:inline">{{ h.reset || 'Reset' }}</span>
         </button>
         <!-- Fullscreen -->
         <button
           type="button"
-          class="flex items-center justify-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:px-3 sm:py-2 sm:text-xs"
+          class="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
           :class="isFullscreen ? 'border border-primary/40 bg-primary/10 text-primary' : 'border border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text'"
           @click="toggleFullscreen"
         >
-          <Minimize2 v-if="isFullscreen" :size="13" :stroke-width="1.75" />
-          <Maximize2 v-else :size="13" :stroke-width="1.75" />
+          <Minimize2 v-if="isFullscreen" :size="12" :stroke-width="1.75" class="sm:hidden" />
+          <Maximize2 v-else :size="12" :stroke-width="1.75" class="sm:hidden" />
+          <Minimize2 v-if="isFullscreen" :size="14" :stroke-width="1.75" class="hidden sm:block" />
+          <Maximize2 v-else :size="14" :stroke-width="1.75" class="hidden sm:block" />
           <span class="hidden sm:inline">{{ isFullscreen ? 'Keluar' : 'Layar Penuh' }}</span>
         </button>
         <!-- External -->
-        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs">
-          <ExternalLink :size="13" :stroke-width="1.75" />
+        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center rounded-lg border border-border bg-bg px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs">
+          <ExternalLink :size="12" :stroke-width="1.75" class="sm:hidden" />
+          <ExternalLink :size="14" :stroke-width="1.75" class="hidden sm:block" />
         </a>
       </div>
     </div>
@@ -149,20 +165,20 @@ onUnmounted(() => {
 
     <!-- PHONE Frame -->
     <div v-else ref="frameRef" class="dr-phone-wrap">
-      <div class="dr-phone mx-auto max-w-full rounded-[2rem] border-2 border-border bg-card p-2 shadow-card sm:w-[320px] sm:rounded-[2.8rem] sm:p-2.5">
-        <div class="overflow-hidden rounded-[1.6rem] border border-border sm:rounded-[2.2rem]">
-          <!-- Notch -->
-          <div class="relative flex h-6 items-center justify-center bg-bg sm:h-8" aria-hidden="true">
-            <span class="absolute left-4 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full border border-border bg-bg-alt sm:left-5 sm:h-3 sm:w-3" />
-            <span class="h-2 w-20 rounded-full bg-border sm:h-2.5 sm:w-28" />
+      <div class="dr-phone mx-auto w-full max-w-full rounded-none border-0 border-border bg-card p-0 shadow-none sm:w-[320px] sm:rounded-[2.8rem] sm:border-2 sm:p-2.5 sm:shadow-card">
+        <div class="h-full sm:overflow-hidden sm:rounded-[2.2rem] sm:border sm:border-border">
+          <!-- Notch (hidden on mobile) -->
+          <div class="relative hidden h-8 items-center justify-center bg-bg sm:flex" aria-hidden="true">
+            <span class="absolute left-5 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-border bg-bg-alt" />
+            <span class="h-2.5 w-28 rounded-full bg-border" />
           </div>
           <!-- Content -->
-          <div class="dr-phone-content bg-bg">
+          <div class="dr-phone-content h-full bg-bg">
             <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" :phone-mode="true" />
           </div>
-          <!-- Home Bar -->
-          <div class="flex h-5 items-center justify-center border-t border-border bg-bg sm:h-7" aria-hidden="true">
-            <span class="h-1 w-16 rounded-full bg-border sm:w-24" />
+          <!-- Home Bar (hidden on mobile) -->
+          <div class="hidden h-7 items-center justify-center border-t border-border bg-bg sm:flex" aria-hidden="true">
+            <span class="h-1 w-24 rounded-full bg-border" />
           </div>
         </div>
       </div>
@@ -177,9 +193,16 @@ onUnmounted(() => {
 }
 
 .dr-phone-content {
-  height: min(540px, calc(100vh - 12rem));
+  height: min(540px, calc(100vh - 10rem));
   min-height: 320px;
   overflow-y: auto;
+}
+
+@media (max-width: 639px) {
+  .dr-phone-content {
+    height: calc(100vh - 6rem);
+    min-height: 300px;
+  }
 }
 
 /* ===== DESKTOP FULLSCREEN ===== */
