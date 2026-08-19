@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
   const body = await readBody<Record<string, unknown>>(event)
   const skills = normalizeSkills(body)
   await writeSkillsFile(skills)

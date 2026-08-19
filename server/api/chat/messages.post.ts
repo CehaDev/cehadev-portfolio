@@ -1,6 +1,9 @@
 import { createError } from 'h3'
+import { rateLimitOrThrow } from '../../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
+  rateLimitOrThrow(event, 'chat-msg', 20, 5 * 60 * 1000)
+
   const { enabled } = await getChatConfig()
   if (!enabled) {
     throw createError({ statusCode: 403, statusMessage: 'Chat sedang nonaktif' })

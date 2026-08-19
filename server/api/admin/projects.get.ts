@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
   const files = await listProjectFiles()
   const projects = []
   for (const f of files) {

@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
   const stored = await readSmtpSettings()
   return {
     host: stored.host ?? '',

@@ -13,9 +13,19 @@ const EXTS: Record<string, string> = {
 const uploadsDir = path.resolve(process.cwd(), 'public/uploads')
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 
-export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+function validateMagicBytes(data: Buffer, expectedType: string): boolean {
+  const signatures: Record<string, number[][]> = {
+    'image/jpeg': [[0xff, 0xd8, 0xff]],
+    'image/png': [[0x89, 0x50, 0x4e, 0x47]],
+    'image/webp': [[0x52, 0x49, 0x46, 0x46]],
+    'image/avif': [[0x00, 0x00, 0x00]]
+  }
+  const sigs = signatures[expectedType]
+  if (!sigs) return false
+  return sigs.some((sig) => sig.every((byte, i) => data[i] === byte))
+}
 
+export default defineEventHandler(async (event) => {
   const parts = await readMultipartFormData(event)
   const file = parts?.find((p) => p.name === 'photo' && p.filename)
   if (!file?.data || !file.type) {
@@ -23,6 +33,9 @@ export default defineEventHandler(async (event) => {
   }
   if (!ALLOWED.has(file.type)) {
     throw createError({ statusCode: 400, statusMessage: 'Format foto harus JPG, PNG, WEBP, atau AVIF' })
+  }
+  if (!validateMagicBytes(file.data, file.type)) {
+    throw createError({ statusCode: 400, statusMessage: 'File tidak sesuai dengan format yang dinyatakan' })
   }
   if (file.data.length > MAX_SIZE) {
     throw createError({ statusCode: 400, statusMessage: 'Ukuran foto maksimal 5 MB' })

@@ -118,6 +118,10 @@ export async function markMessageRead(id: string) {
   })
 }
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 export async function addMessageReply(id: string, text: string) {
   const msg = await getMessage(id)
   const clean = text.trim().slice(0, 5000)
@@ -132,7 +136,7 @@ export async function addMessageReply(id: string, text: string) {
       bcc: cfg ? cfg.from : undefined,
       subject: `Re: ${msg.subject}`,
       text: clean,
-      html: `<p>Halo <strong>${msg.name}</strong>,</p>\n<p>${clean.replace(/\n/g, '<br />')}</p>\n<br />\n<p>Salam,<br />${cfg ? cfg.fromName : 'CehaDev'}</p>`
+      html: `<p>Halo <strong>${escapeHtml(msg.name)}</strong>,</p>\n<p>${escapeHtml(clean).replace(/\n/g, '<br />')}</p>\n<br />\n<p>Salam,<br />${cfg ? escapeHtml(cfg.fromName) : 'CehaDev'}</p>`
     })
     status = 'sent'
   } catch (e) {

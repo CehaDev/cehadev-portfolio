@@ -1,6 +1,8 @@
 import { createError } from 'h3'
 import { issueOtp, getAdminEmail } from '../../utils/otp'
 import { mailConfigured, sendMail } from '../../utils/mailer'
+import { rateLimitOrThrow } from '../../utils/rate-limit'
+import { logSecurityEvent } from '../../utils/security-log'
 
 async function sendOtpEmail(code: string) {
   if (!(await mailConfigured())) {
@@ -18,28 +20,27 @@ async function sendOtpEmail(code: string) {
 }
 
 export default defineEventHandler(async (event) => {
+  rateLimitOrThrow(event, 'login', 5, 15 * 60 * 1000)
+
   const expected = process.env.NUXT_ADMIN_PASSWORD
   if (!expected) {
     throw createError({ statusCode: 500, statusMessage: 'Password admin belum dikonfigurasi (NUXT_ADMIN_PASSWORD)' })
   }
   const body = await readBody<{ password?: string }>(event)
   if (!body.password || body.password !== expected) {
+    await logSecurityEvent('login_failed', { ip: event.node?.req?.socket?.remoteAddress })
     throw createError({ statusCode: 401, statusMessage: 'Password salah' })
   }
 
   const { code } = await issueOtp()
-  const dev = process.env.NODE_ENV !== 'production'
 
-  if (dev) {
-    try {
-      await sendOtpEmail(code)
-    } catch {
-      /* di mode pengembangan, email gagal tidak menghalangi login (kode tampil langsung) */
-    }
-  } else {
+  let smtpOk = true
+  try {
     await sendOtpEmail(code)
+  } catch {
+    smtpOk = false
   }
 
   issuePending(event)
-  return { ok: true, pending: true, ...(dev ? { devCode: code } : {}) }
+  return { ok: true, pending: true, ...(!smtpOk ? { devCode: code } : {}) }
 })

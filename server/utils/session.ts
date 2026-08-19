@@ -1,4 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import path from 'node:path'
 import { getCookie, setCookie, deleteCookie, createError } from 'h3'
 
 export const SESSION_COOKIE = 'cehadev_admin_session'
@@ -7,12 +9,38 @@ const SESSION_TTL = 7 * 24 * 60 * 60 // 7 hari
 export const PENDING_COOKIE = 'cehadev_admin_pending'
 const PENDING_TTL = 10 * 60 * 1000 // 10 menit
 
+const epochFile = path.resolve(process.cwd(), '.data/session-epoch.json')
+
 function secret() {
-  return process.env.NUXT_ADMIN_SECRET || 'cehadev-admin-dev-secret'
+  const s = process.env.NUXT_ADMIN_SECRET
+  if (!s) {
+    throw createError({ statusCode: 500, statusMessage: 'NUXT_ADMIN_SECRET belum diatur' })
+  }
+  if (process.env.NODE_ENV === 'production' && (s.length < 32 || /dev-only/i.test(s))) {
+    throw createError({ statusCode: 500, statusMessage: 'NUXT_ADMIN_SECRET tidak aman untuk production' })
+  }
+  return s
 }
 
 export function signToken(str: string) {
   return createHmac('sha256', secret()).update(str).digest('base64url')
+}
+
+// ---- Session Epoch (untuk revocation) ----
+
+async function getSessionEpoch(): Promise<number> {
+  try {
+    const data = JSON.parse(await readFile(epochFile, 'utf-8'))
+    return typeof data.epoch === 'number' ? data.epoch : 0
+  } catch {
+    return 0
+  }
+}
+
+export async function revokeAllSessions() {
+  const current = await getSessionEpoch()
+  await mkdir(path.dirname(epochFile), { recursive: true })
+  await writeFile(epochFile, JSON.stringify({ epoch: current + 1 }), 'utf-8')
 }
 
 // ---- Token "pending" untuk langkah verifikasi OTP ----
@@ -51,13 +79,16 @@ export function clearPending(event: Parameters<typeof deleteCookie>[0]) {
   deleteCookie(event, PENDING_COOKIE, { path: '/' })
 }
 
-export function issueSession() {
-  const payload = { iat: Date.now(), exp: Date.now() + SESSION_TTL * 1000 }
+// ---- Session ----
+
+export async function issueSession() {
+  const epoch = await getSessionEpoch()
+  const payload = { iat: Date.now(), exp: Date.now() + SESSION_TTL * 1000, epoch }
   const str = JSON.stringify(payload)
   return `${Buffer.from(str).toString('base64url')}.${signToken(str)}`
 }
 
-export function isSessionValid(token: string | undefined) {
+export async function isSessionValid(token: string | undefined) {
   if (!token) return false
   const [b64, sig] = token.split('.')
   if (!b64 || !sig) return false
@@ -68,18 +99,22 @@ export function isSessionValid(token: string | undefined) {
   if (!timingSafeEqual(actual, expected)) return false
   try {
     const payload = JSON.parse(str)
-    return (
-      typeof payload.iat === 'number' &&
-      typeof payload.exp === 'number' &&
-      payload.exp > Date.now()
-    )
+    if (
+      typeof payload.iat !== 'number' ||
+      typeof payload.exp !== 'number' ||
+      payload.exp <= Date.now()
+    ) {
+      return false
+    }
+    const currentEpoch = await getSessionEpoch()
+    return payload.epoch === currentEpoch
   } catch {
     return false
   }
 }
 
-export function setAdminSession(event: Parameters<typeof setCookie>[0]) {
-  setCookie(event, SESSION_COOKIE, issueSession(), {
+export async function setAdminSession(event: Parameters<typeof setCookie>[0]) {
+  setCookie(event, SESSION_COOKIE, await issueSession(), {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -91,9 +126,9 @@ export function clearAdminSession(event: Parameters<typeof deleteCookie>[0]) {
   deleteCookie(event, SESSION_COOKIE, { path: '/' })
 }
 
-export function requireAdmin(event: Parameters<typeof getCookie>[0]) {
+export async function requireAdmin(event: Parameters<typeof getCookie>[0]) {
   const token = getCookie(event, SESSION_COOKIE)
-  if (!isSessionValid(token)) {
+  if (!(await isSessionValid(token))) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 }

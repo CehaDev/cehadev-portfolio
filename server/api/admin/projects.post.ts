@@ -1,7 +1,6 @@
 import { createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
   const body = await readBody<Record<string, unknown>>(event)
   const project = normalizeProject(body)
   if (!project.slug || !project.title) {

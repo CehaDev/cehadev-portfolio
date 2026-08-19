@@ -1,7 +1,6 @@
 import { createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
   const slug = getRouterParam(event, 'slug') ?? ''
   const body = await readBody<Record<string, unknown>>(event)
   const project = normalizeProject({ ...body, slug: body.slug ?? slug })
