@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Monitor, Smartphone, RotateCcw, Maximize2, Minimize2 } from 'lucide-vue-next'
+import { Monitor, Smartphone, RotateCcw, Maximize2, Minimize2, ExternalLink } from 'lucide-vue-next'
 import { computed, onUnmounted, ref } from 'vue'
 import type { Component } from 'vue'
 import { clearDemo } from '~/utils/demoStorage'
@@ -78,55 +78,84 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
+  <div class="demo-runner">
+    <!-- Header -->
+    <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div class="min-w-0">
         <h3 class="text-xl font-extrabold tracking-tight text-text md:text-2xl">{{ title || h.title || 'Demo Interaktif' }}</h3>
         <p v-if="note || h.note" class="mt-1 text-sm text-text-secondary">{{ note || h.note || 'Demo berjalan penuh di browser — tanpa perlu server.' }}</p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <div class="flex rounded-btn border border-border bg-card p-1" role="group" :aria-label="h.deviceAria || 'Mode tampilan'">
+        <!-- Device Toggle -->
+        <div class="flex rounded-xl border border-border bg-bg p-1" role="group" :aria-label="h.deviceAria || 'Mode tampilan'">
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-[8px] px-3 py-1.5 text-xs font-semibold transition-colors"
-            :class="device === 'desktop' ? 'bg-gradient-brand text-white' : 'text-text-secondary hover:text-text'"
+            class="relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-200"
+            :class="device === 'desktop' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'desktop'"
           >
             <Monitor :size="14" :stroke-width="1.75" />
-            {{ h.desktop || 'Desktop' }}
+            <span class="hidden sm:inline">{{ h.desktop || 'Desktop' }}</span>
           </button>
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-[8px] px-3 py-1.5 text-xs font-semibold transition-colors"
-            :class="device === 'phone' ? 'bg-gradient-brand text-white' : 'text-text-secondary hover:text-text'"
+            class="relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-200"
+            :class="device === 'phone' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'phone'"
           >
             <Smartphone :size="14" :stroke-width="1.75" />
-            {{ h.mobile || 'HP' }}
+            <span class="hidden sm:inline">{{ h.mobile || 'HP' }}</span>
           </button>
         </div>
-        <button type="button" class="inline-flex items-center gap-1.5 rounded-btn border border-border bg-card px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-text" @click="resetDemo">
+
+        <!-- Reset -->
+        <button
+          type="button"
+          class="flex items-center gap-1.5 rounded-xl border border-border bg-bg px-3 py-2 text-xs font-semibold text-text-secondary transition-all duration-200 hover:border-primary/50 hover:text-text hover:shadow-sm"
+          :title="h.reset || 'Reset'"
+          @click="resetDemo"
+        >
           <RotateCcw :size="14" :stroke-width="1.75" />
-          {{ h.reset || 'Reset' }}
+          <span class="hidden sm:inline">{{ h.reset || 'Reset' }}</span>
         </button>
-        <button type="button" class="inline-flex items-center gap-1.5 rounded-btn border border-border bg-card px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-text" @click="toggleFullscreen">
+
+        <!-- Fullscreen -->
+        <button
+          type="button"
+          class="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200"
+          :class="isFullscreen ? 'border border-primary/40 bg-primary/10 text-primary' : 'border border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text hover:shadow-sm'"
+          :title="isFullscreen ? (h.exitFullscreen || 'Keluar') : (h.fullscreen || 'Layar Penuh')"
+          @click="toggleFullscreen"
+        >
           <Minimize2 v-if="isFullscreen" :size="14" :stroke-width="1.75" />
           <Maximize2 v-else :size="14" :stroke-width="1.75" />
-          {{ isFullscreen ? (h.exitFullscreen || 'Keluar') : (h.fullscreen || 'Layar Penuh') }}
+          <span class="hidden sm:inline">{{ isFullscreen ? (h.exitFullscreen || 'Keluar') : (h.fullscreen || 'Layar Penuh') }}</span>
         </button>
+
+        <!-- External Link -->
+        <a
+          v-if="url"
+          :href="url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 rounded-xl border border-border bg-bg px-3 py-2 text-xs font-semibold text-text-secondary transition-all duration-200 hover:border-primary/50 hover:text-text hover:shadow-sm"
+          :title="'Buka di tab baru'"
+        >
+          <ExternalLink :size="14" :stroke-width="1.75" />
+        </a>
       </div>
     </div>
 
-    <!-- Frame browser / desktop -->
-    <div v-if="device === 'desktop'" ref="frameRef" class="overflow-hidden rounded-card border border-border bg-card shadow-card">
-      <div class="flex items-center gap-1.5 border-b border-border px-4 py-3" aria-hidden="true">
+    <!-- Desktop Frame -->
+    <div v-if="device === 'desktop'" ref="frameRef" class="demo-frame overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+      <div class="flex items-center gap-2 border-b border-border bg-bg-alt/50 px-4 py-2.5">
         <span class="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span class="h-3 w-3 rounded-full bg-[#FEBC2E]" />
         <span class="h-3 w-3 rounded-full bg-[#28C840]" />
-        <span class="ml-3 flex min-w-0 flex-1 items-center gap-2 rounded-md bg-bg px-3 py-1 text-[11px] text-text-muted">
+        <div class="ml-2 flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-bg/80 px-3 py-1.5">
           <span class="hidden h-1.5 w-1.5 shrink-0 rounded-full bg-success sm:block" aria-hidden="true" />
-          <span class="truncate">{{ displayUrl }}</span>
-        </span>
+          <span class="truncate text-[11px] text-text-muted">{{ displayUrl }}</span>
+        </div>
         <span class="hidden shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success sm:inline-flex">
           {{ h.runsOffline || 'Berjalan offline' }}
         </span>
@@ -136,24 +165,36 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Frame ponsel -->
-    <div v-else ref="frameRef" class="mx-auto w-[310px] max-w-full">
-      <div class="rounded-[2.6rem] border border-border bg-card p-2 shadow-card">
-        <div class="overflow-hidden rounded-[2.1rem] border border-border">
-          <div class="relative flex h-7 items-center justify-center bg-bg" aria-hidden="true">
-            <span class="absolute left-4 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-border bg-bg-alt" />
-            <span class="h-2 w-24 rounded-full bg-border" />
+    <!-- Phone Frame -->
+    <div v-else ref="frameRef" class="mx-auto w-[320px] max-w-full">
+      <div class="rounded-[2.8rem] border-2 border-border bg-card p-2.5 shadow-card">
+        <div class="overflow-hidden rounded-[2.2rem] border border-border">
+          <!-- Phone Notch -->
+          <div class="relative flex h-8 items-center justify-center bg-bg" aria-hidden="true">
+            <span class="absolute left-5 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-border bg-bg-alt" />
+            <span class="h-2.5 w-28 rounded-full bg-border" />
           </div>
           <div class="h-[540px] overflow-y-auto bg-bg">
             <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" />
           </div>
-          <div class="flex h-7 items-center justify-center gap-8 border-t border-border bg-bg text-text-muted" aria-hidden="true">
-            <span class="h-1.5 w-1.5 rounded-full bg-border" />
-            <span class="h-1.5 w-1.5 rounded-full bg-border" />
-            <span class="h-1.5 w-1.5 rounded-full bg-border" />
+          <!-- Phone Home Bar -->
+          <div class="flex h-7 items-center justify-center border-t border-border bg-bg" aria-hidden="true">
+            <span class="h-1 w-24 rounded-full bg-border" />
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.demo-runner :deep(.demo-frame:fullscreen) {
+  border-radius: 0;
+  border: none;
+  max-width: none;
+  width: 100%;
+}
+.demo-runner :deep(.demo-frame:fullscreen > div:last-child) {
+  height: calc(100vh - 44px);
+}
+</style>

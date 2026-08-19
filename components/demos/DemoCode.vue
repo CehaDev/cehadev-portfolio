@@ -76,7 +76,8 @@ onUnmounted(() => {
 
 <template>
   <div v-if="files.length" class="flex h-full min-h-[540px] flex-col bg-bg text-text">
-    <div class="flex items-center gap-1 overflow-x-auto border-b border-border bg-card-alt/60 px-3 pt-2" role="tablist" :aria-label="'File kode'">
+    <!-- File Tabs -->
+    <div class="flex items-center gap-1 overflow-x-auto border-b border-border bg-bg-alt/50 px-3 pt-2" role="tablist" :aria-label="'File kode'">
       <button
         v-for="(f, i) in files"
         :key="`${f.name}-${i}`"
@@ -89,12 +90,13 @@ onUnmounted(() => {
       >
         <FileCode2 :size="13" :stroke-width="1.75" />
         <span class="max-w-44 truncate font-mono">{{ f.name }}</span>
-        <span class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(f.language)">
+        <span class="rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(f.language)">
           {{ codeLangLabel(f.language) }}
         </span>
       </button>
     </div>
 
+    <!-- Code Area -->
     <div class="relative flex-1 overflow-hidden">
       <div class="absolute right-4 top-3 z-10 flex items-center gap-2">
         <span

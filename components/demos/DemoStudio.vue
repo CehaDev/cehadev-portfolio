@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AlertCircle, FileCode2, Folder, FolderOpen, Globe, LoaderCircle, Play } from 'lucide-vue-next'
+import { AlertCircle, FileCode2, Folder, FolderOpen, Globe, LoaderCircle, Play, Eye, PanelLeftClose, PanelLeft } from 'lucide-vue-next'
 import { codeToHtml } from '~/utils/shiki'
 import type { CodeFile } from '~/utils/demoCode'
 import { codeLangLabel, codeLangClass } from '~/utils/demoCode'
@@ -27,9 +27,8 @@ const files = computed(() => (props.files ?? []).filter((f) => f.name && f.conte
 const tree = ref<TreeNode[]>([])
 const expanded = ref<Record<string, boolean>>({})
 const activePath = ref('')
-const compact = ref(false)
+const sidebarOpen = ref(true)
 const rootEl = ref<HTMLElement | null>(null)
-let observer: ResizeObserver | null = null
 
 function buildTree() {
   const dirs = new Map<string, TreeNode>()
@@ -177,34 +176,37 @@ onMounted(() => {
   buildTree()
   if (activePath.value === '') activePath.value = files.value[0]?.name ?? ''
   run()
-  const el = rootEl.value
-  if (el) {
-    compact.value = el.clientWidth < 620
-    if (typeof ResizeObserver !== 'undefined') {
-      observer = new ResizeObserver((entries) => {
-        compact.value = (entries[0]?.contentRect.width ?? 0) < 620
-      })
-      observer.observe(el)
-    }
-  }
-})
-
-onBeforeUnmount(() => {
-  observer?.disconnect()
-  observer = null
 })
 </script>
 
 <template>
-  <div v-if="files.length" ref="rootEl" class="flex h-full min-h-[540px] flex-col bg-bg text-text">
-    <div class="flex items-center justify-between gap-2 border-b border-border bg-card-alt/60 px-3 py-2">
-      <span class="flex min-w-0 items-center gap-2 text-xs font-semibold text-text-secondary">
-        <FolderOpen :size="14" class="shrink-0 text-primary" />
-        <span class="truncate">{{ files.length }} berkas</span>
+  <div v-if="files.length" ref="rootEl" class="studio flex h-full min-h-[540px] flex-col bg-bg text-text">
+    <!-- Toolbar -->
+    <div class="flex items-center justify-between gap-2 border-b border-border bg-bg-alt/50 px-3 py-2">
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="hidden items-center gap-1.5 rounded-lg border border-border px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/40 hover:text-text lg:flex"
+          :class="sidebarOpen ? 'bg-primary/10 text-primary border-primary/30' : ''"
+          @click="sidebarOpen = !sidebarOpen"
+        >
+          <PanelLeft v-if="!sidebarOpen" :size="13" :stroke-width="2" />
+          <PanelLeftClose v-else :size="13" :stroke-width="2" />
+        </button>
+        <span class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary">
+          <FolderOpen :size="14" class="shrink-0 text-primary" />
+          <span class="truncate">{{ files.length }} berkas</span>
+        </span>
+      </div>
+
+      <span class="hidden items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-[11px] font-semibold text-primary lg:flex">
+        <Eye :size="12" :stroke-width="2" />
+        Preview Only
       </span>
+
       <button
         type="button"
-        class="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-gradient-brand px-3 py-1.5 text-[11px] font-bold text-white shadow-sm transition-transform hover:scale-[1.03] active:scale-95"
+        class="flex items-center gap-1.5 rounded-lg bg-gradient-brand px-3 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all hover:shadow-btn-glow hover:scale-[1.02] active:scale-95"
         @click="run"
       >
         <Play :size="12" :stroke-width="2.25" />
@@ -212,76 +214,76 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div class="grid min-h-0 flex-1" :class="compact ? 'grid-cols-1' : 'grid-cols-[170px_1fr]'">
-      <aside v-if="!compact" class="min-h-0 overflow-y-auto border-r border-border bg-card-alt/40 p-2 text-[12px]" aria-label="File project">
-        <button
-          v-for="row in rows"
-          :key="row.node.path"
-          type="button"
-          class="flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left transition-colors"
-          :class="!row.node.file && activePath === row.node.path ? 'bg-card/80 text-text-secondary' : row.node.file && activePath === row.node.path ? 'bg-primary/15 text-text' : 'text-text-muted hover:bg-card/60 hover:text-text-secondary'"
-          :style="{ paddingLeft: (row.depth * 14 + 8) + 'px' }"
-          @click="select(row)"
-        >
-          <FolderOpen v-if="row.node.children && expanded[row.node.path]" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
-          <Folder v-else-if="row.node.children" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
-          <FileCode2 v-else :size="13" :stroke-width="1.75" class="shrink-0 text-text-muted" />
-          <span class="truncate font-mono">{{ row.node.name }}</span>
-        </button>
-      </aside>
+    <!-- Desktop: Side by Side -->
+    <div class="hidden min-h-0 flex-1 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <!-- Code Panel -->
+      <div class="flex min-h-0 flex-col border-r border-border">
+        <!-- File Tree + Editor -->
+        <div class="grid min-h-0 flex-1" :class="sidebarOpen ? 'grid-cols-[170px_minmax(0,1fr)]' : 'grid-cols-1'">
+          <!-- File Tree Sidebar -->
+          <aside v-if="sidebarOpen" class="min-h-0 overflow-y-auto border-r border-border bg-card-alt/30 p-1.5 text-[12px]" aria-label="File project">
+            <button
+              v-for="row in rows"
+              :key="row.node.path"
+              type="button"
+              class="flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-left transition-colors"
+              :class="!row.node.file && activePath === row.node.path ? 'bg-card/80 text-text-secondary' : row.node.file && activePath === row.node.path ? 'bg-primary/15 text-text font-medium' : 'text-text-muted hover:bg-card/60 hover:text-text-secondary'"
+              :style="{ paddingLeft: (row.depth * 14 + 8) + 'px' }"
+              @click="select(row)"
+            >
+              <FolderOpen v-if="row.node.children && expanded[row.node.path]" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
+              <Folder v-else-if="row.node.children" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
+              <FileCode2 v-else :size="13" :stroke-width="1.75" class="shrink-0 text-text-muted" />
+              <span class="truncate font-mono text-[11px]">{{ row.node.name }}</span>
+            </button>
+          </aside>
 
+          <!-- Editor -->
+          <div class="flex min-h-0 flex-col">
+            <!-- Active File Tab -->
+            <div class="flex items-center justify-between border-b border-border bg-card-alt/40 px-3 py-1.5">
+              <span class="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold text-text-secondary">
+                <FileCode2 :size="12" :stroke-width="1.75" class="shrink-0 text-primary" />
+                <span class="truncate">{{ activeFile?.name ?? '—' }}</span>
+              </span>
+              <span class="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(activeFile?.language ?? '')">
+                {{ codeLangLabel(activeFile?.language ?? '') }}
+              </span>
+            </div>
+
+            <!-- Code Area -->
+            <div class="relative min-h-0 flex-1 overflow-hidden">
+              <div v-if="loading" class="flex h-full items-center justify-center gap-2 text-text-muted">
+                <LoaderCircle :size="18" class="animate-spin" />
+                <span class="text-xs">Menyiapkan editor...</span>
+              </div>
+              <div v-else-if="activeFile" class="flex h-full">
+                <div class="select-none border-r border-border bg-card-alt/40 py-3 pl-3 pr-2 text-right font-mono text-[12.5px] leading-[1.65] text-text-muted" aria-hidden="true">
+                  <div v-for="n in lineCount" :key="n">{{ n }}</div>
+                </div>
+                <div class="min-w-0 flex-1 overflow-auto py-3 pr-3">
+                  <div v-if="highlighted[activeFile.name]" class="code-panel" v-html="highlighted[activeFile.name]" />
+                  <pre class="font-mono text-[12.5px] leading-[1.65] text-text-secondary">{{ activeFile.content }}<span v-if="highlightError" class="mt-3 block text-[10px] text-red-400">Tidak dapat mewarnai kode: {{ highlightError }}</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Panel (Desktop) -->
       <div class="flex min-h-0 flex-col">
-        <div v-if="compact" class="flex gap-1 overflow-x-auto border-b border-border px-2 py-1.5">
-          <button
-            v-for="f in files"
-            :key="f.name"
-            type="button"
-            class="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-mono text-[11px] transition-colors"
-            :class="activePath === f.name ? 'bg-primary/15 text-text' : 'bg-card/60 text-text-muted hover:text-text-secondary'"
-            @click="activePath = f.name"
-          >
-            <FileCode2 :size="11" :stroke-width="1.75" />
-            {{ baseName(f.name) }}
-          </button>
-        </div>
-
-        <div class="flex items-center justify-between gap-2 border-b border-border bg-card-alt/40 px-3 py-1.5">
-          <span class="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold text-text-secondary">
-            <FileCode2 :size="12" :stroke-width="1.75" class="shrink-0 text-primary" />
-            <span class="truncate">{{ activeFile?.name ?? '—' }}</span>
+        <div class="flex items-center justify-between border-b border-border bg-card-alt/40 px-3 py-1.5">
+          <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+            <Globe :size="11" :stroke-width="1.75" class="text-primary" />
+            Live Preview
           </span>
-          <span class="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(activeFile?.language ?? '')">
-            {{ codeLangLabel(activeFile?.language ?? '') }}
+          <span v-if="previewMode === 'web'" class="flex items-center gap-1 text-[10px] text-text-muted">
+            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-success" aria-hidden="true" />
+            auto
           </span>
         </div>
-
-        <div class="relative h-[240px] shrink-0 overflow-hidden border-b border-border">
-          <div v-if="loading" class="flex h-full items-center justify-center gap-2 text-text-muted">
-            <LoaderCircle :size="18" class="animate-spin" />
-            <span class="text-xs">Menyiapkan editor...</span>
-          </div>
-          <div v-else-if="activeFile" class="flex h-full">
-            <div class="select-none border-r border-border bg-card-alt/40 py-3 pl-3 pr-2 text-right font-mono text-[12.5px] leading-[1.65] text-text-muted" aria-hidden="true">
-              <div v-for="n in lineCount" :key="n">{{ n }}</div>
-            </div>
-            <div class="min-w-0 flex-1 overflow-x-auto py-3 pr-3">
-              <div v-if="highlighted[activeFile.name]" class="code-panel" v-html="highlighted[activeFile.name]" />
-              <pre class="font-mono text-[12.5px] leading-[1.65] text-text-secondary">{{ activeFile.content }}<span v-if="highlightError" class="mt-3 block text-[10px] text-red-400">Tidak dapat mewarnai kode: {{ highlightError }}</span></pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="relative flex min-h-0 flex-1 flex-col">
-          <div class="flex items-center justify-between border-b border-border bg-card-alt/60 px-3 py-1.5">
-            <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
-              <Globe :size="11" :stroke-width="1.75" class="text-primary" />
-              Live Preview
-            </span>
-            <span v-if="previewMode === 'web'" class="flex items-center gap-1 text-[10px] text-text-muted">
-              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-success" aria-hidden="true" />
-              auto
-            </span>
-          </div>
+        <div class="min-h-0 flex-1">
           <iframe
             v-if="previewMode === 'web'"
             :key="runKey"
@@ -300,8 +302,30 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+
+    <!-- Mobile: Preview Only -->
+    <div class="min-h-0 flex-1 lg:hidden">
+      <div class="h-full min-h-[500px]">
+        <iframe
+          v-if="previewMode === 'web'"
+          :key="runKey"
+          :srcdoc="previewDoc"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          title="Live preview project"
+          class="h-full w-full border-0 bg-white"
+        />
+        <div v-else class="flex h-full items-center justify-center bg-bg p-6">
+          <div class="max-w-sm rounded-xl border border-border bg-card/60 p-4 text-center">
+            <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto text-amber-400" />
+            <p class="mt-2 text-xs font-semibold text-text-secondary">Tidak bisa dijalankan di browser</p>
+            <p class="mt-1 text-[11px] leading-relaxed text-text-muted">{{ previewNote }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Empty State -->
   <div v-else class="flex h-full min-h-[540px] items-center justify-center bg-bg p-8 text-center text-text-muted">
     <div>
       <FileCode2 :size="28" :stroke-width="1.5" class="mx-auto opacity-60" />
@@ -312,18 +336,21 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.code-panel :deep(pre.shiki) {
+.studio :deep(.code-panel pre.shiki),
+.studio :deep(.code-panel-mobile pre.shiki) {
   margin: 0;
   padding: 0 !important;
   background: transparent !important;
   overflow: visible;
 }
-.code-panel :deep(.shiki) {
+.studio :deep(.code-panel .shiki),
+.studio :deep(.code-panel-mobile .shiki) {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }
-.code-panel :deep(.shiki .line) {
+.studio :deep(.code-panel .shiki .line),
+.studio :deep(.code-panel-mobile .shiki .line) {
   display: inline-block;
   width: 100%;
   min-height: 1.65em;
