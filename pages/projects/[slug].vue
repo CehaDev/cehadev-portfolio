@@ -74,8 +74,8 @@ const featureIcons = {
 }
 
 const gallery = computed(() => {
-  const g = detail.value?.gallery as Array<{ label: string; seed: number }> | undefined
-  return g?.length ? g : [{ label: project.value?.title ?? 'Preview', seed: 1 }]
+  const g = detail.value?.gallery as Array<{ label: string; seed: number; image?: string }> | undefined
+  return g?.length ? g : [{ label: project.value?.title ?? 'Preview', seed: 1, image: undefined }]
 })
 
 const externalLive = computed(() => {
@@ -327,7 +327,12 @@ function openDemo() {
               :class="i === 0 ? 'sm:col-span-2 lg:row-span-2' : ''"
               :delay="(i % 3) * 60"
             >
-              <ProjectThumb :seed="g.seed" :label="g.label" :height="i === 0 ? 'h-full min-h-56' : 'h-44'" />
+              <div v-if="g.image" class="group relative overflow-hidden rounded-card border border-border" :class="i === 0 ? 'h-full min-h-56' : 'h-44'">
+                <img :src="g.image" :alt="g.label" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <span class="absolute left-3 top-3 rounded-md bg-black/50 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">{{ g.label }}</span>
+              </div>
+              <ProjectThumb v-else :seed="g.seed" :label="g.label" :height="i === 0 ? 'h-full min-h-56' : 'h-44'" />
             </Reveal>
           </div>
         </div>

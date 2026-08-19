@@ -1,6 +1,9 @@
 {
   "slug": "devboard",
-  "title": { "id": "DevBoard", "en": "DevBoard" },
+  "title": {
+    "id": "DevBoard",
+    "en": "DevBoard"
+  },
   "tagline": {
     "id": "Dashboard analitik developer dengan visualisasi data real-time.",
     "en": "A developer analytics dashboard with real-time data visualization."
@@ -10,16 +13,40 @@
     "en": "An analytics dashboard to monitor app performance, user metrics, and system logs with interactive charts."
   },
   "tags": [
-    { "id": "Vue.js", "en": "Vue.js" },
-    { "id": "Node.js", "en": "Node.js" },
-    { "id": "Tailwind CSS", "en": "Tailwind CSS" }
+    {
+      "id": "Vue.js",
+      "en": "Vue.js"
+    },
+    {
+      "id": "Node.js",
+      "en": "Node.js"
+    },
+    {
+      "id": "Tailwind CSS",
+      "en": "Tailwind CSS"
+    }
   ],
-  "tech": ["vue", "node", "tailwind", "javascript"],
-  "category": { "id": "Dasbor", "en": "Dashboard" },
+  "tech": [
+    "vue",
+    "node",
+    "tailwind",
+    "javascript"
+  ],
+  "category": {
+    "id": "Dasbor",
+    "en": "Dashboard"
+  },
   "year": "2024",
-  "role": { "id": "Frontend Developer", "en": "Frontend Developer" },
-  "duration": { "id": "2 Bulan", "en": "2 Months" },
+  "role": {
+    "id": "Frontend Developer",
+    "en": "Frontend Developer"
+  },
+  "duration": {
+    "id": "2 Bulan",
+    "en": "2 Months"
+  },
   "featured": true,
+  "archived": false,
   "liveUrl": "https://devboard.example.com",
   "githubUrl": "https://github.com/cehadev/devboard",
   "demo": {
@@ -64,43 +91,300 @@
       "en": "DevBoard is an analytics dashboard built for developers and teams to monitor app performance in real-time. User metrics, system logs, and resource usage are visualized in interactive, easy-to-understand charts.\n\nBuilt with Vue 3 and Node.js, DevBoard aggregates data from multiple sources into a single unified view. Its design prioritizes data readability and fast responses even with large datasets."
     },
     "featureHighlights": [
-      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": { "id": "Visualisasi Real-time", "en": "Real-time Visualization" }, "desc": { "id": "Grafik dan metrik yang diperbarui secara langsung.", "en": "Charts and metrics updated live." } },
-      { "icon": "Activity", "color": "#22C55E", "title": { "id": "Monitoring Performa", "en": "Performance Monitoring" }, "desc": { "id": "Pantau CPU, memori, dan waktu respons aplikasi.", "en": "Monitor CPU, memory, and app response time." } },
-      { "icon": "Bell", "color": "#F59E0B", "title": { "id": "Alert Cerdas", "en": "Smart Alerts" }, "desc": { "id": "Notifikasi otomatis saat metrik melewati ambang batas.", "en": "Automatic notifications when metrics cross thresholds." } },
-      { "icon": "Users", "color": "#8B5CF6", "title": { "id": "Analisis Pengguna", "en": "User Analytics" }, "desc": { "id": "Wawasan perilaku pengguna dari data aktivitas harian.", "en": "User behavior insights from daily activity data." } }
+      {
+        "icon": "LayoutDashboard",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Visualisasi Real-time",
+          "en": "Real-time Visualization"
+        },
+        "desc": {
+          "id": "Grafik dan metrik yang diperbarui secara langsung.",
+          "en": "Charts and metrics updated live."
+        }
+      },
+      {
+        "icon": "Activity",
+        "color": "#22C55E",
+        "title": {
+          "id": "Monitoring Performa",
+          "en": "Performance Monitoring"
+        },
+        "desc": {
+          "id": "Pantau CPU, memori, dan waktu respons aplikasi.",
+          "en": "Monitor CPU, memory, and app response time."
+        }
+      },
+      {
+        "icon": "Bell",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Alert Cerdas",
+          "en": "Smart Alerts"
+        },
+        "desc": {
+          "id": "Notifikasi otomatis saat metrik melewati ambang batas.",
+          "en": "Automatic notifications when metrics cross thresholds."
+        }
+      },
+      {
+        "icon": "Users",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Analisis Pengguna",
+          "en": "User Analytics"
+        },
+        "desc": {
+          "id": "Wawasan perilaku pengguna dari data aktivitas harian.",
+          "en": "User behavior insights from daily activity data."
+        }
+      }
     ],
     "mainFeatures": [
-      { "icon": "LayoutDashboard", "color": "#38BDF8", "title": { "id": "Dashboard Interaktif", "en": "Interactive Dashboard" }, "desc": { "id": "Widget yang bisa disusun ulang sesuai kebutuhan pemantauan.", "en": "Widgets that can be rearranged to fit your monitoring needs." } },
-      { "icon": "Activity", "color": "#22C55E", "title": { "id": "Metrik Real-time", "en": "Real-time Metrics" }, "desc": { "id": "Streaming data performa dengan WebSocket untuk pembaruan instan.", "en": "Performance data streaming with WebSockets for instant updates." } },
-      { "icon": "Bell", "color": "#F59E0B", "title": { "id": "Sistem Alert", "en": "Alert System" }, "desc": { "id": "Pemberitahuan via email dan notifikasi saat terjadi anomali.", "en": "Email and in-app notifications when anomalies occur." } },
-      { "icon": "Search", "color": "#8B5CF6", "title": { "id": "Pencarian Log", "en": "Log Search" }, "desc": { "id": "Telusuri log sistem dengan filter waktu, level, dan layanan.", "en": "Search system logs with time, level, and service filters." } },
-      { "icon": "FolderCheck", "color": "#F43F5E", "title": { "id": "Ekspor Laporan", "en": "Report Export" }, "desc": { "id": "Unduh ringkasan metrik dalam format CSV atau PDF.", "en": "Download metric summaries in CSV or PDF format." } }
+      {
+        "icon": "LayoutDashboard",
+        "color": "#38BDF8",
+        "title": {
+          "id": "Dashboard Interaktif",
+          "en": "Interactive Dashboard"
+        },
+        "desc": {
+          "id": "Widget yang bisa disusun ulang sesuai kebutuhan pemantauan.",
+          "en": "Widgets that can be rearranged to fit your monitoring needs."
+        }
+      },
+      {
+        "icon": "Activity",
+        "color": "#22C55E",
+        "title": {
+          "id": "Metrik Real-time",
+          "en": "Real-time Metrics"
+        },
+        "desc": {
+          "id": "Streaming data performa dengan WebSocket untuk pembaruan instan.",
+          "en": "Performance data streaming with WebSockets for instant updates."
+        }
+      },
+      {
+        "icon": "Bell",
+        "color": "#F59E0B",
+        "title": {
+          "id": "Sistem Alert",
+          "en": "Alert System"
+        },
+        "desc": {
+          "id": "Pemberitahuan via email dan notifikasi saat terjadi anomali.",
+          "en": "Email and in-app notifications when anomalies occur."
+        }
+      },
+      {
+        "icon": "Search",
+        "color": "#8B5CF6",
+        "title": {
+          "id": "Pencarian Log",
+          "en": "Log Search"
+        },
+        "desc": {
+          "id": "Telusuri log sistem dengan filter waktu, level, dan layanan.",
+          "en": "Search system logs with time, level, and service filters."
+        }
+      },
+      {
+        "icon": "FolderCheck",
+        "color": "#F43F5E",
+        "title": {
+          "id": "Ekspor Laporan",
+          "en": "Report Export"
+        },
+        "desc": {
+          "id": "Unduh ringkasan metrik dalam format CSV atau PDF.",
+          "en": "Download metric summaries in CSV or PDF format."
+        }
+      }
     ],
-    "techStack": ["vue", "node", "tailwind", "javascript"],
+    "techStack": [
+      "vue",
+      "node",
+      "tailwind",
+      "javascript"
+    ],
     "process": [
-      { "num": "01", "icon": "ClipboardList", "title": { "id": "Perencanaan", "en": "Planning" }, "desc": { "id": "Menentukan metrik yang dipantau dan sumber datanya.", "en": "Defining the monitored metrics and their data sources." } },
-      { "num": "02", "icon": "PenTool", "title": { "id": "Desain UI/UX", "en": "UI/UX Design" }, "desc": { "id": "Merancang tata letak dashboard dan visualisasi data.", "en": "Designing the dashboard layout and data visualizations." } },
-      { "num": "03", "icon": "Code2", "title": { "id": "Pengembangan", "en": "Development" }, "desc": { "id": "Membangun agregasi data, API, dan komponen grafik.", "en": "Building data aggregation, APIs, and chart components." } },
-      { "num": "04", "icon": "Bug", "title": { "id": "Pengujian", "en": "Testing" }, "desc": { "id": "Menguji akurasi data dan respons terhadap dataset besar.", "en": "Testing data accuracy and responsiveness with large datasets." } },
-      { "num": "05", "icon": "Rocket", "title": { "id": "Deployment", "en": "Deployment" }, "desc": { "id": "Deploy dan kalibrasi ambang batas alert di produksi.", "en": "Deploying and calibrating alert thresholds in production." } }
+      {
+        "num": "01",
+        "icon": "ClipboardList",
+        "title": {
+          "id": "Perencanaan",
+          "en": "Planning"
+        },
+        "desc": {
+          "id": "Menentukan metrik yang dipantau dan sumber datanya.",
+          "en": "Defining the monitored metrics and their data sources."
+        }
+      },
+      {
+        "num": "02",
+        "icon": "PenTool",
+        "title": {
+          "id": "Desain UI/UX",
+          "en": "UI/UX Design"
+        },
+        "desc": {
+          "id": "Merancang tata letak dashboard dan visualisasi data.",
+          "en": "Designing the dashboard layout and data visualizations."
+        }
+      },
+      {
+        "num": "03",
+        "icon": "Code2",
+        "title": {
+          "id": "Pengembangan",
+          "en": "Development"
+        },
+        "desc": {
+          "id": "Membangun agregasi data, API, dan komponen grafik.",
+          "en": "Building data aggregation, APIs, and chart components."
+        }
+      },
+      {
+        "num": "04",
+        "icon": "Bug",
+        "title": {
+          "id": "Pengujian",
+          "en": "Testing"
+        },
+        "desc": {
+          "id": "Menguji akurasi data dan respons terhadap dataset besar.",
+          "en": "Testing data accuracy and responsiveness with large datasets."
+        }
+      },
+      {
+        "num": "05",
+        "icon": "Rocket",
+        "title": {
+          "id": "Deployment",
+          "en": "Deployment"
+        },
+        "desc": {
+          "id": "Deploy dan kalibrasi ambang batas alert di produksi.",
+          "en": "Deploying and calibrating alert thresholds in production."
+        }
+      }
     ],
     "challenges": [
-      { "title": { "id": "Data besar & responsif", "en": "Large & responsive data" }, "desc": { "id": "Mengatasi kelambatan saat menampilkan ribuan titik data dengan agregasi dan virtual scrolling.", "en": "Avoiding lag when rendering thousands of data points with aggregation and virtual scrolling." } },
-      { "title": { "id": "Pembaruan real-time", "en": "Real-time updates" }, "desc": { "id": "Menjaga sinkronisasi grafik antar klien tanpa membebani server dengan throttling dan delta updates.", "en": "Keeping charts in sync across clients without overloading the server using throttling and delta updates." } },
-      { "title": { "id": "Akurasi metrik", "en": "Metric accuracy" }, "desc": { "id": "Memastikan konsistensi perhitungan metrik antara tampilan dan sumber data asli.", "en": "Ensuring metric calculations stay consistent between the UI and the source data." } }
+      {
+        "title": {
+          "id": "Data besar & responsif",
+          "en": "Large & responsive data"
+        },
+        "desc": {
+          "id": "Mengatasi kelambatan saat menampilkan ribuan titik data dengan agregasi dan virtual scrolling.",
+          "en": "Avoiding lag when rendering thousands of data points with aggregation and virtual scrolling."
+        }
+      },
+      {
+        "title": {
+          "id": "Pembaruan real-time",
+          "en": "Real-time updates"
+        },
+        "desc": {
+          "id": "Menjaga sinkronisasi grafik antar klien tanpa membebani server dengan throttling dan delta updates.",
+          "en": "Keeping charts in sync across clients without overloading the server using throttling and delta updates."
+        }
+      },
+      {
+        "title": {
+          "id": "Akurasi metrik",
+          "en": "Metric accuracy"
+        },
+        "desc": {
+          "id": "Memastikan konsistensi perhitungan metrik antara tampilan dan sumber data asli.",
+          "en": "Ensuring metric calculations stay consistent between the UI and the source data."
+        }
+      }
     ],
     "results": [
-      { "icon": "Activity", "value": { "id": "12K+", "en": "12K+" }, "label": { "id": "Event Diproses / Hari", "en": "Events Processed / Day" } },
-      { "icon": "Rocket", "value": { "id": "< 1s", "en": "< 1s" }, "label": { "id": "Latensi Refresh", "en": "Refresh Latency" } },
-      { "icon": "Users", "value": { "id": "40+", "en": "40+" }, "label": { "id": "Pengguna Tim", "en": "Team Users" } },
-      { "icon": "ShieldCheck", "value": { "id": "99.9%", "en": "99.9%" }, "label": { "id": "Keandalan Sistem", "en": "System Reliability" } }
+      {
+        "icon": "Activity",
+        "value": {
+          "id": "12K+",
+          "en": "12K+"
+        },
+        "label": {
+          "id": "Event Diproses / Hari",
+          "en": "Events Processed / Day"
+        }
+      },
+      {
+        "icon": "Rocket",
+        "value": {
+          "id": "< 1s",
+          "en": "< 1s"
+        },
+        "label": {
+          "id": "Latensi Refresh",
+          "en": "Refresh Latency"
+        }
+      },
+      {
+        "icon": "Users",
+        "value": {
+          "id": "40+",
+          "en": "40+"
+        },
+        "label": {
+          "id": "Pengguna Tim",
+          "en": "Team Users"
+        }
+      },
+      {
+        "icon": "ShieldCheck",
+        "value": {
+          "id": "99.9%",
+          "en": "99.9%"
+        },
+        "label": {
+          "id": "Keandalan Sistem",
+          "en": "System Reliability"
+        }
+      }
     ],
     "gallery": [
-      { "label": { "id": "Dashboard", "en": "Dashboard" }, "seed": 31 },
-      { "label": { "id": "Grafik Metrik", "en": "Metric Charts" }, "seed": 32 },
-      { "label": { "id": "Log Viewer", "en": "Log Viewer" }, "seed": 33 },
-      { "label": { "id": "Pengaturan Alert", "en": "Alert Settings" }, "seed": 34 },
-      { "label": { "id": "Laporan", "en": "Reports" }, "seed": 35 }
+      {
+        "label": {
+          "id": "Dashboard",
+          "en": "Dashboard"
+        },
+        "seed": 31,
+        "image": "/uploads/projects/gallery-1787158348747-y867o0.png"
+      },
+      {
+        "label": {
+          "id": "Grafik Metrik",
+          "en": "Metric Charts"
+        },
+        "seed": 32
+      },
+      {
+        "label": {
+          "id": "Log Viewer",
+          "en": "Log Viewer"
+        },
+        "seed": 33
+      },
+      {
+        "label": {
+          "id": "Pengaturan Alert",
+          "en": "Alert Settings"
+        },
+        "seed": 34
+      },
+      {
+        "label": {
+          "id": "Laporan",
+          "en": "Reports"
+        },
+        "seed": 35
+      }
     ]
   }
 }

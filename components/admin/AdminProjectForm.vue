@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref, watch, computed } from 'vue'
-import { LoaderCircle, Save, Plus, Trash2, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay, FileText, Settings2, Tags, Check, FileCode2, ChevronUp, ChevronDown } from 'lucide-vue-next'
+import { LoaderCircle, Save, Plus, Trash2, ListChecks, GitBranch, Bug, BarChart3, Images, MonitorPlay, FileText, Settings2, Tags, Check, FileCode2, ChevronUp, ChevronDown, Upload, X, ImagePlus } from 'lucide-vue-next'
 import { techIcons } from '~/composables/useSkills'
 import { CODE_LANGS, detectLangFromName } from '~/utils/demoCode'
 import type { CodeFile } from '~/utils/demoCode'
@@ -33,6 +33,7 @@ interface ResultItem {
 interface GalleryItem {
   label: LS
   seed: number
+  image?: string
 }
 interface DetailState {
   overview: LS
@@ -94,7 +95,7 @@ const detail = reactive<DetailState>({
   process: (initialDetail.process ?? []).map((p: any) => ({ num: str(p?.num), icon: str(p?.icon) || 'Code2', title: ls(p?.title), desc: ls(p?.desc) })),
   challenges: (initialDetail.challenges ?? []).map((c: any) => ({ title: ls(c?.title), desc: ls(c?.desc) })),
   results: (initialDetail.results ?? []).map((r: any) => ({ icon: str(r?.icon) || 'Activity', value: ls(r?.value), label: ls(r?.label) })),
-  gallery: (initialDetail.gallery ?? []).map((g: any) => ({ label: ls(g?.label), seed: Number(g?.seed) || 1 }))
+  gallery: (initialDetail.gallery ?? []).map((g: any) => ({ label: ls(g?.label), seed: Number(g?.seed) || 1, image: str(g?.image) || undefined }))
 })
 
 const initialDemo = props.initial?.demo ?? {}
@@ -160,6 +161,8 @@ const iconOptions = ['Search', 'LayoutDashboard', 'MessageSquare', 'ShieldCheck'
 
 const error = ref('')
 const saving = ref(false)
+const uploadingGallery = ref<number | null>(null)
+const galleryInputs = ref<Record<number, HTMLInputElement | null>>({})
 
 const sectionNav = [
   { id: 'pf-sec-basic', num: 1, label: 'Informasi Dasar' },
@@ -264,8 +267,12 @@ function payload() {
       .map((r) => ({ icon: r.icon, value: cleanLs(r.value), label: cleanLs(r.label) }))
       .filter((r) => hasText(r.label)),
     gallery: d.gallery
-      .map((g) => ({ label: cleanLs(g.label), seed: Number(g.seed) || 1 }))
-      .filter((g) => hasText(g.label))
+      .map((g) => {
+        const item: Record<string, unknown> = { label: cleanLs(g.label), seed: Number(g.seed) || 1 }
+        if (g.image) item.image = g.image
+        return item
+      })
+      .filter((g) => hasText(g.label as LS))
   }
   const hasDetail =
     hasText(detailPayload.overview) ||
@@ -333,7 +340,39 @@ function emptyResult(): ResultItem {
   return { icon: 'Activity', value: { id: '', en: '' }, label: { id: '', en: '' } }
 }
 function emptyGallery(): GalleryItem {
-  return { label: { id: '', en: '' }, seed: 1 }
+  return { label: { id: '', en: '' }, seed: 1, image: undefined }
+}
+
+async function uploadGalleryImage(index: number, file: File) {
+  if (uploadingGallery.value !== null) return
+  uploadingGallery.value = index
+  error.value = ''
+  try {
+    const fd = new FormData()
+    fd.append('image', file)
+    const res = await $fetch<{ ok: boolean; url: string }>('/api/admin/projects/gallery', { method: 'POST', body: fd })
+    if (res.ok) detail.gallery[index].image = res.url
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    error.value = err.data?.statusMessage ?? 'Gagal mengunggah gambar, coba lagi'
+  } finally {
+    uploadingGallery.value = null
+  }
+}
+
+function onGalleryImageChange(index: number, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) uploadGalleryImage(index, file)
+  input.value = ''
+}
+
+async function removeGalleryImage(index: number) {
+  const item = detail.gallery[index]
+  if (item?.image) {
+    await $fetch('/api/admin/projects/gallery', { method: 'DELETE', body: { url: item.image } }).catch(() => {})
+  }
+  if (item) item.image = undefined
 }
 
 async function save() {
@@ -1000,29 +1039,76 @@ async function save() {
               <span class="text-[9px] text-text-muted">Tambah item</span>
             </div>
           </div>
+          <p class="mb-3 text-xs text-text-muted">Upload gambar untuk ditampilkan di galeri project. Format: JPG, PNG, WEBP, atau AVIF (maks 10 MB).</p>
           <div class="space-y-3">
-            <div v-for="(g, i) in detail.gallery" :key="i" class="rounded-lg border border-border bg-bg p-3">
-              <div class="mb-3 flex items-center gap-3">
-                <span class="h-10 w-14 shrink-0 overflow-hidden rounded-md border border-border">
-                  <ProjectThumb :seed="g.seed || 1" :label="g.label.id || 'Galeri'" height="h-10" />
-                </span>
-                <button type="button" class="ml-auto shrink-0 rounded-lg border border-red-500/30 p-2 text-red-400 transition-colors hover:bg-red-500/10" :aria-label="`Hapus galeri ${i + 1}`" @click="removeItem(detail.gallery, i)">
+            <div v-for="(g, i) in detail.gallery" :key="i" class="rounded-xl border border-border/60 bg-bg-alt/50 p-4 transition-all hover:border-primary/20">
+              <div class="mb-3 flex items-start gap-4">
+                <!-- Image Preview / Upload Zone -->
+                <div class="group relative shrink-0">
+                  <input
+                    :ref="(el) => { galleryInputs[i] = el as HTMLInputElement }"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/avif"
+                    class="hidden"
+                    @change="onGalleryImageChange(i, $event)"
+                  />
+                  <div
+                    class="flex h-24 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed transition-all"
+                    :class="g.image ? 'border-border' : 'border-border/60 hover:border-primary/40'"
+                    role="button"
+                    tabindex="0"
+                    :aria-label="`Upload gambar galeri ${i + 1}`"
+                    @click="galleryInputs[i]?.click()"
+                    @keydown.enter="galleryInputs[i]?.click()"
+                  >
+                    <img v-if="g.image" :src="g.image" :alt="g.label.id || `Galeri ${i + 1}`" class="h-full w-full object-cover" />
+                    <div v-else class="flex flex-col items-center gap-1 text-text-muted">
+                      <LoaderCircle v-if="uploadingGallery === i" :size="18" class="animate-spin text-primary" />
+                      <ImagePlus v-else :size="18" :stroke-width="1.5" />
+                      <span class="text-[10px] font-medium">{{ uploadingGallery === i ? 'Mengunggah...' : 'Upload' }}</span>
+                    </div>
+                  </div>
+                  <!-- Remove image button -->
+                  <button
+                    v-if="g.image"
+                    type="button"
+                    class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-sm transition-transform hover:scale-110"
+                    :aria-label="`Hapus gambar galeri ${i + 1}`"
+                    @click.stop="removeGalleryImage(i)"
+                  >
+                    <X :size="10" :stroke-width="2.5" />
+                  </button>
+                </div>
+
+                <!-- Label & Seed -->
+                <div class="min-w-0 flex-1">
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1 block text-xs font-medium text-text-secondary">Label</label>
+                      <LocaleInput :id="`pf-gl-label-${i}`" v-model="g.label" placeholder="Label galeri" />
+                    </div>
+                    <div>
+                      <label :for="`pf-gl-seed-${i}`" class="mb-1 block text-xs font-medium text-text-secondary">Seed (warna fallback)</label>
+                      <input :id="`pf-gl-seed-${i}`" v-model.number="g.seed" type="number" class="input-field !py-2" placeholder="Seed" />
+                    </div>
+                  </div>
+                  <p v-if="!g.image" class="mt-2 text-[10px] text-text-muted">Klik area gambar untuk upload. Tanpa gambar, akan menampilkan thumbnail gradient dari seed.</p>
+                  <p v-else class="mt-2 text-[10px] text-success">Gambar uploaded. Thumbnail gradient menjadi fallback.</p>
+                </div>
+
+                <!-- Delete Gallery Item -->
+                <button type="button" class="shrink-0 rounded-lg border border-transparent p-2 text-text-muted transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400" :aria-label="`Hapus galeri ${i + 1}`" @click="removeItem(detail.gallery, i)">
                   <Trash2 :size="14" :stroke-width="1.5" />
                 </button>
               </div>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-text">Label</label>
-                  <LocaleInput :id="`pf-gl-label-${i}`" v-model="g.label" placeholder="Label galeri" />
-                </div>
-                <div>
-                  <label :for="`pf-gl-seed-${i}`" class="mb-1 block text-xs font-medium text-text">Seed</label>
-                  <input :id="`pf-gl-seed-${i}`" v-model.number="g.seed" type="number" class="input-field !py-2" placeholder="Seed" />
-                </div>
-              </div>
             </div>
-            <p v-if="!detail.gallery.length" class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-text-muted">
-              Belum ada item galeri.
+            <p v-if="!detail.gallery.length" class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border px-6 py-10 text-center">
+              <Images :size="28" :stroke-width="1.5" class="text-text-muted/40" />
+              <span class="text-sm text-text-muted">Belum ada item galeri</span>
+              <button type="button" class="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/20" @click="addItem(detail.gallery, emptyGallery)">
+                <Plus :size="12" :stroke-width="2" />
+                Tambah Sekarang
+              </button>
             </p>
           </div>
         </div>

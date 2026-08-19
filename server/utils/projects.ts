@@ -97,7 +97,12 @@ export function normalizeProject(body: Record<string, unknown>) {
     (Array.isArray(v) ? v : [])
       .map((x) => {
         const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        return { label: normalizeLS(o.label), seed: Number(o.seed) || 1 }
+        const image = str(o.image)
+        return {
+          label: normalizeLS(o.label),
+          seed: Number(o.seed) || 1,
+          ...(image ? { image } : {})
+        }
       })
       .filter((g) => g.label.id)
 
