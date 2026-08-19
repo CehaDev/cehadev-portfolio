@@ -204,7 +204,7 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
 </script>
 
 <template>
-  <!-- ===== PHONE MODE: preview iframe only, fills 100% ===== -->
+  <!-- ===== PHONE MODE: preview iframe only ===== -->
   <div v-if="phoneMode" class="flex h-full flex-col bg-bg text-text">
     <iframe
       v-if="previewMode === 'web'"
@@ -214,11 +214,11 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
       title="Live preview project"
       class="h-full w-full flex-1 border-0 bg-white"
     />
-    <div v-else class="flex h-full flex-1 items-center justify-center bg-bg p-6">
-      <div class="max-w-xs rounded-xl border border-border bg-card/60 p-4 text-center">
-        <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto text-amber-400" />
-        <p class="mt-2 text-xs font-semibold text-text-secondary">Tidak bisa dijalankan</p>
-        <p class="mt-1 text-[11px] leading-relaxed text-text-muted">{{ previewNote }}</p>
+    <div v-else class="flex h-full flex-1 items-center justify-center bg-bg p-4 sm:p-6">
+      <div class="max-w-xs rounded-xl border border-border bg-card/60 p-3 text-center sm:p-4">
+        <AlertCircle :size="20" :stroke-width="1.75" class="mx-auto text-amber-400" />
+        <p class="mt-2 text-[11px] font-semibold text-text-secondary sm:text-xs">Tidak bisa dijalankan</p>
+        <p class="mt-1 text-[10px] leading-relaxed text-text-muted sm:text-[11px]">{{ previewNote }}</p>
       </div>
     </div>
   </div>
@@ -226,8 +226,8 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
   <!-- ===== DESKTOP MODE: full editor ===== -->
   <div v-else-if="files.length" class="studio-root flex h-full flex-col bg-bg text-text">
     <!-- Toolbar -->
-    <div class="flex shrink-0 items-center justify-between gap-2 border-b border-border bg-bg-alt/50 px-3 py-2">
-      <div class="flex items-center gap-2">
+    <div class="flex shrink-0 items-center justify-between gap-2 border-b border-border bg-bg-alt/50 px-2 py-1.5 sm:px-3 sm:py-2">
+      <div class="flex items-center gap-1.5 sm:gap-2">
         <button
           type="button"
           class="hidden items-center gap-1.5 rounded-lg border border-border px-2 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/40 hover:text-text lg:flex"
@@ -237,23 +237,24 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
           <PanelLeft v-if="!sidebarOpen" :size="13" :stroke-width="2" />
           <PanelLeftClose v-else :size="13" :stroke-width="2" />
         </button>
-        <span class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary">
-          <FolderOpen :size="14" class="shrink-0 text-primary" />
+        <span class="flex items-center gap-1 text-[11px] font-semibold text-text-secondary sm:gap-1.5 sm:text-xs">
+          <FolderOpen :size="13" class="shrink-0 text-primary sm:hidden" />
+          <FolderOpen :size="14" class="hidden shrink-0 text-primary sm:block" />
           <span class="truncate">{{ files.length }} berkas</span>
         </span>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 sm:gap-2">
         <button
           type="button"
-          class="hidden items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-all lg:flex"
+          class="hidden items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition-all lg:flex"
           :class="isLive ? 'border-success/40 bg-success/10 text-success' : 'border-border bg-bg text-text-secondary'"
           @click="isLive = !isLive"
         >
           <span class="h-1.5 w-1.5 rounded-full" :class="isLive ? 'animate-pulse bg-success' : 'bg-text-muted'" />
-          {{ isLive ? 'Live Auto' : 'Manual' }}
+          {{ isLive ? 'Live' : 'Manual' }}
         </button>
-        <button type="button" class="flex items-center gap-1.5 rounded-lg bg-gradient-brand px-3 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all hover:shadow-btn-glow hover:scale-[1.02] active:scale-95" @click="run">
-          <Play :size="12" :stroke-width="2.25" />
+        <button type="button" class="flex items-center gap-1 rounded-lg bg-gradient-brand px-2.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all hover:shadow-btn-glow hover:scale-[1.02] active:scale-95 sm:px-3" @click="run">
+          <Play :size="11" :stroke-width="2.25" />
           Run
         </button>
       </div>
@@ -263,46 +264,48 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
     <div class="hidden min-h-0 flex-1 lg:grid lg:grid-cols-2">
       <!-- Code Side -->
       <div class="flex min-h-0 flex-col border-r border-border">
-        <div class="grid min-h-0 flex-1" :class="sidebarOpen ? 'grid-cols-[170px_minmax(0,1fr)]' : 'grid-cols-1'">
-          <aside v-if="sidebarOpen" class="min-h-0 overflow-y-auto border-r border-border bg-card-alt/30 p-1.5 text-[12px]">
+        <div class="grid min-h-0 flex-1" :class="sidebarOpen ? 'grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]' : 'grid-cols-1'">
+          <aside v-if="sidebarOpen" class="min-h-0 overflow-y-auto border-r border-border bg-card-alt/30 p-1 text-[11px] sm:p-1.5 sm:text-[12px]">
             <button
               v-for="row in rows"
               :key="row.node.path"
               type="button"
-              class="flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-left transition-colors"
+              class="flex w-full items-center gap-1 rounded-lg px-1.5 py-1 text-left transition-colors sm:gap-1.5 sm:px-2 sm:py-1.5"
               :class="row.node.file && activePath === row.node.path ? 'bg-primary/15 font-medium text-text' : !row.node.file && activePath === row.node.path ? 'bg-card/80 text-text-secondary' : 'text-text-muted hover:bg-card/60 hover:text-text-secondary'"
-              :style="{ paddingLeft: (row.depth * 14 + 8) + 'px' }"
+              :style="{ paddingLeft: (row.depth * 12 + 6) + 'px' }"
               @click="select(row)"
             >
-              <FolderOpen v-if="row.node.children && expanded[row.node.path]" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
-              <Folder v-else-if="row.node.children" :size="13" :stroke-width="1.75" class="shrink-0 text-sky-400" />
-              <FileCode2 v-else :size="13" :stroke-width="1.75" class="shrink-0 text-text-muted" />
-              <span class="truncate font-mono text-[11px]">{{ row.node.name }}</span>
+              <FolderOpen v-if="row.node.children && expanded[row.node.path]" :size="12" :stroke-width="1.75" class="shrink-0 text-sky-400" />
+              <Folder v-else-if="row.node.children" :size="12" :stroke-width="1.75" class="shrink-0 text-sky-400" />
+              <FileCode2 v-else :size="12" :stroke-width="1.75" class="shrink-0 text-text-muted" />
+              <span class="truncate font-mono text-[10px] sm:text-[11px]">{{ row.node.name }}</span>
             </button>
           </aside>
 
           <div class="flex min-h-0 flex-col">
-            <div class="flex shrink-0 items-center justify-between border-b border-border bg-card-alt/40 px-3 py-1.5">
-              <span class="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold text-text-secondary">
-                <FileCode2 :size="12" :stroke-width="1.75" class="shrink-0 text-primary" />
+            <div class="flex shrink-0 items-center justify-between border-b border-border bg-card-alt/40 px-2 py-1 sm:px-3 sm:py-1.5">
+              <span class="flex min-w-0 items-center gap-1 font-mono text-[10px] font-semibold text-text-secondary sm:gap-1.5 sm:text-[11px]">
+                <FileCode2 :size="11" :stroke-width="1.75" class="shrink-0 text-primary sm:hidden" />
+                <FileCode2 :size="12" :stroke-width="1.75" class="hidden shrink-0 text-primary sm:block" />
                 <span class="truncate">{{ activeFile?.name ?? '—' }}</span>
                 <span v-if="editedContent[activeFile?.name ?? '']" class="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" title="Modified" />
               </span>
-              <span class="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide" :class="codeLangClass(activeFile?.language ?? '')">
+              <span class="shrink-0 rounded-md px-1 py-0.5 text-[8px] font-bold uppercase tracking-wide sm:px-1.5 sm:text-[9px]" :class="codeLangClass(activeFile?.language ?? '')">
                 {{ codeLangLabel(activeFile?.language ?? '') }}
               </span>
             </div>
             <div class="editor-wrap relative min-h-0 flex-1 overflow-hidden">
               <div v-if="loading" class="flex h-full items-center justify-center gap-2 text-text-muted">
-                <LoaderCircle :size="18" class="animate-spin" />
-                <span class="text-xs">Menyiapkan editor...</span>
+                <LoaderCircle :size="16" class="animate-spin sm:hidden" />
+                <LoaderCircle :size="18" class="hidden animate-spin sm:block" />
+                <span class="text-[11px] sm:text-xs">Menyiapkan editor...</span>
               </div>
               <template v-else-if="activeFile">
-                <div class="absolute inset-y-0 left-0 z-10 flex select-none bg-card-alt/40 py-3 pl-3 pr-2 text-right font-mono text-[12.5px] leading-[1.65] text-text-muted" aria-hidden="true">
+                <div class="absolute inset-y-0 left-0 z-10 flex select-none bg-card-alt/40 py-2.5 pl-2 pr-1.5 text-right font-mono text-[11px] leading-[1.65] text-text-muted sm:py-3 sm:pl-3 sm:pr-2 sm:text-[12.5px]" aria-hidden="true">
                   <div v-for="n in lineCount" :key="n">{{ n }}</div>
                 </div>
-                <div ref="highlightRef" class="editor-highlight pointer-events-none absolute inset-0 overflow-hidden py-3 pl-[52px] pr-3">
-                  <div v-if="highlighted[activeFile.name]" class="code-panel font-mono text-[12.5px] leading-[1.65]" v-html="highlighted[activeFile.name]" />
+                <div ref="highlightRef" class="editor-highlight pointer-events-none absolute inset-0 overflow-hidden py-2.5 pl-[40px] pr-2 sm:py-3 sm:pl-[52px] sm:pr-3">
+                  <div v-if="highlighted[activeFile.name]" class="code-panel font-mono text-[11px] leading-[1.65] sm:text-[12.5px]" v-html="highlighted[activeFile.name]" />
                 </div>
                 <textarea
                   ref="editorRef"
@@ -311,7 +314,7 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
                   autocomplete="off"
                   autocorrect="off"
                   autocapitalize="off"
-                  class="editor-textarea absolute inset-0 z-20 h-full w-full resize-none bg-transparent py-3 pl-[52px] pr-3 font-mono text-[12.5px] leading-[1.65] text-transparent caret-text focus:outline-none"
+                  class="editor-textarea absolute inset-0 z-20 h-full w-full resize-none bg-transparent py-2.5 pl-[40px] pr-2 font-mono text-[11px] leading-[1.65] text-transparent caret-text focus:outline-none sm:py-3 sm:pl-[52px] sm:pr-3 sm:text-[12.5px]"
                   :aria-label="`Editor ${activeFile.name}`"
                   @input="onInput"
                   @keydown="onTab"
@@ -325,12 +328,13 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
 
       <!-- Preview Side -->
       <div class="flex min-h-0 flex-col">
-        <div class="flex shrink-0 items-center justify-between border-b border-border bg-card-alt/40 px-3 py-1.5">
-          <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
-            <Globe :size="11" :stroke-width="1.75" class="text-primary" />
+        <div class="flex shrink-0 items-center justify-between border-b border-border bg-card-alt/40 px-2 py-1 sm:px-3 sm:py-1.5">
+          <span class="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-text-muted sm:gap-1.5 sm:text-[10px]">
+            <Globe :size="10" :stroke-width="1.75" class="text-primary sm:hidden" />
+            <Globe :size="11" :stroke-width="1.75" class="hidden text-primary sm:block" />
             Live Preview
           </span>
-          <span v-if="previewMode === 'web' && isLive" class="flex items-center gap-1 text-[10px] text-text-muted">
+          <span v-if="previewMode === 'web' && isLive" class="flex items-center gap-1 text-[9px] text-text-muted sm:text-[10px]">
             <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
             auto
           </span>
@@ -344,11 +348,12 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
             title="Live preview project"
             class="h-full w-full border-0 bg-white"
           />
-          <div v-else class="flex h-full items-center justify-center bg-bg p-6">
-            <div class="max-w-sm rounded-xl border border-border bg-card/60 p-4 text-center">
-              <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto text-amber-400" />
-              <p class="mt-2 text-xs font-semibold text-text-secondary">Tidak bisa dijalankan di browser</p>
-              <p class="mt-1 text-[11px] leading-relaxed text-text-muted">{{ previewNote }}</p>
+          <div v-else class="flex h-full items-center justify-center bg-bg p-4 sm:p-6">
+            <div class="max-w-xs rounded-xl border border-border bg-card/60 p-3 text-center sm:max-w-sm sm:p-4">
+              <AlertCircle :size="20" :stroke-width="1.75" class="mx-auto text-amber-400 sm:hidden" />
+              <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto hidden text-amber-400 sm:block" />
+              <p class="mt-2 text-[11px] font-semibold text-text-secondary sm:text-xs">Tidak bisa dijalankan di browser</p>
+              <p class="mt-1 text-[10px] leading-relaxed text-text-muted sm:text-[11px]">{{ previewNote }}</p>
             </div>
           </div>
         </div>
@@ -365,22 +370,24 @@ onBeforeUnmount(() => { if (autoPreviewTimer) clearTimeout(autoPreviewTimer) })
         title="Live preview project"
         class="h-full w-full border-0 bg-white"
       />
-      <div v-else class="flex h-full items-center justify-center bg-bg p-6">
-        <div class="max-w-sm rounded-xl border border-border bg-card/60 p-4 text-center">
-          <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto text-amber-400" />
-          <p class="mt-2 text-xs font-semibold text-text-secondary">Tidak bisa dijalankan di browser</p>
-          <p class="mt-1 text-[11px] leading-relaxed text-text-muted">{{ previewNote }}</p>
+      <div v-else class="flex h-full items-center justify-center bg-bg p-4 sm:p-6">
+        <div class="max-w-xs rounded-xl border border-border bg-card/60 p-3 text-center sm:max-w-sm sm:p-4">
+          <AlertCircle :size="20" :stroke-width="1.75" class="mx-auto text-amber-400 sm:hidden" />
+          <AlertCircle :size="22" :stroke-width="1.75" class="mx-auto hidden text-amber-400 sm:block" />
+          <p class="mt-2 text-[11px] font-semibold text-text-secondary sm:text-xs">Tidak bisa dijalankan di browser</p>
+          <p class="mt-1 text-[10px] leading-relaxed text-text-muted sm:text-[11px]">{{ previewNote }}</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Empty State -->
-  <div v-else class="flex h-full items-center justify-center bg-bg p-8 text-center text-text-muted">
+  <div v-else class="flex h-full items-center justify-center bg-bg p-6 text-center text-text-muted sm:p-8">
     <div>
-      <FileCode2 :size="28" :stroke-width="1.5" class="mx-auto opacity-60" />
-      <p class="mt-3 text-sm">Belum ada file project.</p>
-      <p class="mt-1 text-xs">Atur file HTML/CSS/JS lewat panel admin untuk live preview.</p>
+      <FileCode2 :size="24" :stroke-width="1.5" class="mx-auto opacity-60 sm:hidden" />
+      <FileCode2 :size="28" :stroke-width="1.5" class="mx-auto hidden opacity-60 sm:block" />
+      <p class="mt-2 text-xs sm:mt-3 sm:text-sm">Belum ada file project.</p>
+      <p class="mt-0.5 text-[11px] sm:mt-1 sm:text-xs">Atur file HTML/CSS/JS lewat panel admin untuk live preview.</p>
     </div>
   </div>
 </template>

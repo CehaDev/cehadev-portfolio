@@ -83,79 +83,86 @@ onUnmounted(() => {
         <h3 class="text-xl font-extrabold tracking-tight text-text md:text-2xl">{{ title || h.title || 'Demo Interaktif' }}</h3>
         <p v-if="note || h.note" class="mt-1 text-sm text-text-secondary">{{ note || h.note || 'Demo berjalan penuh di browser — tanpa perlu server.' }}</p>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <div class="flex rounded-xl border border-border bg-bg p-1" role="group">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <!-- Device Toggle -->
+        <div class="flex rounded-xl border border-border bg-bg p-0.5 sm:p-1" role="group">
           <button
             type="button"
-            class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all"
+            class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:flex-initial sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'desktop' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'desktop'"
           >
-            <Monitor :size="14" :stroke-width="1.75" />
+            <Monitor :size="13" :stroke-width="1.75" />
             <span class="hidden sm:inline">{{ h.desktop || 'Desktop' }}</span>
           </button>
           <button
             type="button"
-            class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all"
+            class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:flex-initial sm:px-3 sm:py-2 sm:text-xs"
             :class="device === 'phone' ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-secondary hover:text-text'"
             @click="device = 'phone'"
           >
-            <Smartphone :size="14" :stroke-width="1.75" />
+            <Smartphone :size="13" :stroke-width="1.75" />
             <span class="hidden sm:inline">{{ h.mobile || 'HP' }}</span>
           </button>
         </div>
-        <button type="button" class="flex items-center gap-1.5 rounded-xl border border-border bg-bg px-3 py-2 text-xs font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text" @click="resetDemo">
-          <RotateCcw :size="14" :stroke-width="1.75" />
+        <!-- Reset -->
+        <button type="button" class="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs" @click="resetDemo">
+          <RotateCcw :size="13" :stroke-width="1.75" />
           <span class="hidden sm:inline">{{ h.reset || 'Reset' }}</span>
         </button>
+        <!-- Fullscreen -->
         <button
           type="button"
-          class="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all"
+          class="flex items-center justify-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition-all sm:px-3 sm:py-2 sm:text-xs"
           :class="isFullscreen ? 'border border-primary/40 bg-primary/10 text-primary' : 'border border-border bg-bg text-text-secondary hover:border-primary/50 hover:text-text'"
           @click="toggleFullscreen"
         >
-          <Minimize2 v-if="isFullscreen" :size="14" :stroke-width="1.75" />
-          <Maximize2 v-else :size="14" :stroke-width="1.75" />
+          <Minimize2 v-if="isFullscreen" :size="13" :stroke-width="1.75" />
+          <Maximize2 v-else :size="13" :stroke-width="1.75" />
           <span class="hidden sm:inline">{{ isFullscreen ? 'Keluar' : 'Layar Penuh' }}</span>
         </button>
-        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 rounded-xl border border-border bg-bg px-3 py-2 text-xs font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text">
-          <ExternalLink :size="14" :stroke-width="1.75" />
+        <!-- External -->
+        <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center rounded-xl border border-border bg-bg px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-all hover:border-primary/50 hover:text-text sm:px-3 sm:py-2 sm:text-xs">
+          <ExternalLink :size="13" :stroke-width="1.75" />
         </a>
       </div>
     </div>
 
     <!-- DESKTOP Frame -->
-    <div v-if="device === 'desktop'" ref="frameRef" class="dr-frame overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-      <div class="flex items-center gap-2 border-b border-border bg-bg-alt/50 px-4 py-2.5" aria-hidden="true">
-        <span class="h-3 w-3 rounded-full bg-[#FF5F57]" />
-        <span class="h-3 w-3 rounded-full bg-[#FEBC2E]" />
-        <span class="h-3 w-3 rounded-full bg-[#28C840]" />
-        <div class="ml-2 flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-bg/80 px-3 py-1.5">
+    <div v-if="device === 'desktop'" ref="frameRef" class="dr-frame overflow-hidden rounded-xl border border-border bg-card shadow-card sm:rounded-2xl">
+      <div class="flex items-center gap-2 border-b border-border bg-bg-alt/50 px-3 py-2 sm:px-4 sm:py-2.5" aria-hidden="true">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#FF5F57] sm:h-3 sm:w-3" />
+        <span class="h-2.5 w-2.5 rounded-full bg-[#FEBC2E] sm:h-3 sm:w-3" />
+        <span class="h-2.5 w-2.5 rounded-full bg-[#28C840] sm:h-3 sm:w-3" />
+        <div class="ml-2 flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-bg/80 px-2.5 py-1 sm:px-3 sm:py-1.5">
           <span class="hidden h-1.5 w-1.5 shrink-0 rounded-full bg-success sm:block" />
-          <span class="truncate text-[11px] text-text-muted">{{ displayUrl }}</span>
+          <span class="truncate text-[10px] text-text-muted sm:text-[11px]">{{ displayUrl }}</span>
         </div>
         <span class="hidden shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success sm:inline-flex">
           {{ h.runsOffline || 'Offline' }}
         </span>
       </div>
-      <div class="dr-content h-[540px] overflow-y-auto bg-bg">
+      <div class="dr-content overflow-y-auto bg-bg">
         <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" />
       </div>
     </div>
 
     <!-- PHONE Frame -->
     <div v-else ref="frameRef" class="dr-phone-wrap">
-      <div class="dr-phone mx-auto w-[320px] max-w-full rounded-[2.8rem] border-2 border-border bg-card p-2.5 shadow-card">
-        <div class="overflow-hidden rounded-[2.2rem] border border-border">
-          <div class="relative flex h-8 items-center justify-center bg-bg" aria-hidden="true">
-            <span class="absolute left-5 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-border bg-bg-alt" />
-            <span class="h-2.5 w-28 rounded-full bg-border" />
+      <div class="dr-phone mx-auto max-w-full rounded-[2rem] border-2 border-border bg-card p-2 shadow-card sm:w-[320px] sm:rounded-[2.8rem] sm:p-2.5">
+        <div class="overflow-hidden rounded-[1.6rem] border border-border sm:rounded-[2.2rem]">
+          <!-- Notch -->
+          <div class="relative flex h-6 items-center justify-center bg-bg sm:h-8" aria-hidden="true">
+            <span class="absolute left-4 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full border border-border bg-bg-alt sm:left-5 sm:h-3 sm:w-3" />
+            <span class="h-2 w-20 rounded-full bg-border sm:h-2.5 sm:w-28" />
           </div>
+          <!-- Content -->
           <div class="dr-phone-content bg-bg">
             <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" :phone-mode="true" />
           </div>
-          <div class="flex h-7 items-center justify-center border-t border-border bg-bg" aria-hidden="true">
-            <span class="h-1 w-24 rounded-full bg-border" />
+          <!-- Home Bar -->
+          <div class="flex h-5 items-center justify-center border-t border-border bg-bg sm:h-7" aria-hidden="true">
+            <span class="h-1 w-16 rounded-full bg-border sm:w-24" />
           </div>
         </div>
       </div>
@@ -165,11 +172,13 @@ onUnmounted(() => {
 
 <style scoped>
 .dr-content {
-  height: 540px;
+  height: min(540px, calc(100vh - 14rem));
+  min-height: 320px;
 }
 
 .dr-phone-content {
-  height: 540px;
+  height: min(540px, calc(100vh - 12rem));
+  min-height: 320px;
   overflow-y: auto;
 }
 
