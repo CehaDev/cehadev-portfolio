@@ -152,7 +152,7 @@ onUnmounted(() => {
             <span class="h-2.5 w-28 rounded-full bg-border" />
           </div>
           <div class="dr-phone-content bg-bg">
-            <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" />
+            <component :is="demoComponent" :key="resetKey" :storage-key="storageKey" :files="files" :phone-mode="true" />
           </div>
           <div class="flex h-7 items-center justify-center border-t border-border bg-bg" aria-hidden="true">
             <span class="h-1 w-24 rounded-full bg-border" />
@@ -187,14 +187,14 @@ onUnmounted(() => {
 /* ===== PHONE FULLSCREEN ===== */
 .dr-phone-wrap:fullscreen {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   background: rgb(var(--color-bg));
 }
 .dr-phone-wrap:fullscreen .dr-phone {
   width: 100%;
   max-width: 430px;
-  height: 100vh;
+  height: 100%;
   border-radius: 0;
   border: none;
   padding: 0;
@@ -212,7 +212,8 @@ onUnmounted(() => {
 .dr-phone-wrap:fullscreen .dr-phone-content {
   flex: 1;
   height: auto;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
 }
 .dr-phone-wrap:fullscreen .dr-phone > div > div:last-child {
   display: none;
