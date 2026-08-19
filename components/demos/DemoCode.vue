@@ -28,13 +28,11 @@ async function highlight() {
   if (!activeFile.value) return
   const idx = activeIdx.value
   if (highlighted.value[idx] !== undefined) return
-  const code = activeFile.value.content
   loading.value = true
   error.value = ''
   try {
     const lang = isShikiLang(activeFile.value.language) ? activeFile.value.language : 'text'
-    const html = await codeToHtml(code, lang)
-    highlighted.value[idx] = html
+    highlighted.value[idx] = await codeToHtml(activeFile.value.content, lang)
   } catch (e) {
     highlighted.value[idx] = ''
     error.value = String((e as Error)?.message ?? e)
@@ -43,19 +41,13 @@ async function highlight() {
   }
 }
 
-watch(
-  [activeIdx, files],
-  () => {
-    if (!files.value.length) return
-    if (activeIdx.value >= files.value.length) activeIdx.value = 0
-    void highlight()
-  },
-  { immediate: true }
-)
+watch([activeIdx, files], () => {
+  if (!files.value.length) return
+  if (activeIdx.value >= files.value.length) activeIdx.value = 0
+  void highlight()
+}, { immediate: true })
 
-function selectFile(i: number) {
-  activeIdx.value = i
-}
+function selectFile(i: number) { activeIdx.value = i }
 
 async function copyCode() {
   if (!activeFile.value) return
@@ -64,20 +56,16 @@ async function copyCode() {
     copied.value = true
     if (copyTimer) clearTimeout(copyTimer)
     copyTimer = setTimeout(() => (copied.value = false), 1800)
-  } catch {
-    /* clipboard tidak tersedia */
-  }
+  } catch {}
 }
 
-onUnmounted(() => {
-  if (copyTimer) clearTimeout(copyTimer)
-})
+onUnmounted(() => { if (copyTimer) clearTimeout(copyTimer) })
 </script>
 
 <template>
-  <div v-if="files.length" class="flex h-full min-h-[540px] flex-col bg-bg text-text">
+  <div v-if="files.length" class="flex h-full flex-col bg-bg text-text">
     <!-- File Tabs -->
-    <div class="flex items-center gap-1 overflow-x-auto border-b border-border bg-bg-alt/50 px-3 pt-2" role="tablist" :aria-label="'File kode'">
+    <div class="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-border bg-bg-alt/50 px-3 pt-2" role="tablist">
       <button
         v-for="(f, i) in files"
         :key="`${f.name}-${i}`"
@@ -97,20 +85,13 @@ onUnmounted(() => {
     </div>
 
     <!-- Code Area -->
-    <div class="relative flex-1 overflow-hidden">
+    <div class="relative min-h-0 flex-1 overflow-hidden">
       <div class="absolute right-4 top-3 z-10 flex items-center gap-2">
-        <span
-          v-if="copied"
-          class="inline-flex items-center gap-1 rounded-md border border-success/30 bg-success/10 px-2 py-1 text-[10px] font-semibold text-success"
-        >
+        <span v-if="copied" class="inline-flex items-center gap-1 rounded-md border border-success/30 bg-success/10 px-2 py-1 text-[10px] font-semibold text-success">
           <Check :size="11" :stroke-width="2.25" />
           Tersalin
         </span>
-        <button
-          type="button"
-          class="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-text"
-          @click="copyCode"
-        >
+        <button type="button" class="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold text-text-secondary transition-colors hover:border-primary/50 hover:text-text" @click="copyCode">
           <Copy :size="12" :stroke-width="1.75" />
           Salin
         </button>
@@ -121,24 +102,18 @@ onUnmounted(() => {
         <span class="text-xs">Menyiapkan editor...</span>
       </div>
       <div v-else class="flex h-full">
-        <div
-          class="select-none border-r border-border bg-card-alt/40 py-4 pl-4 pr-3 text-right font-mono text-[12.5px] leading-[1.65] text-text-muted"
-          aria-hidden="true"
-        >
+        <div class="select-none border-r border-border bg-card-alt/40 py-4 pl-4 pr-3 text-right font-mono text-[12.5px] leading-[1.65] text-text-muted" aria-hidden="true">
           <div v-for="n in lineCount" :key="n">{{ n }}</div>
         </div>
         <div class="min-w-0 flex-1 overflow-x-auto py-4 pr-4">
           <div v-if="highlighted[activeIdx]" class="code-panel" v-html="highlighted[activeIdx]" />
-          <pre
-            v-else
-            class="font-mono text-[12.5px] leading-[1.65] text-text-secondary"
-          >{{ activeFile.content }}<span v-if="error" class="mt-3 block text-[10px] text-red-400">Tidak dapat mewarnai kode: {{ error }}</span></pre>
+          <pre v-else class="font-mono text-[12.5px] leading-[1.65] text-text-secondary">{{ activeFile.content }}<span v-if="error" class="mt-3 block text-[10px] text-red-400">Tidak dapat mewarnai kode: {{ error }}</span></pre>
         </div>
       </div>
     </div>
   </div>
 
-  <div v-else class="flex h-full min-h-[540px] items-center justify-center bg-bg p-8 text-center text-text-muted">
+  <div v-else class="flex h-full items-center justify-center bg-bg p-8 text-center text-text-muted">
     <div>
       <FileCode2 :size="28" :stroke-width="1.5" class="mx-auto opacity-60" />
       <p class="mt-3 text-sm">Belum ada file kode.</p>
