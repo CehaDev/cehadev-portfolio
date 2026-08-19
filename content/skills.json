@@ -1,153 +1,330 @@
 {
   "homeSkills": [
     {
-      "name": { "id": "JavaScript", "en": "JavaScript" },
+      "name": {
+        "id": "JavaScript",
+        "en": "JavaScript"
+      },
       "level": 90,
       "tech": "javascript"
     },
     {
-      "name": { "id": "Vue.js", "en": "Vue.js" },
+      "name": {
+        "id": "Vue.js",
+        "en": "Vue.js"
+      },
       "level": 85,
       "tech": "vue"
     },
     {
-      "name": { "id": "Nuxt.js", "en": "Nuxt.js" },
+      "name": {
+        "id": "Nuxt.js",
+        "en": "Nuxt.js"
+      },
       "level": 85,
       "tech": "nuxt"
     },
     {
-      "name": { "id": "Tailwind CSS", "en": "Tailwind CSS" },
+      "name": {
+        "id": "Tailwind CSS",
+        "en": "Tailwind CSS"
+      },
       "level": 90,
       "tech": "tailwind"
     },
     {
-      "name": { "id": "Node.js", "en": "Node.js" },
+      "name": {
+        "id": "Node.js",
+        "en": "Node.js"
+      },
       "level": 80,
       "tech": "node"
     },
     {
-      "name": { "id": "Linux", "en": "Linux" },
+      "name": {
+        "id": "Linux",
+        "en": "Linux"
+      },
       "level": 75,
       "tech": "linux"
     },
     {
-      "name": { "id": "Git & GitHub", "en": "Git & GitHub" },
+      "name": {
+        "id": "Git & GitHub",
+        "en": "Git & GitHub"
+      },
       "level": 85,
       "tech": "git"
     }
   ],
   "technicalSkills": [
     {
-      "name": { "id": "JavaScript", "en": "JavaScript" },
+      "name": {
+        "id": "JavaScript",
+        "en": "JavaScript"
+      },
       "level": 90,
       "tech": "javascript",
-      "category": { "id": "Bahasa", "en": "Language" }
+      "category": {
+        "id": "Bahasa",
+        "en": "Language"
+      }
     },
     {
-      "name": { "id": "CSS3", "en": "CSS3" },
-      "level": 90,
+      "name": {
+        "id": "CSS3",
+        "en": "CSS3"
+      },
+      "level": 66,
       "tech": "css3",
-      "category": { "id": "Styling", "en": "Styling" }
+      "category": {
+        "id": "Styling",
+        "en": "Styling"
+      }
     },
     {
-      "name": { "id": "Vue.js", "en": "Vue.js" },
+      "name": {
+        "id": "Vue.js",
+        "en": "Vue.js"
+      },
       "level": 85,
       "tech": "vue",
-      "category": { "id": "Framework", "en": "Framework" }
+      "category": {
+        "id": "Framework",
+        "en": "Framework"
+      }
     },
     {
-      "name": { "id": "Node.js", "en": "Node.js" },
+      "name": {
+        "id": "Node.js",
+        "en": "Node.js"
+      },
       "level": 80,
       "tech": "node",
-      "category": { "id": "Runtime", "en": "Runtime" }
+      "category": {
+        "id": "Runtime",
+        "en": "Runtime"
+      }
     },
     {
-      "name": { "id": "Nuxt.js", "en": "Nuxt.js" },
+      "name": {
+        "id": "Nuxt.js",
+        "en": "Nuxt.js"
+      },
       "level": 85,
       "tech": "nuxt",
-      "category": { "id": "Framework", "en": "Framework" }
+      "category": {
+        "id": "Framework",
+        "en": "Framework"
+      }
     },
     {
-      "name": { "id": "PHP", "en": "PHP" },
+      "name": {
+        "id": "PHP",
+        "en": "PHP"
+      },
       "level": 70,
       "tech": "php",
-      "category": { "id": "Bahasa", "en": "Language" }
+      "category": {
+        "id": "Bahasa",
+        "en": "Language"
+      }
     },
     {
-      "name": { "id": "Tailwind CSS", "en": "Tailwind CSS" },
+      "name": {
+        "id": "Tailwind CSS",
+        "en": "Tailwind CSS"
+      },
       "level": 90,
       "tech": "tailwind",
-      "category": { "id": "Styling", "en": "Styling" }
+      "category": {
+        "id": "Styling",
+        "en": "Styling"
+      }
     },
     {
-      "name": { "id": "MySQL", "en": "MySQL" },
+      "name": {
+        "id": "MySQL",
+        "en": "MySQL"
+      },
       "level": 75,
       "tech": "mysql",
-      "category": { "id": "Database", "en": "Database" }
+      "category": {
+        "id": "Database",
+        "en": "Database"
+      }
     },
     {
-      "name": { "id": "HTML5", "en": "HTML5" },
+      "name": {
+        "id": "HTML5",
+        "en": "HTML5"
+      },
       "level": 95,
       "tech": "html5",
-      "category": { "id": "Bahasa", "en": "Language" }
+      "category": {
+        "id": "Bahasa",
+        "en": "Language"
+      }
     },
     {
-      "name": { "id": "Git & GitHub", "en": "Git & GitHub" },
+      "name": {
+        "id": "Git & GitHub",
+        "en": "Git & GitHub"
+      },
       "level": 85,
       "tech": "git",
-      "category": { "id": "Tooling", "en": "Tooling" }
+      "category": {
+        "id": "Tooling",
+        "en": "Tooling"
+      }
     }
   ],
   "marqueeTech": [
-    { "id": "Vue.js", "en": "Vue.js" },
-    { "id": "Nuxt.js", "en": "Nuxt.js" },
-    { "id": "Tailwind CSS", "en": "Tailwind CSS" },
-    { "id": "TypeScript", "en": "TypeScript" },
-    { "id": "Git & GitHub", "en": "Git & GitHub" },
-    { "id": "Linux", "en": "Linux" }
+    {
+      "id": "Vue.js",
+      "en": "Vue.js"
+    },
+    {
+      "id": "Nuxt.js",
+      "en": "Nuxt.js"
+    },
+    {
+      "id": "Tailwind CSS",
+      "en": "Tailwind CSS"
+    },
+    {
+      "id": "TypeScript",
+      "en": "TypeScript"
+    },
+    {
+      "id": "Git & GitHub",
+      "en": "Git & GitHub"
+    },
+    {
+      "id": "Linux",
+      "en": "Linux"
+    }
   ],
   "skillsSummary": [
     {
-      "label": { "id": "Teknologi", "en": "Technologies" },
-      "value": { "id": "10+", "en": "10+" },
+      "label": {
+        "id": "Teknologi",
+        "en": "Technologies"
+      },
+      "value": {
+        "id": "10+",
+        "en": "10+"
+      },
       "icon": "Code2"
     },
     {
-      "label": { "id": "Tahun Pengalaman", "en": "Years Experience" },
-      "value": { "id": "2+", "en": "2+" },
+      "label": {
+        "id": "Tahun Pengalaman",
+        "en": "Years Experience"
+      },
+      "value": {
+        "id": "2+",
+        "en": "2+"
+      },
       "icon": "Clock"
     },
     {
-      "label": { "id": "Proyek Selesai", "en": "Projects Completed" },
-      "value": { "id": "15+", "en": "15+" },
+      "label": {
+        "id": "Proyek Selesai",
+        "en": "Projects Completed"
+      },
+      "value": {
+        "id": "15+",
+        "en": "15+"
+      },
       "icon": "FolderGit2"
     },
     {
-      "label": { "id": "Belajar Terus Menerus", "en": "Continuous Learning" },
-      "value": { "id": "∞", "en": "∞" },
+      "label": {
+        "id": "Belajar Terus Menerus",
+        "en": "Continuous Learning"
+      },
+      "value": {
+        "id": "∞",
+        "en": "∞"
+      },
       "icon": "GraduationCap"
     }
   ],
   "toolsList": [
-    { "id": "VS Code", "en": "VS Code" },
-    { "id": "Figma", "en": "Figma" },
-    { "id": "Postman", "en": "Postman" },
-    { "id": "Docker", "en": "Docker" },
-    { "id": "Git", "en": "Git" },
-    { "id": "GitHub", "en": "GitHub" },
-    { "id": "NPM", "en": "NPM" },
-    { "id": "ESLint", "en": "ESLint" },
-    { "id": "Prettier", "en": "Prettier" },
-    { "id": "Vite", "en": "Vite" },
-    { "id": "Netlify", "en": "Netlify" },
-    { "id": "Chrome DevTools", "en": "Chrome DevTools" }
+    {
+      "id": "VS Code",
+      "en": "VS Code"
+    },
+    {
+      "id": "Figma",
+      "en": "Figma"
+    },
+    {
+      "id": "Postman",
+      "en": "Postman"
+    },
+    {
+      "id": "Docker",
+      "en": "Docker"
+    },
+    {
+      "id": "Git",
+      "en": "Git"
+    },
+    {
+      "id": "GitHub",
+      "en": "GitHub"
+    },
+    {
+      "id": "NPM",
+      "en": "NPM"
+    },
+    {
+      "id": "ESLint",
+      "en": "ESLint"
+    },
+    {
+      "id": "Prettier",
+      "en": "Prettier"
+    },
+    {
+      "id": "Vite",
+      "en": "Vite"
+    },
+    {
+      "id": "Netlify",
+      "en": "Netlify"
+    },
+    {
+      "id": "Chrome DevTools",
+      "en": "Chrome DevTools"
+    }
   ],
   "softSkills": [
-    { "id": "Pemecahan Masalah", "en": "Problem Solving" },
-    { "id": "Komunikasi", "en": "Communication" },
-    { "id": "Kerja Sama Tim", "en": "Teamwork" },
-    { "id": "Manajemen Waktu", "en": "Time Management" },
-    { "id": "Adaptabilitas", "en": "Adaptability" },
-    { "id": "Berorientasi Detail", "en": "Detail Oriented" }
+    {
+      "id": "Pemecahan Masalah",
+      "en": "Problem Solving"
+    },
+    {
+      "id": "Komunikasi",
+      "en": "Communication"
+    },
+    {
+      "id": "Kerja Sama Tim",
+      "en": "Teamwork"
+    },
+    {
+      "id": "Manajemen Waktu",
+      "en": "Time Management"
+    },
+    {
+      "id": "Adaptabilitas",
+      "en": "Adaptability"
+    },
+    {
+      "id": "Berorientasi Detail",
+      "en": "Detail Oriented"
+    }
   ]
 }
