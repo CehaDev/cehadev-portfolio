@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  Eye, Users, Mail, Plus, ArrowRight, Layers, Star, Inbox, FileText, FolderKanban, Activity, Globe, Sparkles
+  Eye, Users, Mail, Plus, ArrowRight, Layers, Star, Inbox, FileText, FolderKanban, Activity, Globe, Sparkles, Play
 } from 'lucide-vue-next'
 import { lsId } from '~/utils/localize'
 
@@ -151,6 +151,13 @@ const avatarGradients = [
           <p class="mt-1.5 text-sm text-text-secondary">Pantau performa website, kelola project, dan balas pesan — semua dari sini.</p>
         </div>
         <div class="flex flex-wrap items-end gap-5">
+          <div class="flex flex-col items-center gap-1">
+            <NuxtLink to="/admin/demos" class="btn-outline !py-2.5">
+              <Play :size="16" :stroke-width="2" />
+              Lihat Demo
+            </NuxtLink>
+            <span class="text-[10px] text-text-muted">Live preview project</span>
+          </div>
           <div class="flex flex-col items-center gap-1">
             <NuxtLink to="/admin/cv" class="btn-outline !py-2.5">
               <FileText :size="16" :stroke-width="2" />
