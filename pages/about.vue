@@ -58,7 +58,7 @@ const legacyCategory: Record<string, string> = {
 
 const techSkills = computed(() => {
   const fallback = site.value?.headings?.about?.otherCategory ?? 'Lainnya'
-  return (skills.value?.technicalSkills ?? []).map((s) => ({
+  return (skills.value?.technicalSkills ?? []).map((s: any) => ({
     ...s,
     category: s.category || legacyCategory[s.tech] || fallback
   }))
@@ -82,8 +82,8 @@ const stackGroups = computed(() => {
 const stats = computed(() => {
   const list = site.value?.stats ?? []
   if (!list.length) return []
-  const hours = list.find((s) => s.icon === 'Clock')
-  const rest = list.filter((s) => s.icon !== 'Clock')
+  const hours = list.find((s: any) => s.icon === 'Clock')
+  const rest = list.filter((s: any) => s.icon !== 'Clock')
   return [hours, ...rest].filter(Boolean) as NonNullable<typeof hours>[]
 })
 

@@ -33,7 +33,7 @@ export function normalizeSkills(body: Record<string, unknown>) {
         if (hasCategory) item.category = normalizeLS(o.category)
         return item
       })
-      .filter((i) => i.name.id)
+      .filter((i) => (i.name as any).id)
 
   const summaryCards = (v: unknown) =>
     arr(v)

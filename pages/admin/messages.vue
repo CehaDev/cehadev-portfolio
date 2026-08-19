@@ -31,7 +31,7 @@ const { data: messages, refresh } = await useAsyncData('admin-messages', () =>
 )
 
 const { data: smtpReady } = await useAsyncData('admin-smtp-ready', () =>
-  useRequestFetch()<boolean>('/api/admin/settings/smtp').then((s) => Boolean(s.hasPass && s.host && s.user)).catch(() => false)
+  useRequestFetch()<any>('/api/admin/settings/smtp').then((s: any) => Boolean(s.hasPass && s.host && s.user)).catch(() => false)
 )
 
 const activeId = ref<string | null>(null)
@@ -73,7 +73,7 @@ async function openMessage(id: string) {
 }
 
 async function toggleRead(m: InboxMessage) {
-  await $fetch(`/api/admin/messages/${m.id}`, { method: 'PATCH', body: { read: !m.read } })
+  await $fetch(`/api/admin/messages/${m.id}`, { method: 'PATCH' as any, body: { read: !m.read } })
   m.read = !m.read
 }
 
@@ -81,7 +81,7 @@ async function removeMessage(id: string) {
   if (!window.confirm('Hapus pesan ini secara permanen?')) return
   busyDelete.value = true
   try {
-    await $fetch(`/api/admin/messages/${id}`, { method: 'DELETE' })
+    await $fetch(`/api/admin/messages/${id}`, { method: 'DELETE' as any })
     if (activeId.value === id) {
       activeId.value = null
       detail.value = null

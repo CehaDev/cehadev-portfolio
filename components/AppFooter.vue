@@ -18,7 +18,7 @@ const navItems = computed(() =>
     { to: '/contact', key: 'contact' }
   ].map(({ to, key }) => ({
     to,
-    label: site.value?.headings?.nav?.[key] ?? t(`nav.${key}`)
+    label: site.value?.headings?.nav?.[key] ?? t(`nav.${key}` as any)
   }))
 )
 
@@ -139,8 +139,8 @@ const socials = computed(() => {
             <li v-for="c in contactItems" :key="c.label">
               <a
                 :href="c.href"
-                :target="c.href.startsWith('http') ? '_blank' : null"
-                :rel="c.href.startsWith('http') ? 'noopener noreferrer' : null"
+                :target="c.href.startsWith('http') ? '_blank' : undefined"
+                :rel="c.href.startsWith('http') ? 'noopener noreferrer' : undefined"
                 class="group flex items-center gap-2.5 text-sm text-text-secondary transition-colors hover:text-primary"
               >
                 <component :is="c.icon" :size="14" :stroke-width="1.5" class="shrink-0 text-primary" />

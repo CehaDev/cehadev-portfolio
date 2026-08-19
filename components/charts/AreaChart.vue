@@ -52,9 +52,9 @@ function yAt(v: number) {
   return PAD_TOP + plotH.value - (v / maxValue.value) * plotH.value
 }
 
-const points = computed(() => props.values.map((v, i) => ({ x: xAt(i), y: yAt(v) })))
+const points = computed(() => props.values.map((v: number, i: number) => ({ x: xAt(i), y: yAt(v) })))
 
-const linePath = computed(() => points.value.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '))
+const linePath = computed(() => points.value.map((p: { x: number; y: number }, i: number) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '))
 
 const areaPath = computed(() => {
   if (!points.value.length) return ''
@@ -62,9 +62,9 @@ const areaPath = computed(() => {
   return `${linePath.value} L ${points.value[points.value.length - 1].x} ${base} L ${points.value[0].x} ${base} Z`
 })
 
-const secondaryPoints = computed(() => (props.secondary ?? []).map((v, i) => ({ x: xAt(i), y: yAt(v) })))
+const secondaryPoints = computed(() => (props.secondary ?? []).map((v: number, i: number) => ({ x: xAt(i), y: yAt(v) })))
 
-const secondaryPath = computed(() => secondaryPoints.value.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '))
+const secondaryPath = computed(() => secondaryPoints.value.map((p: { x: number; y: number }, i: number) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' '))
 
 const gridLines = computed(() => {
   const lines: { y: number; value: number }[] = []
@@ -84,7 +84,7 @@ function onMove(e: MouseEvent) {
   const mx = e.clientX - rect.left
   let best = 0
   let bestDist = Infinity
-  points.value.forEach((p, i) => {
+  points.value.forEach((p: { x: number; y: number }, i: number) => {
     const d = Math.abs(p.x - mx)
     if (d < bestDist) {
       bestDist = d

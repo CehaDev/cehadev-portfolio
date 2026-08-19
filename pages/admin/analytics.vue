@@ -31,14 +31,14 @@ const ranges = [
 
 const daily = computed(() => (analytics.value?.daily ?? []).slice(-range.value))
 
-const chartLabels = computed(() => daily.value.map((d) => d.date))
-const chartViews = computed(() => daily.value.map((d) => d.views))
-const chartVisitors = computed(() => daily.value.map((d) => d.visitors))
+const chartLabels = computed(() => daily.value.map((d: any) => d.date))
+const chartViews = computed(() => daily.value.map((d: any) => d.views))
+const chartVisitors = computed(() => daily.value.map((d: any) => d.visitors))
 
 const avgPerDay = computed(() => {
   const n = daily.value.length
   if (!n) return 0
-  return Math.round(daily.value.reduce((a, d) => a + d.views, 0) / n)
+  return Math.round(daily.value.reduce((a: number, d: any) => a + d.views, 0) / n)
 })
 
 const totalViews = computed(() => analytics.value?.total.views ?? 0)
@@ -50,8 +50,8 @@ const prevHalf = computed(() => {
   const slice = daily.value
   if (slice.length < 2) return 0
   const mid = Math.floor(slice.length / 2)
-  const a = slice.slice(0, mid).reduce((s, d) => s + d.views, 0)
-  const b = slice.slice(mid).reduce((s, d) => s + d.views, 0)
+  const a = slice.slice(0, mid).reduce((s: number, d: any) => s + d.views, 0)
+  const b = slice.slice(mid).reduce((s: number, d: any) => s + d.views, 0)
   if (a === 0) return b > 0 ? 100 : 0
   return Math.round(((b - a) / a) * 100)
 })

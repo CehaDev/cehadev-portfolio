@@ -69,8 +69,8 @@ const socials = computed(() => {
         <Reveal v-for="(c, i) in contacts" :key="c.label" :delay="i * 90">
           <a
             :href="c.href"
-            :target="c.href.startsWith('http') ? '_blank' : null"
-            :rel="c.href.startsWith('http') ? 'noopener noreferrer' : null"
+            :target="c.href.startsWith('http') ? '_blank' : undefined"
+            :rel="c.href.startsWith('http') ? 'noopener noreferrer' : undefined"
             class="group card flex h-full flex-col items-center p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
           >
             <span

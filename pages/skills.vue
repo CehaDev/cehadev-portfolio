@@ -18,13 +18,13 @@ const activeCat = ref('all')
 const techSkills = computed(() => (skills.value?.technicalSkills ?? []))
 
 const categories = computed(() => {
-  const set = new Set(techSkills.value.map((s) => s.category).filter(Boolean))
+  const set = new Set(techSkills.value.map((s: any) => s.category).filter(Boolean))
   return ['all', ...set] as string[]
 })
 
 const filteredSkills = computed(() => {
   if (activeCat.value === 'all') return techSkills.value
-  return techSkills.value.filter((s) => s.category === activeCat.value)
+  return techSkills.value.filter((s: any) => s.category === activeCat.value)
 })
 
 const groups = computed(() => {

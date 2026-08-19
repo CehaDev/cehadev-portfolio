@@ -28,11 +28,11 @@ export function useStats() {
   })
 
   const viewsOf = (slug: string) => {
-    const found = data.value?.projects.find((p) => p.slug === slug)
+    const found = data.value?.projects.find((p: { slug: string; views: number }) => p.slug === slug)
     return found?.views ?? 0
   }
 
-  const sourceOf = (label: string) => data.value?.sources.find((s) => s.label === label)?.value ?? 0
+  const sourceOf = (label: string) => data.value?.sources.find((s: { label: string; value: number }) => s.label === label)?.value ?? 0
 
   return { data, viewsOf, sourceOf, formatCount }
 }

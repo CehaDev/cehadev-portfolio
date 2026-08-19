@@ -40,7 +40,7 @@ function closeSidebar() {
 
 watch(() => route.fullPath, () => closeSidebar())
 
-watch(sidebarOpen, (open) => {
+watch(sidebarOpen, (open: boolean) => {
   if (typeof document !== 'undefined') document.body.style.overflow = open ? 'hidden' : ''
 })
 

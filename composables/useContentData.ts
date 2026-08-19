@@ -2,7 +2,17 @@ import { localize } from '~/utils/localize'
 
 type LangRef = Ref<'id' | 'en'>
 
-function localizedResult<T>(res: Awaited<ReturnType<typeof useAsyncData<T>>>, lang: LangRef) {
+interface AsyncDataShape<T> {
+  data: Ref<T>
+  pending: Ref<boolean>
+  error: Ref<any>
+  status: Ref<any>
+  refresh: () => Promise<void>
+  execute: () => Promise<void>
+  clear: () => void
+}
+
+function localizedResult<T>(res: AsyncDataShape<T>, lang: LangRef) {
   return {
     data: computed(() => localize(res.data.value, lang.value)),
     pending: res.pending,

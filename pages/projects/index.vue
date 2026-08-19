@@ -12,21 +12,21 @@ useSeoMeta({
 
 const headings = computed(() => site.value?.headings?.projects ?? {})
 
-const categories = computed(() => ['All', ...new Set((projects.value ?? []).map((p) => p.category))])
+const categories = computed(() => ['All', ...new Set((projects.value ?? []).map((p: any) => p.category))])
 const activeCategory = ref('All')
 
 const filtered = computed(() =>
-  activeCategory.value === 'All' ? projects.value ?? [] : (projects.value ?? []).filter((p) => p.category === activeCategory.value)
+  activeCategory.value === 'All' ? projects.value ?? [] : (projects.value ?? []).filter((p: any) => p.category === activeCategory.value)
 )
 
 function categoryCount(cat: string) {
-  return cat === 'All' ? (projects.value?.length ?? 0) : (projects.value ?? []).filter((p) => p.category === cat).length
+  return cat === 'All' ? (projects.value?.length ?? 0) : (projects.value ?? []).filter((p: any) => p.category === cat).length
 }
 
 const totalProjects = computed(() => projects.value?.length ?? 0)
 const totalCategories = computed(() => categories.value.length - 1)
 const yearsRange = computed(() => {
-  const list = (projects.value ?? []).map((p) => Number(p.year)).filter(Number.isFinite)
+  const list = (projects.value ?? []).map((p: any) => Number(p.year)).filter(Number.isFinite)
   return list.length ? `${Math.min(...list)} – ${Math.max(...list)}` : ''
 })
 

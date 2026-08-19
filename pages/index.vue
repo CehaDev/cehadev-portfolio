@@ -17,7 +17,7 @@ const headings = computed(() => site.value?.headings?.home ?? {})
 
 const featuredProjects = computed(() => {
   const list = projects.value ?? []
-  const featured = list.filter((p) => p.featured)
+  const featured = list.filter((p: any) => p.featured)
   return featured.length >= 3 ? featured : list.slice(0, 3)
 })
 

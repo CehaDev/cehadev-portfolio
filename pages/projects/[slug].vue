@@ -14,7 +14,7 @@ const { data: site } = await useSiteSettings()
 const { t } = useI18n()
 const headings = computed(() => site.value?.headings?.projectDetail ?? {})
 
-const project = computed(() => (projects.value ?? []).find((p) => p.slug === route.params.slug))
+const project = computed(() => (projects.value ?? []).find((p: any) => p.slug === route.params.slug))
 
 useSeoMeta({
   title: () => `${project.value?.title ?? 'Project'} | CehaDev`,

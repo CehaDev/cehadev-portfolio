@@ -17,7 +17,7 @@ const navItems = computed(() =>
     { to: '/contact', key: 'contact' }
   ].map(({ to, key }) => ({
     to,
-    label: site.value?.headings?.nav?.[key] ?? t(`nav.${key}`)
+    label: site.value?.headings?.nav?.[key] ?? t(`nav.${key}` as any)
   }))
 )
 
