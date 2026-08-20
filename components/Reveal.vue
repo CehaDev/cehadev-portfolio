@@ -44,18 +44,23 @@ onMounted(() => {
   const node = el.value
   if (!node) return
 
+  const show = () => { visible.value = true }
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          visible.value = true
+          show()
           observer.disconnect()
+          clearTimeout(fallbackTimer)
         }
       })
     },
-    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
   )
   observer.observe(node)
+
+  const fallbackTimer = setTimeout(show, 3000) as unknown as ReturnType<typeof setTimeout>
 
   if (props.parallax !== 0) {
     let ticking = false

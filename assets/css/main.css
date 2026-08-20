@@ -36,7 +36,12 @@
     background-image:
       radial-gradient(circle at 15% 0%, rgba(124, 58, 237, 0.08), transparent 45%),
       radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.06), transparent 40%);
-    background-attachment: fixed;
+    background-attachment: scroll;
+  }
+  @media (min-width: 1024px) {
+    body {
+      background-attachment: fixed;
+    }
   }
 
   ::selection {

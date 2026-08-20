@@ -32,7 +32,7 @@ onMounted(() => {
         width.value = props.level
       })
     },
-    { threshold: 0.4 }
+    { threshold: 0.15 }
   )
   observer.observe(node)
 })

@@ -8,8 +8,12 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
+  nitro: {
+    preset: 'vercel'
+  },
   routeRules: {
-    '/api/**': { maxDuration: 30 }
+    '/api/**': { cors: true },
+    '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
   },
   app: {
     head: {

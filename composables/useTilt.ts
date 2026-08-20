@@ -5,9 +5,12 @@ export function useTilt(max = 8) {
   const reduced = () =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+  const isTouch = () =>
+    typeof window !== 'undefined' && (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window)
+
   function onMove(e: MouseEvent) {
     const el = tiltRef.value
-    if (!el || reduced()) return
+    if (!el || reduced() || isTouch()) return
     const rect = el.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) return
     const px = (e.clientX - rect.left) / rect.width

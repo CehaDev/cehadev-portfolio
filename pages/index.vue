@@ -101,7 +101,7 @@ const avatarButtons = computed(() => [
             {{ site?.heroBadge }}
           </span>
 
-          <h1 class="mt-7 text-[52px] font-extrabold leading-[1.05] tracking-tight md:text-7xl lg:text-[84px]">
+          <h1 class="mt-7 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl md:text-7xl lg:text-[84px]">
             {{ site?.heroTitle1 }}
             <br />
             <span class="bg-gradient-brand bg-clip-text text-transparent">{{ site?.heroTitleGradient }}</span>
