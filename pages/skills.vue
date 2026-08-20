@@ -63,7 +63,7 @@ const floatingBoxes = [
   <div class="container-site py-16 md:py-20">
     <!-- HERO -->
     <section class="grid min-h-[calc(100vh-76px)] items-center gap-12 lg:grid-cols-[55fr_45fr]">
-      <Reveal>
+      <Reveal :parallax="18">
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight md:text-5xl">
           {{ headings.myHead1 ?? 'My' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.myHead2 ?? 'Skills' }}</span>
         </h1>
@@ -72,7 +72,7 @@ const floatingBoxes = [
         </p>
       </Reveal>
 
-      <Reveal class="relative mx-auto" :delay="100">
+      <Reveal class="relative mx-auto" :delay="100" direction="right" :parallax="14">
         <AvatarIllustration :size="250" variant="laptop" />
         <div
           v-for="b in floatingBoxes"
@@ -110,7 +110,7 @@ const floatingBoxes = [
     <section class="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
       <!-- Kolom kiri: Technical Skills + Banner -->
       <div class="space-y-6">
-        <Reveal class="card p-7">
+        <Reveal class="card p-7" :parallax="8">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.technicalSkills ?? 'Technical Skills' }}</h2>
 
           <div v-if="activeCat === 'all'" class="mt-6 space-y-8">
@@ -184,7 +184,7 @@ const floatingBoxes = [
 
       <!-- Kolom kanan -->
       <div class="space-y-6">
-        <Reveal class="card p-6">
+        <Reveal class="card p-6" :parallax="10">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.skillsSummary ?? 'Skills Summary' }}</h2>
           <div class="mt-5 grid grid-cols-2 gap-4">
             <div v-for="s in skills?.skillsSummary ?? []" :key="s.label" class="rounded-card border border-border bg-bg p-4">
@@ -197,7 +197,7 @@ const floatingBoxes = [
           </div>
         </Reveal>
 
-        <Reveal class="card p-6" :delay="80">
+        <Reveal class="card p-6" :delay="80" direction="left" :parallax="12">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.toolsOthers ?? 'Tools & Others' }}</h2>
           <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div
@@ -213,7 +213,7 @@ const floatingBoxes = [
           </div>
         </Reveal>
 
-        <Reveal class="card p-6" :delay="160">
+        <Reveal class="card p-6" :delay="160" direction="right" :parallax="14">
           <h2 class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.softSkills ?? 'Soft Skills' }}</h2>
           <div class="mt-5 flex flex-wrap gap-2">
             <span

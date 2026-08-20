@@ -92,7 +92,7 @@ const avatarButtons = computed(() => [
       </div>
 
       <div class="container-site flex flex-col items-center gap-14 py-16 lg:flex-row lg:gap-20">
-        <Reveal class="max-w-2xl text-center lg:flex-1 lg:text-left">
+        <Reveal class="max-w-2xl text-center lg:flex-1 lg:text-left" :parallax="15">
           <span class="inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-text-secondary shadow-card">
             <span class="relative flex h-2 w-2" aria-hidden="true">
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
@@ -193,7 +193,7 @@ const avatarButtons = computed(() => [
       </div>
 
       <div class="container-site pb-8">
-        <Reveal class="card border-border/60 bg-card/70 px-8 py-6 backdrop-blur" :delay="200">
+        <Reveal class="card border-border/60 bg-card/70 px-8 py-6 backdrop-blur" :delay="200" direction="up" :parallax="8">
           <dl class="grid grid-cols-2 gap-6 sm:grid-cols-4">
             <div v-for="s in heroStats" :key="s.label" class="text-center sm:text-left">
               <dd class="text-2xl font-extrabold text-text md:text-3xl">
@@ -233,7 +233,7 @@ const avatarButtons = computed(() => [
 
     <!-- FEATURED PROJECTS -->
     <section class="container-site py-20 md:py-24">
-      <Reveal class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <Reveal class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" :parallax="10">
         <div>
           <span class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.featuredWork ?? 'Featured Work' }}</span>
           <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
@@ -253,10 +253,10 @@ const avatarButtons = computed(() => [
       </Reveal>
 
       <div class="mt-12 grid gap-6 lg:grid-cols-2 lg:grid-rows-2 lg:auto-rows-fr">
-        <Reveal v-if="featuredProjects[0]" class="lg:row-span-2">
+        <Reveal v-if="featuredProjects[0]" class="lg:row-span-2" direction="left" :parallax="20">
           <FeaturedProjectCard :project="featuredProjects[0]" :index="0" variant="large" />
         </Reveal>
-        <Reveal v-for="(p, i) in featuredProjects.slice(1)" :key="p.slug" :delay="i * 100">
+        <Reveal v-for="(p, i) in featuredProjects.slice(1)" :key="p.slug" :delay="i * 120" :direction="i % 2 === 0 ? 'right' : 'up'" :parallax="12 + i * 5">
           <FeaturedProjectCard :project="p" :index="i + 1" />
         </Reveal>
       </div>
@@ -264,7 +264,7 @@ const avatarButtons = computed(() => [
 
     <!-- CTA -->
     <section class="container-site pb-24">
-      <Reveal class="relative overflow-hidden rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 via-primary/5 to-blue/10 px-8 py-16 text-center md:px-16 md:py-20" direction="scale">
+      <Reveal class="relative overflow-hidden rounded-card border border-primary/25 bg-gradient-to-r from-primary/15 via-primary/5 to-blue/10 px-8 py-16 text-center md:px-16 md:py-20" direction="scale" :parallax="12">
         <div class="absolute inset-0 bg-glow-circle opacity-40" style="mask-image: linear-gradient(to bottom, black, transparent)" aria-hidden="true" />
         <div class="relative">
           <h2 class="text-3xl font-extrabold tracking-tight text-text md:text-4xl">

@@ -93,13 +93,15 @@ const statItems = computed(() => {
       </p>
 
       <div class="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
-        <div v-for="s in statItems" :key="s.label" class="rounded-card border border-border bg-card px-3 py-5 text-center shadow-card">
-          <span class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
-            <component :is="s.icon" :size="16" :stroke-width="1.75" />
-          </span>
-          <p class="mt-2.5 font-mono text-xl font-extrabold leading-none text-text">{{ s.value }}</p>
-          <p class="mt-1.5 text-xs text-text-muted">{{ s.label }}</p>
-        </div>
+        <Reveal v-for="(s, i) in statItems" :key="s.label" :delay="i * 80" :direction="i % 2 === 0 ? 'up' : 'scale'" :parallax="8 + i * 3">
+          <div class="rounded-card border border-border bg-card px-3 py-5 text-center shadow-card">
+            <span class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+              <component :is="s.icon" :size="16" :stroke-width="1.75" />
+            </span>
+            <p class="mt-2.5 font-mono text-xl font-extrabold leading-none text-text">{{ s.value }}</p>
+            <p class="mt-1.5 text-xs text-text-muted">{{ s.label }}</p>
+          </div>
+        </Reveal>
       </div>
     </div>
 
@@ -125,7 +127,7 @@ const statItems = computed(() => {
         </div>
 
         <div class="mt-8 grid gap-6 sm:grid-cols-2">
-          <Reveal v-for="(p, i) in filtered" :key="p.slug" :delay="(i % 2) * 80">
+          <Reveal v-for="(p, i) in filtered" :key="p.slug" :delay="(i % 2) * 80" :direction="i % 2 === 0 ? 'left' : 'up'" :parallax="10 + (i % 3) * 4">
             <ProjectCard :project="p" />
           </Reveal>
         </div>
@@ -133,6 +135,7 @@ const statItems = computed(() => {
 
       <!-- GRAFIK BAHASA & TEKNOLOGI -->
       <aside class="lg:order-2">
+        <Reveal direction="right" :parallax="16">
         <section class="card p-6 md:p-7">
           <div class="flex items-center gap-4">
             <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
@@ -168,6 +171,7 @@ const statItems = computed(() => {
             </div>
           </div>
         </section>
+        </Reveal>
       </aside>
     </div>
   </div>

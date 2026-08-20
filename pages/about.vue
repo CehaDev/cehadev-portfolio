@@ -116,7 +116,7 @@ function statIcon(icon: string) {
       />
 
       <div class="container-site py-16 text-center md:py-24">
-        <Reveal>
+        <Reveal :parallax="20">
           <div class="relative mx-auto flex justify-center">
             <AvatarIllustration :size="180" variant="code" />
 
@@ -158,7 +158,7 @@ function statIcon(icon: string) {
 
       <!-- STATS -->
       <div class="container-site pb-16">
-        <Reveal class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border/60 lg:grid-cols-4">
+        <Reveal class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border/60 lg:grid-cols-4" direction="up" :parallax="10">
           <div
             v-for="s in stats"
             :key="s.label"
@@ -190,15 +190,18 @@ function statIcon(icon: string) {
             </h2>
           </Reveal>
 
-          <Reveal class="mt-6 space-y-4 text-[15px] leading-relaxed text-text-secondary">
+          <Reveal class="mt-6 space-y-4 text-[15px] leading-relaxed text-text-secondary" direction="left" :parallax="12">
             <p v-for="(para, i) in site?.aboutIntro ?? []" :key="i">{{ para }}</p>
           </Reveal>
 
           <ul class="mt-8 space-y-3">
             <Reveal
-              v-for="item in site?.aboutChecklist ?? []"
+              v-for="(item, idx) in site?.aboutChecklist ?? []"
               :key="item"
               class="group flex items-start gap-3.5 rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40"
+              :delay="idx * 80"
+              direction="left"
+              :parallax="6 + idx * 3"
             >
               <span
                 class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors duration-300 group-hover:bg-primary/25"
@@ -211,7 +214,7 @@ function statIcon(icon: string) {
           </ul>
         </div>
 
-        <Reveal class="lg:sticky lg:top-24">
+        <Reveal class="lg:sticky lg:top-24" direction="right" :parallax="15">
           <div class="card overflow-hidden">
             <div class="relative flex flex-col items-center px-6 pb-6 pt-9 text-center">
               <div
@@ -254,7 +257,7 @@ function statIcon(icon: string) {
 
     <!-- QUOTE -->
     <section class="container-site pb-20">
-      <Reveal class="mx-auto max-w-3xl text-center" direction="blur">
+      <Reveal class="mx-auto max-w-3xl text-center" direction="blur" :parallax="18">
         <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary" aria-hidden="true">
           <Quote :size="22" :stroke-width="1.5" />
         </span>
@@ -277,9 +280,12 @@ function statIcon(icon: string) {
 
       <div class="mx-auto mt-12 grid max-w-5xl gap-5 text-left sm:grid-cols-2 lg:grid-cols-3">
         <Reveal
-          v-for="group in stackGroups"
+          v-for="(group, gIdx) in stackGroups"
           :key="group.category"
           class="card group/card relative flex flex-col overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card-hover"
+          :delay="gIdx * 100"
+          :direction="gIdx % 2 === 0 ? 'left' : 'right'"
+          :parallax="10 + gIdx * 4"
         >
           <div
             class="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-opacity duration-300 opacity-0 group-hover/card:opacity-100"
