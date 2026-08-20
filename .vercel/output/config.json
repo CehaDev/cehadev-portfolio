@@ -1,0 +1,250 @@
+{
+  "version": 3,
+  "overrides": {},
+  "routes": [
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "src": "/_nuxt/(.*)"
+    },
+    {
+      "src": "/_nuxt(.*)",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "(?<__isr_route>/__nuxt_error)",
+      "dest": "/__fallback"
+    },
+    {
+      "src": "/skills",
+      "dest": "/skills"
+    },
+    {
+      "src": "/projects",
+      "dest": "/projects"
+    },
+    {
+      "src": "/cv",
+      "dest": "/cv"
+    },
+    {
+      "src": "/contact",
+      "dest": "/contact"
+    },
+    {
+      "src": "/api/track",
+      "dest": "/api/track"
+    },
+    {
+      "src": "/api/stats",
+      "dest": "/api/stats"
+    },
+    {
+      "src": "/api/content/skills",
+      "dest": "/api/content/skills"
+    },
+    {
+      "src": "/api/content/site",
+      "dest": "/api/content/site"
+    },
+    {
+      "src": "/api/content/projects",
+      "dest": "/api/content/projects"
+    },
+    {
+      "src": "/api/content/cv",
+      "dest": "/api/content/cv"
+    },
+    {
+      "src": "/api/contact",
+      "dest": "/api/contact"
+    },
+    {
+      "src": "/api/chat/messages",
+      "dest": "/api/chat/messages"
+    },
+    {
+      "src": "/api/chat/config",
+      "dest": "/api/chat/config"
+    },
+    {
+      "src": "/api/auth/verify",
+      "dest": "/api/auth/verify"
+    },
+    {
+      "src": "/api/auth/otp/resend",
+      "dest": "/api/auth/otp/resend"
+    },
+    {
+      "src": "/api/auth/me",
+      "dest": "/api/auth/me"
+    },
+    {
+      "src": "/api/auth/logout",
+      "dest": "/api/auth/logout"
+    },
+    {
+      "src": "/api/auth/login",
+      "dest": "/api/auth/login"
+    },
+    {
+      "src": "/api/admin/skills",
+      "dest": "/api/admin/skills"
+    },
+    {
+      "src": "/api/admin/site",
+      "dest": "/api/admin/site"
+    },
+    {
+      "src": "/api/admin/settings/smtp/test",
+      "dest": "/api/admin/settings/smtp/test"
+    },
+    {
+      "src": "/api/admin/settings/smtp",
+      "dest": "/api/admin/settings/smtp"
+    },
+    {
+      "src": "/api/admin/projects/gallery",
+      "dest": "/api/admin/projects/gallery"
+    },
+    {
+      "src": "/api/admin/projects",
+      "dest": "/api/admin/projects"
+    },
+    {
+      "src": "/api/admin/messages/unread",
+      "dest": "/api/admin/messages/unread"
+    },
+    {
+      "src": "/api/admin/messages",
+      "dest": "/api/admin/messages"
+    },
+    {
+      "src": "/api/admin/cv/photo",
+      "dest": "/api/admin/cv/photo"
+    },
+    {
+      "src": "/api/admin/cv",
+      "dest": "/api/admin/cv"
+    },
+    {
+      "src": "/api/admin/chat/unread",
+      "dest": "/api/admin/chat/unread"
+    },
+    {
+      "src": "/api/admin/chat/conversations",
+      "dest": "/api/admin/chat/conversations"
+    },
+    {
+      "src": "/api/admin/chat/config",
+      "dest": "/api/admin/chat/config"
+    },
+    {
+      "src": "/api/admin/analytics/overview",
+      "dest": "/api/admin/analytics/overview"
+    },
+    {
+      "src": "/admin/verify",
+      "dest": "/admin/verify"
+    },
+    {
+      "src": "/admin/skills",
+      "dest": "/admin/skills"
+    },
+    {
+      "src": "/admin/site",
+      "dest": "/admin/site"
+    },
+    {
+      "src": "/admin/settings",
+      "dest": "/admin/settings"
+    },
+    {
+      "src": "/admin/projects/new",
+      "dest": "/admin/projects/new"
+    },
+    {
+      "src": "/admin/projects",
+      "dest": "/admin/projects"
+    },
+    {
+      "src": "/admin/messages",
+      "dest": "/admin/messages"
+    },
+    {
+      "src": "/admin/login",
+      "dest": "/admin/login"
+    },
+    {
+      "src": "/admin/demos",
+      "dest": "/admin/demos"
+    },
+    {
+      "src": "/admin/cv",
+      "dest": "/admin/cv"
+    },
+    {
+      "src": "/admin/chat",
+      "dest": "/admin/chat"
+    },
+    {
+      "src": "/admin/analytics",
+      "dest": "/admin/analytics"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin"
+    },
+    {
+      "src": "/about",
+      "dest": "/about"
+    },
+    {
+      "src": "/__nuxt_error",
+      "dest": "/__nuxt_error"
+    },
+    {
+      "src": "/",
+      "dest": "/index"
+    },
+    {
+      "src": "/projects/(?<slug>[^/]+)",
+      "dest": "/projects/[slug]"
+    },
+    {
+      "src": "/api/chat/conversations/(?<id>[^/]+)",
+      "dest": "/api/chat/conversations/[id]"
+    },
+    {
+      "src": "/api/admin/projects/(?<slug>[^/]+)",
+      "dest": "/api/admin/projects/[slug]"
+    },
+    {
+      "src": "/api/admin/messages/(?<id>[^/]+)",
+      "dest": "/api/admin/messages/[id]"
+    },
+    {
+      "src": "/api/admin/chat/conversations/(?<id>[^/]+)",
+      "dest": "/api/admin/chat/conversations/[id]"
+    },
+    {
+      "src": "/admin/projects/(?<slug>[^/]+)",
+      "dest": "/admin/projects/[slug]"
+    },
+    {
+      "src": "/__nuxt_island/(?:.*)",
+      "dest": "/__nuxt_island/[...]"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/__fallback"
+    }
+  ]
+}
