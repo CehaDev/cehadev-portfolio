@@ -1,5 +1,0 @@
-{
-  "buildCommand": "nuxt build",
-  "outputDirectory": ".vercel/output",
-  "installCommand": "npm install"
-}
