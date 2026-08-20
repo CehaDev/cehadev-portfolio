@@ -1,20 +1,13 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import siteFallback from '../../content/site.json'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray, normalizeLSObject, deepLS } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
-const siteFile = path.resolve(process.cwd(), 'content/site.json')
-
 export async function readSiteFile() {
   const data = await kvGetJson('content_site', null)
   if (data) return data
-  // Local fallback: read from content/site.json
-  try {
-    return JSON.parse(await readFile(siteFile, 'utf-8'))
-  } catch {
-    throw createError({ statusCode: 404, statusMessage: 'Data pengaturan website tidak ditemukan' })
-  }
+  if (siteFallback) return siteFallback
+  throw createError({ statusCode: 404, statusMessage: 'Data pengaturan website tidak ditemukan' })
 }
 
 export async function writeSiteFile(data: unknown) {

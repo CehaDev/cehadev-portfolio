@@ -1,19 +1,13 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import cvFallback from '../../content/cv.json'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray, normalizeLSObject } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
-const cvFile = path.resolve(process.cwd(), 'content/cv.json')
-
 export async function readCvFile() {
   const data = await kvGetJson('content_cv', null)
   if (data) return data
-  try {
-    return JSON.parse(await readFile(cvFile, 'utf-8'))
-  } catch {
-    throw createError({ statusCode: 404, statusMessage: 'CV tidak ditemukan' })
-  }
+  if (cvFallback) return cvFallback
+  throw createError({ statusCode: 404, statusMessage: 'CV tidak ditemukan' })
 }
 
 export async function writeCvFile(data: unknown) {

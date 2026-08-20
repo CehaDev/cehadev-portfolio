@@ -1,33 +1,23 @@
-import { readdir, readFile } from 'node:fs/promises'
-import path from 'node:path'
+import cehavaStore from '../../content/projects/cehava-store.json'
+import devboard from '../../content/projects/devboard.json'
+import magerans from '../../content/projects/magerans.json'
+import nutechApi from '../../content/projects/nutech-api.json'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
 const PROJECTS_KEY = 'content_projects'
-const projectsDir = path.resolve(process.cwd(), 'content/projects')
+
+const bundledProjects: Record<string, unknown>[] = [cehavaStore, devboard, magerans, nutechApi]
 
 function isValidSlug(slug: string) {
   return /^[a-z0-9][a-z0-9-]*$/.test(slug)
 }
 
-async function readLocalProjects(): Promise<Array<Record<string, unknown>>> {
-  try {
-    const files = (await readdir(projectsDir)).filter((f) => f.endsWith('.json'))
-    const projects = []
-    for (const f of files) {
-      projects.push(JSON.parse(await readFile(path.join(projectsDir, f), 'utf-8')))
-    }
-    return projects
-  } catch {
-    return []
-  }
-}
-
 export async function listProjectFiles() {
   let projects = await kvGetJson<Array<{ slug?: string }>>(PROJECTS_KEY, [])
   if (!projects.length) {
-    projects = await readLocalProjects()
+    projects = bundledProjects
   }
   return projects.map((p) => p.slug).filter((s): s is string => typeof s === 'string').sort()
 }
@@ -36,7 +26,7 @@ export async function readProjectFile(slug: string) {
   if (!isValidSlug(slug)) throw createError({ statusCode: 400, statusMessage: 'Slug tidak valid' })
 
   let projects = await kvGetJson<Array<Record<string, unknown>>>(PROJECTS_KEY, [])
-  if (!projects.length) projects = await readLocalProjects()
+  if (!projects.length) projects = bundledProjects
 
   const project = projects.find((p) => p.slug === slug)
   if (!project) throw createError({ statusCode: 404, statusMessage: 'Project tidak ditemukan' })

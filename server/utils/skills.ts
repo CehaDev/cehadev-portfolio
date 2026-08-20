@@ -1,19 +1,13 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import skillsFallback from '../../content/skills.json'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
-const skillsFile = path.resolve(process.cwd(), 'content/skills.json')
-
 export async function readSkillsFile() {
   const data = await kvGetJson('content_skills', null)
   if (data) return data
-  try {
-    return JSON.parse(await readFile(skillsFile, 'utf-8'))
-  } catch {
-    throw createError({ statusCode: 404, statusMessage: 'Data skill tidak ditemukan' })
-  }
+  if (skillsFallback) return skillsFallback
+  throw createError({ statusCode: 404, statusMessage: 'Data skill tidak ditemukan' })
 }
 
 export async function writeSkillsFile(data: unknown) {
