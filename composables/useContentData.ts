@@ -26,26 +26,23 @@ function localizedResult<T>(res: AsyncDataShape<T>, lang: LangRef) {
 
 export async function useSiteSettings() {
   const { lang } = useLang()
-  return localizedResult(await useAsyncData('site-settings', () => queryCollection('site').first()), lang)
+  return localizedResult(await useAsyncData('site-settings', () => $fetch('/api/content/site')), lang)
 }
 
 export async function useCvContent() {
   const { lang } = useLang()
-  return localizedResult(await useAsyncData('cv-content', () => queryCollection('cv').first()), lang)
+  return localizedResult(await useAsyncData('cv-content', () => $fetch('/api/content/cv')), lang)
 }
 
 export async function useSkillsContent() {
   const { lang } = useLang()
-  return localizedResult(await useAsyncData('skills-content', () => queryCollection('skills').first()), lang)
+  return localizedResult(await useAsyncData('skills-content', () => $fetch('/api/content/skills')), lang)
 }
 
 export async function useProjectsContent() {
   const { lang } = useLang()
   return localizedResult(
-    await useAsyncData('projects-content', async () => {
-      const all = await queryCollection('projects').all()
-      return all.filter((p) => !(p as unknown as { archived?: boolean }).archived)
-    }),
+    await useAsyncData('projects-content', () => $fetch<Array<{ archived?: boolean }>>('/api/content/projects')),
     lang
   )
 }

@@ -1,8 +1,7 @@
 import { createHash, randomInt, timingSafeEqual } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import path from 'node:path'
 import { createError } from 'h3'
 import { getMailConfig } from './mailer'
+import { kvGetJson, kvSetJson } from './db'
 
 export const OTP_TTL = 10 * 60 * 1000
 const MAX_TRIES = 5
@@ -13,33 +12,16 @@ interface OtpStore {
   tries?: number
 }
 
-const otpFile = path.resolve(process.cwd(), '.data/otp.json')
-
 function hashCode(code: string) {
   return createHash('sha256').update(`otp:${code}`).digest('hex')
 }
 
 async function readStore(): Promise<OtpStore> {
-  try {
-    const parsed = JSON.parse(await readFile(otpFile, 'utf-8'))
-    return parsed && typeof parsed === 'object' ? parsed : {}
-  } catch {
-    return {}
-  }
+  return kvGetJson<OtpStore>('otp_state', {})
 }
 
-let queue: Promise<unknown> = Promise.resolve()
-
-function writeStore(store: OtpStore): Promise<void> {
-  const run = queue.then(async () => {
-    await mkdir(path.dirname(otpFile), { recursive: true })
-    await writeFile(otpFile, JSON.stringify(store, null, 2), 'utf-8')
-  })
-  queue = run.then(
-    () => {},
-    () => {}
-  )
-  return run
+async function writeStore(store: OtpStore): Promise<void> {
+  await kvSetJson('otp_state', store)
 }
 
 export async function issueOtp(): Promise<{ code: string }> {

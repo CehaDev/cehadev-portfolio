@@ -1,11 +1,15 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray, normalizeLSObject, deepLS } from './ls'
+import { kvGetJson, kvSetJson } from './db'
 
 const siteFile = path.resolve(process.cwd(), 'content/site.json')
 
 export async function readSiteFile() {
+  const data = await kvGetJson('content_site', null)
+  if (data) return data
+  // Local fallback: read from content/site.json
   try {
     return JSON.parse(await readFile(siteFile, 'utf-8'))
   } catch {
@@ -14,69 +18,43 @@ export async function readSiteFile() {
 }
 
 export async function writeSiteFile(data: unknown) {
-  await writeFile(siteFile, JSON.stringify(data, null, 2) + '\n', 'utf-8')
+  await kvSetJson('content_site', data)
 }
 
 export function normalizeSite(body: Record<string, unknown>) {
   const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
   const arr = (v: unknown) => (Array.isArray(v) ? v : [])
-
   const strings = (v: unknown) => normalizeLSArray(v)
 
   const stats = (v: unknown) =>
-    arr(v)
-      .map((x) => {
-        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        return {
-          icon: str(o.icon),
-          label: normalizeLS(o.label),
-          sub: normalizeLS(o.sub),
-          end: Number(o.end) || 0,
-          suffix: normalizeLS(o.suffix)
-        }
-      })
-      .filter((i) => i.label.id)
+    arr(v).map((x) => {
+      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+      return { icon: str(o.icon), label: normalizeLS(o.label), sub: normalizeLS(o.sub), end: Number(o.end) || 0, suffix: normalizeLS(o.suffix) }
+    }).filter((i) => i.label.id)
 
   const socials = (v: unknown) => {
     const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>
-    return {
-      github: str(o.github),
-      linkedin: str(o.linkedin),
-      instagram: str(o.instagram)
-    }
+    return { github: str(o.github), linkedin: str(o.linkedin), instagram: str(o.instagram) }
   }
 
   const faqs = (v: unknown) => normalizeLSObject(v, ['q', 'a'])
 
   const statCards = (v: unknown) =>
-    arr(v)
-      .map((x) => {
-        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        return { icon: str(o.icon), label: normalizeLS(o.label), value: normalizeLS(o.value) }
-      })
-      .filter((i) => i.label.id)
+    arr(v).map((x) => {
+      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+      return { icon: str(o.icon), label: normalizeLS(o.label), value: normalizeLS(o.value) }
+    }).filter((i) => i.label.id)
 
   return {
-    name: str(body.name),
-    role: normalizeLS(body.role),
-    heroBadge: normalizeLS(body.heroBadge),
-    heroTitle1: normalizeLS(body.heroTitle1),
-    heroTitleGradient: normalizeLS(body.heroTitleGradient),
-    heroSubtitle: normalizeLS(body.heroSubtitle),
+    name: str(body.name), role: normalizeLS(body.role),
+    heroBadge: normalizeLS(body.heroBadge), heroTitle1: normalizeLS(body.heroTitle1),
+    heroTitleGradient: normalizeLS(body.heroTitleGradient), heroSubtitle: normalizeLS(body.heroSubtitle),
     heroDescription: normalizeLS(body.heroDescription),
-    aboutIntro: strings(body.aboutIntro),
-    aboutChecklist: strings(body.aboutChecklist),
-    quote: normalizeLS(body.quote),
-    quoteHighlight: normalizeLS(body.quoteHighlight),
-    stats: stats(body.stats),
-    email: str(body.email),
-    location: normalizeLS(body.location),
-    website: str(body.website),
-    phone: str(body.phone),
-    socials: socials(body.socials),
-    cvUrl: str(body.cvUrl),
-    faqs: faqs(body.faqs),
-    projectStats: statCards(body.projectStats),
+    aboutIntro: strings(body.aboutIntro), aboutChecklist: strings(body.aboutChecklist),
+    quote: normalizeLS(body.quote), quoteHighlight: normalizeLS(body.quoteHighlight),
+    stats: stats(body.stats), email: str(body.email), location: normalizeLS(body.location),
+    website: str(body.website), phone: str(body.phone), socials: socials(body.socials),
+    cvUrl: str(body.cvUrl), faqs: faqs(body.faqs), projectStats: statCards(body.projectStats),
     seo: deepLS(body.seo) as Record<string, unknown> | undefined,
     headings: deepLS(body.headings) as Record<string, unknown> | undefined
   }

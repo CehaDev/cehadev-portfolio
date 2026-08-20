@@ -2,17 +2,15 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
-  modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss'],
   experimental: {
     appManifest: false
   },
-  content: {
-    experimental: {
-      sqliteConnector: 'native'
-    }
-  },
   css: ['~/assets/css/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
+  nitro: {
+    preset: 'vercel'
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'id' },

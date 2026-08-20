@@ -1,0 +1,11 @@
+{
+  "framework": "nuxtjs",
+  "buildCommand": "nuxt build",
+  "outputDirectory": ".output",
+  "installCommand": "npm install",
+  "functions": {
+    "api/**": {
+      "maxDuration": 30
+    }
+  }
+}

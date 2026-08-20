@@ -1,11 +1,14 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray } from './ls'
+import { kvGetJson, kvSetJson } from './db'
 
 const skillsFile = path.resolve(process.cwd(), 'content/skills.json')
 
 export async function readSkillsFile() {
+  const data = await kvGetJson('content_skills', null)
+  if (data) return data
   try {
     return JSON.parse(await readFile(skillsFile, 'utf-8'))
   } catch {
@@ -14,7 +17,7 @@ export async function readSkillsFile() {
 }
 
 export async function writeSkillsFile(data: unknown) {
-  await writeFile(skillsFile, JSON.stringify(data, null, 2) + '\n', 'utf-8')
+  await kvSetJson('content_skills', data)
 }
 
 export function normalizeSkills(body: Record<string, unknown>) {
@@ -22,26 +25,18 @@ export function normalizeSkills(body: Record<string, unknown>) {
   const arr = (v: unknown) => (Array.isArray(v) ? v : [])
 
   const skillItems = (v: unknown, hasCategory: boolean) =>
-    arr(v)
-      .map((x) => {
-        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        const item: Record<string, unknown> = {
-          name: normalizeLS(o.name),
-          level: Math.min(100, Math.max(0, Number(o.level) || 0)),
-          tech: str(o.tech)
-        }
-        if (hasCategory) item.category = normalizeLS(o.category)
-        return item
-      })
-      .filter((i) => (i.name as any).id)
+    arr(v).map((x) => {
+      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+      const item: Record<string, unknown> = { name: normalizeLS(o.name), level: Math.min(100, Math.max(0, Number(o.level) || 0)), tech: str(o.tech) }
+      if (hasCategory) item.category = normalizeLS(o.category)
+      return item
+    }).filter((i) => (i.name as any).id)
 
   const summaryCards = (v: unknown) =>
-    arr(v)
-      .map((x) => {
-        const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
-        return { label: normalizeLS(o.label), value: normalizeLS(o.value), icon: str(o.icon) }
-      })
-      .filter((i) => i.label.id)
+    arr(v).map((x) => {
+      const o = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>
+      return { label: normalizeLS(o.label), value: normalizeLS(o.value), icon: str(o.icon) }
+    }).filter((i) => i.label.id)
 
   return {
     homeSkills: skillItems(body.homeSkills, false),

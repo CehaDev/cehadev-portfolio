@@ -1,15 +1,12 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
-import path from 'node:path'
 import { getCookie, setCookie, deleteCookie, createError } from 'h3'
+import { kvGetJson, kvSetJson } from './db'
 
 export const SESSION_COOKIE = 'cehadev_admin_session'
 const SESSION_TTL = 7 * 24 * 60 * 60 // 7 hari
 
 export const PENDING_COOKIE = 'cehadev_admin_pending'
 const PENDING_TTL = 10 * 60 * 1000 // 10 menit
-
-const epochFile = path.resolve(process.cwd(), '.data/session-epoch.json')
 
 function secret() {
   const s = process.env.NUXT_ADMIN_SECRET
@@ -29,18 +26,13 @@ export function signToken(str: string) {
 // ---- Session Epoch (untuk revocation) ----
 
 async function getSessionEpoch(): Promise<number> {
-  try {
-    const data = JSON.parse(await readFile(epochFile, 'utf-8'))
-    return typeof data.epoch === 'number' ? data.epoch : 0
-  } catch {
-    return 0
-  }
+  const data = await kvGetJson<{ epoch?: number }>('session_epoch', {})
+  return typeof data.epoch === 'number' ? data.epoch : 0
 }
 
 export async function revokeAllSessions() {
   const current = await getSessionEpoch()
-  await mkdir(path.dirname(epochFile), { recursive: true })
-  await writeFile(epochFile, JSON.stringify({ epoch: current + 1 }), 'utf-8')
+  await kvSetJson('session_epoch', { epoch: current + 1 })
 }
 
 // ---- Token "pending" untuk langkah verifikasi OTP ----

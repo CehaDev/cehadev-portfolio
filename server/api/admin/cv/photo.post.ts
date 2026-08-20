@@ -1,19 +1,10 @@
-import { mkdir, writeFile, unlink, readdir } from 'node:fs/promises'
-import path from 'node:path'
 import { createError } from 'h3'
+import { put, list, del } from '@vercel/blob'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
-const EXTS: Record<string, string> = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/avif': '.avif'
-}
-
-const uploadsDir = path.resolve(process.cwd(), 'public/uploads')
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 
-function validateMagicBytes(data: Buffer, expectedType: string): boolean {
+function validateMagicBytes(data: Uint8Array, expectedType: string): boolean {
   const signatures: Record<string, number[][]> = {
     'image/jpeg': [[0xff, 0xd8, 0xff]],
     'image/png': [[0x89, 0x50, 0x4e, 0x47]],
@@ -41,16 +32,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Ukuran foto maksimal 5 MB' })
   }
 
-  await mkdir(uploadsDir, { recursive: true })
-
-  // Bersihkan upload CV lama agar tidak menumpuk
-  const oldFiles = (await readdir(uploadsDir)).filter((f) => f.startsWith('cv-photo-'))
-  for (const f of oldFiles) {
-    await unlink(path.join(uploadsDir, f)).catch(() => {})
+  const oldBlobs = await list({ prefix: 'cv-photo-' })
+  for (const blob of oldBlobs.blobs) {
+    await del(blob.url).catch(() => {})
   }
 
-  const filename = `cv-photo-${Date.now()}${EXTS[file.type]}`
-  await writeFile(path.join(uploadsDir, filename), file.data)
+  const ext = file.type === 'image/jpeg' ? '.jpg' : file.type === 'image/png' ? '.png' : file.type === 'image/webp' ? '.webp' : '.avif'
+  const filename = `cv-photo-${Date.now()}${ext}`
 
-  return { ok: true, url: `/uploads/${filename}` }
+  const blob = await put(filename, file.data, {
+    access: 'public',
+    contentType: file.type
+  })
+
+  return { ok: true, url: blob.url }
 })

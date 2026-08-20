@@ -1,19 +1,10 @@
-import { mkdir, writeFile, unlink, readdir } from 'node:fs/promises'
-import path from 'node:path'
 import { createError } from 'h3'
+import { put, del, list } from '@vercel/blob'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
-const EXTS: Record<string, string> = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/avif': '.avif'
-}
-
-const uploadsDir = path.resolve(process.cwd(), 'public/uploads/projects')
 const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
 
-function validateMagicBytes(data: Buffer, expectedType: string): boolean {
+function validateMagicBytes(data: Uint8Array, expectedType: string): boolean {
   const signatures: Record<string, number[][]> = {
     'image/jpeg': [[0xff, 0xd8, 0xff]],
     'image/png': [[0x89, 0x50, 0x4e, 0x47]],
@@ -41,10 +32,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Ukuran gambar maksimal 10 MB' })
   }
 
-  await mkdir(uploadsDir, { recursive: true })
+  const ext = file.type === 'image/jpeg' ? '.jpg' : file.type === 'image/png' ? '.png' : file.type === 'image/webp' ? '.webp' : '.avif'
+  const filename = `gallery-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`
 
-  const filename = `gallery-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${EXTS[file.type]}`
-  await writeFile(path.join(uploadsDir, filename), file.data)
+  const blob = await put(`projects/${filename}`, file.data, {
+    access: 'public',
+    contentType: file.type
+  })
 
-  return { ok: true, url: `/uploads/projects/${filename}` }
+  return { ok: true, url: blob.url }
 })

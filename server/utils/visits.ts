@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { randomUUID } from 'node:crypto'
 import { createError } from 'h3'
+import { db, ensureSchema, kvGetJson, kvSetJson, isUsingTurso } from './db'
 
 export interface Visit {
   id: string
@@ -13,42 +13,26 @@ export interface Visit {
   browser: string
 }
 
-interface VisitStore {
-  visits: Visit[]
-}
+// ---- Local file fallback ----
 
 const visitsFile = path.resolve(process.cwd(), '.data/visits.json')
 const MAX_VISITS = 20000
 
-let queue: Promise<unknown> = Promise.resolve()
-
-function mutate<T>(fn: (store: VisitStore) => T | Promise<T>): Promise<T> {
-  const run = queue.then(async () => {
-    const store = await readStore()
-    const result = await fn(store)
-    await writeStore(store)
-    return result
-  })
-  queue = run.then(
-    () => {},
-    () => {}
-  )
-  return run
-}
-
-async function readStore(): Promise<VisitStore> {
+async function readLocalVisits(): Promise<Visit[]> {
   try {
     const parsed = JSON.parse(await readFile(visitsFile, 'utf-8'))
-    return { visits: Array.isArray(parsed.visits) ? parsed.visits : [] }
+    return Array.isArray(parsed.visits) ? parsed.visits : []
   } catch {
-    return { visits: [] }
+    return []
   }
 }
 
-async function writeStore(store: VisitStore) {
+async function writeLocalVisits(visits: Visit[]) {
   await mkdir(path.dirname(visitsFile), { recursive: true })
-  await writeFile(visitsFile, JSON.stringify(store, null, 2) + '\n', 'utf-8')
+  await writeFile(visitsFile, JSON.stringify({ visits }, null, 2) + '\n', 'utf-8')
 }
+
+// ---- Detect helpers ----
 
 function detectDevice(ua: string) {
   if (/iphone|ipod|android.*mobile/i.test(ua)) return 'Mobile'
@@ -65,33 +49,50 @@ function detectBrowser(ua: string) {
   return 'Lainnya'
 }
 
+// ---- Public API ----
+
 export async function addVisit(input: { path?: string; referrer?: string; session?: string; ua?: string }) {
-  const path = (input.path ?? '').trim().slice(0, 200)
-  if (!path || path.startsWith('/admin') || path.startsWith('/_')) {
+  const p = (input.path ?? '').trim().slice(0, 200)
+  if (!p || p.startsWith('/admin') || p.startsWith('/_')) {
     return { ok: false }
   }
   const ua = input.ua ?? ''
   const visit: Visit = {
-    id: randomUUID(),
+    id: crypto.randomUUID(),
     at: new Date().toISOString(),
-    path,
+    path: p,
     session: (input.session ?? '').trim().slice(0, 80),
     referrer: (input.referrer ?? '').trim().slice(0, 400),
     device: detectDevice(ua),
     browser: detectBrowser(ua)
   }
-  await mutate(async (store) => {
-    store.visits.push(visit)
-    if (store.visits.length > MAX_VISITS) {
-      store.visits.splice(0, store.visits.length - MAX_VISITS)
-    }
-  })
+
+  if (isUsingTurso()) {
+    await ensureSchema()
+    await db().execute({
+      sql: 'INSERT INTO visits (id, at, path, session, referrer, device, browser) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      args: [visit.id, visit.at, visit.path, visit.session, visit.referrer, visit.device, visit.browser]
+    })
+  } else {
+    const visits = await readLocalVisits()
+    visits.push(visit)
+    if (visits.length > MAX_VISITS) visits.splice(0, visits.length - MAX_VISITS)
+    await writeLocalVisits(visits)
+  }
+
   return { ok: true }
 }
 
-export async function listVisits() {
-  const store = await readStore()
-  return store.visits
+export async function listVisits(): Promise<Visit[]> {
+  if (isUsingTurso()) {
+    await ensureSchema()
+    const { rows } = await db().execute({
+      sql: 'SELECT * FROM visits ORDER BY rowid DESC LIMIT 20000',
+      args: []
+    })
+    return rows as unknown as Visit[]
+  }
+  return readLocalVisits()
 }
 
 function dayKey(d: Date) {
