@@ -8,11 +8,8 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
-  nitro: {
-    preset: 'vercel',
-    routeRules: {
-      '/api/**': { maxDuration: 30 }
-    }
+  routeRules: {
+    '/api/**': { maxDuration: 30 }
   },
   app: {
     head: {
