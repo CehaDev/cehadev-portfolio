@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: cehadev-portfolio
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: node .output/server/index.mjs
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NUXT_ADMIN_PASSWORD
+        sync: false
+      - key: NUXT_ADMIN_SECRET
+        sync: false
