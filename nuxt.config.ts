@@ -11,7 +11,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
   nitro: {
-    preset: 'vercel'
+    preset: 'vercel',
+    xPoweredBy: false
   },
   routeRules: {
     '/admin/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },

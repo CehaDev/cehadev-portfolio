@@ -1,12 +1,28 @@
 import { createError, getHeader } from 'h3'
 import { kvGetJson, kvSetJson } from './db'
 
+function normalizeIP(ip: string): string {
+  const s = ip.trim().toLowerCase()
+  if (s.startsWith('::ffff:') && s.includes('.')) return s.slice(7)
+  return s
+}
+
+function bucketIP(ip: string): string {
+  const s = normalizeIP(ip).split(',')[0]
+  if (s.includes(':')) {
+    const groups = s.split(':').filter(Boolean)
+    return 'v6:' + groups.slice(0, 4).join(':')
+  }
+  return s
+}
+
 function getClientIP(event: any): string {
-  const forwarded = getHeader(event, 'x-forwarded-for')
-  if (forwarded) return forwarded.split(',')[0].trim()
   const realIP = getHeader(event, 'x-real-ip')
-  if (realIP) return realIP.trim()
-  return event.node?.req?.socket?.remoteAddress ?? 'unknown'
+  if (realIP) return bucketIP(realIP)
+  const forwarded = getHeader(event, 'x-forwarded-for')
+  if (forwarded) return bucketIP(forwarded)
+  const socket = event.node?.req?.socket?.remoteAddress
+  return socket ? bucketIP(socket) : 'unknown'
 }
 
 export async function checkRateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
