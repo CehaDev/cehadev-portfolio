@@ -22,15 +22,20 @@ const props = withDefaults(
 
 const emit = defineEmits<{ 'update:modelValue': [value: { id: string; en: string }] }>()
 
-const ls = computed({
-  get() {
-    const v = props.modelValue
-    if (typeof v === 'string') return { id: v, en: v }
-    return { id: v?.id ?? '', en: v?.en ?? '' }
-  },
-  set(value: { id: string; en: string }) {
-    emit('update:modelValue', value)
-  }
+const ls = computed(() => {
+  const v = props.modelValue
+  if (typeof v === 'string') return { id: v, en: v }
+  return { id: v?.id ?? '', en: v?.en ?? '' }
+})
+
+const idModel = computed({
+  get: () => ls.value.id,
+  set: (value: string) => emit('update:modelValue', { ...ls.value, id: value })
+})
+
+const enModel = computed({
+  get: () => ls.value.en,
+  set: (value: string) => emit('update:modelValue', { ...ls.value, en: value })
 })
 </script>
 
@@ -40,7 +45,7 @@ const ls = computed({
       <span class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-text-muted">{{ labelId }}</span>
       <input
         :id="id ? `${id}-id` : undefined"
-        v-model="ls.id"
+        v-model="idModel"
         :type="type"
         class="input-field"
         :placeholder="placeholder"
@@ -50,7 +55,7 @@ const ls = computed({
       <span class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-text-muted">{{ labelEn }}</span>
       <input
         :id="id ? `${id}-en` : undefined"
-        v-model="ls.en"
+        v-model="enModel"
         :type="type"
         class="input-field"
         :placeholder="placeholder"
