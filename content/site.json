@@ -303,6 +303,10 @@
         "id": "Proyek",
         "en": "Projects"
       },
+      "articles": {
+        "id": "Artikel",
+        "en": "Articles"
+      },
       "contact": {
         "id": "Kontak",
         "en": "Contact"

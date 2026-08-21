@@ -15,6 +15,7 @@ const navItems = computed(() =>
     { to: '/', key: 'home' },
     { to: '/about', key: 'about' },
     { to: '/projects', key: 'projects' },
+    { to: '/articles', key: 'articles' },
     { to: '/contact', key: 'contact' }
   ].map(({ to, key }) => ({
     to,

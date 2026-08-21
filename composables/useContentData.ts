@@ -46,3 +46,13 @@ export async function useProjectsContent() {
     lang
   )
 }
+
+export async function useArticlesContent() {
+  const { lang } = useLang()
+  return localizedResult(
+    await useAsyncData('articles-content', () =>
+      $fetch<Array<{ slug?: string; status?: string; category?: unknown; tags?: unknown }>>('/api/content/articles')
+    ),
+    lang
+  )
+}

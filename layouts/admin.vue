@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare, Mail, Settings, BarChart3, Zap, Menu, X, Play } from 'lucide-vue-next'
+import { LayoutDashboard, FolderKanban, FileText, Settings2, LogOut, ArrowLeft, MessageSquare, Mail, Settings, BarChart3, Zap, Menu, X, Play, Newspaper } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -7,6 +7,7 @@ const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
   { label: 'Analytics', to: '/admin/analytics', icon: BarChart3 },
   { label: 'Projects', to: '/admin/projects', icon: FolderKanban },
+  { label: 'Artikel', to: '/admin/articles', icon: Newspaper },
   { label: 'Demos', to: '/admin/demos', icon: Play },
   { label: 'Skills', to: '/admin/skills', icon: Zap },
   { label: 'CV', to: '/admin/cv', icon: FileText },

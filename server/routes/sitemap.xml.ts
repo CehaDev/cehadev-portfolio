@@ -1,4 +1,5 @@
 import { listProjectFiles, readProjectFile } from '../utils/projects'
+import { listArticleFiles, readArticleFile } from '../utils/articles'
 
 function entry(loc: string, priority: string) {
   return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`
@@ -30,6 +31,19 @@ export default defineEventHandler(async (event) => {
       continue
     }
     urls.push(entry(`${origin}/projects/${slug}`, '0.7'))
+  }
+
+  const articleSlugs = await listArticleFiles()
+  for (const slug of articleSlugs) {
+    try {
+      const a = (await readArticleFile(slug)) as { status?: string; datePublished?: string }
+      if (a.status === 'draft') continue
+      const url: Record<string, string> = { loc: `${origin}/articles/${slug}`, priority: '0.6' }
+      if (a.datePublished) url.lastmod = a.datePublished
+      urls.push(`  <url>\n    <loc>${url.loc}</loc>\n${url.lastmod ? `    <lastmod>${url.lastmod}</lastmod>\n` : ''}    <priority>${url.priority}</priority>\n  </url>`)
+    } catch {
+      continue
+    }
   }
 
   setHeader(event, 'content-type', 'application/xml; charset=utf-8')

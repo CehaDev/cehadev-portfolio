@@ -1,0 +1,25 @@
+{
+  "slug": "hello-world",
+  "title": {
+    "id": "Halo Dunia, Artikel Pertama Saya",
+    "en": "Hello World, My First Article"
+  },
+  "excerpt": {
+    "id": "Perkenalan fitur artikel di CehaDev — kenapa blog teknis penting untuk portfolio developer dan apa saja yang akan saya tulis ke depan.",
+    "en": "Introducing the articles feature on CehaDev — why a technical blog matters for a developer portfolio and what I plan to write next."
+  },
+  "category": {
+    "id": "Catatan",
+    "en": "Notes"
+  },
+  "tags": ["Portfolio", "Nuxt.js", "Karier"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-08-21",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Akhirnya, bagian **artikel** resmi tayang juga. Selain memamerkan project, saya ingin memakai situs ini untuk mencatat hal-hal yang saya pelajari selama menjadi web developer.\n\n## Kenapa menulis di portfolio sendiri?\n\nMenulis itu cara paling murah untuk *belajar dua kali*. Ketika saya harus menjelaskan sesuatu dengan bahasa sendiri, biasanya ada bagian yang ternyata belum saya pahami sepenuhnya.\n\n> \"You do not really understand something unless you can explain it to your grandmother.\" — Albert Einstein\n\nSelain itu:\n\n1. Sebagai **dokumentasi pribadi** — mudah dicari kembali\n2. Sebagai bukti bahwa saya benar-benar mengerti topik yang ditulis\n3. Berbagi ke teman-teman developer lain yang sedang belajar hal serupa\n\n## Apa yang akan ditulis?\n\nSebagian besar seputar stack yang saya pakai sehari-hari:\n\n```js\nconst topics = ['Nuxt.js', 'Vue', 'TypeScript', 'Tailwind CSS', 'Node.js']\nconsole.log(`Nanti isinya: ${topics.join(', ')}`)\n```\n\nSesekali juga catatan non-teknis: tips produktivitas, pengalaman kerja project, dan hal random lain yang menurut saya menarik.\n\n## Penutup\n\nArtikel ini sekalian jadi uji coba fitur: markdown, blok kode dengan syntax highlighting, dan dukungan dua bahasa (ID/EN) lewat tombol bahasa di navbar.\n\nTerima kasih sudah mampir!",
+    "en": "The **articles** section is finally live. Besides showcasing projects, I want to use this site to document what I learn as a web developer.\n\n## Why write on your own portfolio?\n\nWriting is the cheapest way to *learn twice*. When I have to explain something in my own words, there's usually a part I didn't fully understand yet.\n\n> \"You do not really understand something unless you can explain it to your grandmother.\" — Albert Einstein\n\nAlso:\n\n1. As **personal documentation** — easy to look up later\n2. As proof that I truly understand the topic I wrote about\n3. Sharing with fellow developers learning the same things\n\n## What will I write about?\n\nMostly about my daily stack:\n\n```js\nconst topics = ['Nuxt.js', 'Vue', 'TypeScript', 'Tailwind CSS', 'Node.js']\nconsole.log(`Upcoming posts: ${topics.join(', ')}`)\n```\n\nOccasionally non-technical notes too: productivity tips, project work experience, and other random interesting stuff.\n\n## Closing\n\nThis article doubles as a feature test: markdown, code blocks with syntax highlighting, and bilingual support (ID/EN) via the language switcher in the navbar.\n\nThanks for stopping by!"
+  }
+}

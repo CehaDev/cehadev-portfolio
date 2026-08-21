@@ -11,6 +11,7 @@ export const dict = {
   'nav.home': { id: 'Beranda', en: 'Home' },
   'nav.about': { id: 'Tentang', en: 'About' },
   'nav.projects': { id: 'Proyek', en: 'Projects' },
+  'nav.articles': { id: 'Artikel', en: 'Articles' },
   'nav.contact': { id: 'Kontak', en: 'Contact' },
   'nav.switchLang': { id: 'Ganti bahasa', en: 'Switch language' },
   'nav.downloadCv': { id: 'Unduh CV', en: 'Download CV' },
@@ -83,7 +84,25 @@ export const dict = {
 
   'projectCard.viewProject': { id: 'Lihat Project', en: 'View Project' },
   'projectCard.viewDemoAria': { id: 'Lihat demo {{title}}', en: 'View demo {{title}}' },
-  'projectCard.featured': { id: 'Unggulan', en: 'Featured' }
+  'projectCard.featured': { id: 'Unggulan', en: 'Featured' },
+
+  'articles.badge': { id: 'Blog & Catatan', en: 'Blog & Notes' },
+  'articles.heroHead1': { id: 'Artikel', en: 'Latest' },
+  'articles.heroHead2': { id: '& Tulisan', en: 'Articles' },
+  'articles.heroDesc': {
+    id: 'Catatan, tutorial, dan pemikiran seputar dunia web development — ditulis agar apa yang dipelajari tidak hilang.',
+    en: 'Notes, tutorials, and thoughts about web development — written so what I learn never goes to waste.'
+  },
+  'articles.allCategory': { id: 'Semua', en: 'All' },
+  'articles.filterAria': { id: 'Filter kategori artikel', en: 'Filter articles by category' },
+  'articles.empty': { id: 'Belum ada artikel di kategori ini.', en: 'No articles in this category yet.' },
+  'articles.readTime': { id: '{{min}} mnt baca', en: '{{min}} min read' },
+  'articles.publishedOn': { id: 'Diterbitkan', en: 'Published' },
+  'articles.updatedOn': { id: 'Diperbarui', en: 'Updated' },
+  'articles.backToList': { id: 'Semua Artikel', en: 'All Articles' },
+  'articles.notFound': { id: 'Artikel tidak ditemukan', en: 'Article not found' },
+  'articles.tableOfContents': { id: 'Daftar isi', en: 'Table of contents' },
+  'articleCard.readArticle': { id: 'Baca selengkapnya', en: 'Read article' }
 } as const
 
 export type DictKey = keyof typeof dict
