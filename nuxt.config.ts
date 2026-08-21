@@ -4,7 +4,7 @@ const googleVerification = (process.env.NUXT_GOOGLE_VERIFICATION || '').trim()
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss', '@vercel/analytics'],
   experimental: {
     appManifest: false
   },
