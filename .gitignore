@@ -34,3 +34,4 @@ test-results
 
 # User-uploaded assets (CV photo, dsb)
 public/uploads
+.env*
