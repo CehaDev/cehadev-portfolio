@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const googleVerification = (process.env.NUXT_GOOGLE_VERIFICATION || '').trim()
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
@@ -31,7 +33,8 @@ export default defineNuxtConfig({
         { property: 'og:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' },
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:title', content: 'CehaDev — Web Developer Portfolio' },
-        { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' }
+        { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' },
+        ...(googleVerification ? [{ name: 'google-site-verification', content: googleVerification }] : [])
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/ch.png' },
