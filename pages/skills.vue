@@ -8,6 +8,7 @@ useSeoMeta({
   title: () => site.value?.seo?.skills?.title ?? 'Skills | CehaDev',
   description: () => site.value?.seo?.skills?.description ?? 'Keahlian dan teknologi yang dikuasai CehaDev — JavaScript, Vue.js, Nuxt.js, Node.js, dan berbagai tools pengembangan lainnya.'
 })
+useCanonical('/skills')
 
 const headings = computed(() => site.value?.headings?.skills ?? {})
 

@@ -20,6 +20,7 @@ useSeoMeta({
   title: () => `${project.value?.title ?? 'Project'} | CehaDev`,
   description: () => project.value?.tagline ?? ''
 })
+useCanonical(`/projects/${route.params.slug}`)
 
 if (!project.value) {
   throw createError({ statusCode: 404, statusMessage: headings.value.notFound ?? 'Project tidak ditemukan', fatal: true })

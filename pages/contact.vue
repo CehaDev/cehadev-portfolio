@@ -7,6 +7,7 @@ useSeoMeta({
   title: () => site.value?.seo?.contact?.title ?? 'Contact | CehaDev',
   description: () => site.value?.seo?.contact?.description ?? 'Hubungi CehaDev untuk kolaborasi, project freelance, atau sekadar menyapa. Respons cepat dan terbuka untuk peluang kerja sama.'
 })
+useCanonical('/contact')
 
 const headings = computed(() => site.value?.headings?.contact ?? {})
 

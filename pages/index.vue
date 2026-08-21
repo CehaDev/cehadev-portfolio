@@ -9,6 +9,7 @@ useSeoMeta({
   title: () => site.value?.seo?.home?.title ?? 'CehaDev — Web Developer Portfolio',
   description: () => site.value?.seo?.home?.description ?? 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah. Membangun produk digital modern dengan Nuxt.js, Vue.js, dan Tailwind CSS.'
 })
+useCanonical('/')
 
 const { data: skills } = await useSkillsContent()
 const { data: projects } = await useProjectsContent()

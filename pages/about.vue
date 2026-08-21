@@ -9,6 +9,7 @@ useSeoMeta({
   title: () => site.value?.seo?.about?.title ?? 'About | CehaDev',
   description: () => site.value?.seo?.about?.description ?? 'Kenali lebih dekat CehaDev — Web Developer yang berfokus pada Nuxt.js, Vue.js, dan Node.js.'
 })
+useCanonical('/about')
 
 const headings = computed(() => site.value?.headings?.about ?? {})
 

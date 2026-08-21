@@ -9,6 +9,7 @@ useSeoMeta({
   title: () => site.value?.seo?.projects?.title ?? 'Projects | CehaDev',
   description: () => site.value?.seo?.projects?.description ?? 'Kumpulan project yang pernah dikerjakan CehaDev — dari web app, e-commerce, dashboard, hingga backend API.'
 })
+useCanonical('/projects')
 
 const headings = computed(() => site.value?.headings?.projects ?? {})
 

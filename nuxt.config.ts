@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/api/**': { cors: true },
+    '/admin/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
   },
   app: {

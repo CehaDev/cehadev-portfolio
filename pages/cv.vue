@@ -8,6 +8,7 @@ useSeoMeta({
   title: () => site.value?.seo?.cv?.title ?? 'CV | CehaDev',
   description: () => site.value?.seo?.cv?.description ?? 'Curriculum Vitae CehaDev — Web Developer & Tech Enthusiast.'
 })
+useCanonical('/cv')
 
 const headings = computed(() => site.value?.headings?.cv ?? {})
 
