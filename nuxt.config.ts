@@ -37,7 +37,13 @@ export default defineNuxtConfig({
         ...(googleVerification ? [{ name: 'google-site-verification', content: googleVerification }] : [])
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/ch.png' },
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-16x16.png', sizes: '16x16' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'icon', type: 'image/png', href: '/icon-96.png', sizes: '96x96' },
+        { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
       ],
@@ -46,6 +52,16 @@ export default defineNuxtConfig({
           innerHTML:
             "(function(){try{var t=localStorage.getItem('cehadev-theme');var isDark=(t==='dark')||((t!=='light')&&(!window.matchMedia||!window.matchMedia('(prefers-color-scheme: light)').matches));if(isDark){document.documentElement.classList.add('dark')}}catch(e){document.documentElement.classList.add('dark')}})()",
           tagPosition: 'head'
+        },
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'CehaDev',
+            alternateName: ['CehaDev Portfolio', 'cehadev-portfolio'],
+            url: 'https://cehadev.id'
+          })
         },
         {
           type: 'application/ld+json',
