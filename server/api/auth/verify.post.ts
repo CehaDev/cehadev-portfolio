@@ -4,7 +4,7 @@ import { rateLimitOrThrow } from '../../utils/rate-limit'
 import { logSecurityEvent } from '../../utils/security-log'
 
 export default defineEventHandler(async (event) => {
-  rateLimitOrThrow(event, 'otp-verify', 5, 10 * 60 * 1000)
+  await rateLimitOrThrow(event, 'otp-verify', 5, 10 * 60 * 1000)
 
   if (!readPending(event)) {
     throw createError({ statusCode: 401, statusMessage: 'Sesi verifikasi tidak ditemukan. Silakan login ulang.' })

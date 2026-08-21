@@ -4,7 +4,7 @@ import { mailConfigured, sendMail } from '../../../utils/mailer'
 import { rateLimitOrThrow } from '../../../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
-  rateLimitOrThrow(event, 'otp-resend', 3, 10 * 60 * 1000)
+  await rateLimitOrThrow(event, 'otp-resend', 3, 10 * 60 * 1000)
 
   if (!readPending(event)) {
     throw createError({ statusCode: 401, statusMessage: 'Sesi verifikasi tidak ditemukan. Silakan login ulang.' })
@@ -29,5 +29,11 @@ export default defineEventHandler(async (event) => {
     smtpOk = false
   }
 
-  return { ok: true, ...(!smtpOk ? { devCode: code } : {}) }
+  if (!smtpOk) {
+    if (process.env.NODE_ENV === 'production') {
+      throw createError({ statusCode: 503, statusMessage: 'Layanan email sedang bermasalah. Coba lagi nanti.' })
+    }
+    return { ok: true, devCode: code }
+  }
+  return { ok: true }
 })

@@ -1,0 +1,18 @@
+{
+  "services": {
+    "cehadev-portfolio": {
+      "root": ".",
+      "framework": "nuxtjs",
+      "buildCommand": "npm ci && npm run build"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "cehadev-portfolio"
+      }
+    }
+  ]
+}

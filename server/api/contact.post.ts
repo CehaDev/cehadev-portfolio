@@ -1,7 +1,7 @@
 import { rateLimitOrThrow } from '../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
-  rateLimitOrThrow(event, 'contact', 5, 10 * 60 * 1000)
+  await rateLimitOrThrow(event, 'contact', 5, 10 * 60 * 1000)
 
   const body = await readBody<{ name?: string; email?: string; subject?: string; message?: string }>(event)
   return await addContactMessage({

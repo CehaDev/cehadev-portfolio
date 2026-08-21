@@ -21,7 +21,7 @@ async function sendOtpEmail(code: string) {
 }
 
 export default defineEventHandler(async (event) => {
-  rateLimitOrThrow(event, 'login', 5, 15 * 60 * 1000)
+  await rateLimitOrThrow(event, 'login', 5, 15 * 60 * 1000)
 
   const expected = process.env.NUXT_ADMIN_PASSWORD
   if (!expected) {
@@ -49,5 +49,11 @@ export default defineEventHandler(async (event) => {
   }
 
   issuePending(event)
-  return { ok: true, pending: true, ...(!smtpOk ? { devCode: code } : {}) }
+  if (!smtpOk) {
+    if (process.env.NODE_ENV === 'production') {
+      throw createError({ statusCode: 503, statusMessage: 'Layanan email sedang bermasalah. Coba lagi nanti.' })
+    }
+    return { ok: true, pending: true, devCode: code }
+  }
+  return { ok: true, pending: true }
 })

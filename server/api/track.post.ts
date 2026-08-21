@@ -1,7 +1,7 @@
 import { rateLimitOrThrow } from '../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
-  rateLimitOrThrow(event, 'track', 30, 60 * 1000)
+  await rateLimitOrThrow(event, 'track', 30, 60 * 1000)
 
   const body = await readBody<{ path?: string; referrer?: string; session?: string }>(event)
   const ua = getRequestHeader(event, 'user-agent') ?? ''
