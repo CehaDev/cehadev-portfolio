@@ -12,7 +12,12 @@ export default defineNuxtConfig({
   components: [{ path: '~/components', pathPrefix: false }],
   nitro: {
     preset: 'vercel',
-    xPoweredBy: false
+    xPoweredBy: false,
+    hooks: {
+      'render:response': (response: any) => {
+        if (response?.headers) delete response.headers['x-powered-by']
+      }
+    }
   },
   routeRules: {
     '/admin/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
