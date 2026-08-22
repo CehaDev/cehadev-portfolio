@@ -121,6 +121,8 @@ export const dict = {
   'articles.shareWhatsapp': { id: 'Bagikan ke WhatsApp', en: 'Share to WhatsApp' },
   'articles.shareX': { id: 'Bagikan ke X', en: 'Share to X' },
   'articles.shareFacebook': { id: 'Bagikan ke Facebook', en: 'Share to Facebook' },
+  'articles.fullscreen': { id: 'Layar Penuh', en: 'Fullscreen' },
+  'articles.exitFullscreen': { id: 'Keluar Layar Penuh', en: 'Exit Fullscreen' },
   'articles.prevArticle': { id: 'Sebelumnya', en: 'Previous' },
   'articles.nextArticle': { id: 'Selanjutnya', en: 'Next' },
   'articleCard.readArticle': { id: 'Baca selengkapnya', en: 'Read article' },

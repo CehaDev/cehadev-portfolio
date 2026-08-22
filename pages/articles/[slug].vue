@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
+import { ArrowLeft, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree, Maximize2, Minimize2 } from 'lucide-vue-next'
 import { renderMarkdown, countWords } from '~/utils/markdown'
 
 const route = useRoute()
@@ -132,6 +132,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
   cancelAnimationFrame(raf)
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
 })
 
 watch(html, () => nextTick(updateReadingState))
@@ -142,6 +143,33 @@ const tocOpen = ref(true)
 onMounted(() => {
   if (window.innerWidth < 768) tocOpen.value = false
 })
+
+// ---- Mode layar penuh: artikel melebar + browser fullscreen ----
+const wide = ref(false)
+
+async function toggleWide() {
+  if (!wide.value) {
+    wide.value = true
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen()
+    } catch {}
+  } else {
+    wide.value = false
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen()
+    } catch {}
+  }
+}
+
+function onFullscreenChange() {
+  if (!document.fullscreenElement && wide.value) wide.value = false
+}
+
+onMounted(() => document.addEventListener('fullscreenchange', onFullscreenChange))
+
+// Lebar konten mengikuti mode
+const shellClass = computed(() => (wide.value ? 'w-full' : 'w-full max-w-3xl'))
+const headerClass = computed(() => (wide.value ? 'max-w-3xl' : 'max-w-2xl'))
 
 // ---- Share ----
 const copied = ref(false)
@@ -201,7 +229,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </NuxtLink>
 
     <!-- HEADER ARTIKEL -->
-    <header class="mx-auto mt-6 max-w-2xl text-center md:mt-8">
+    <header class="mx-auto mt-6 text-center md:mt-8" :class="headerClass">
       <span v-if="a.category" class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
         {{ a.category }}
       </span>
@@ -269,11 +297,23 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
         >
           f
         </a>
+        <button
+          type="button"
+          class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[11px] font-medium transition-all duration-300"
+          :class="wide ? 'border-primary/60 bg-primary/15 text-primary' : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-primary'"
+          :aria-label="wide ? t('articles.exitFullscreen') : t('articles.fullscreen')"
+          :title="wide ? t('articles.exitFullscreen') : t('articles.fullscreen')"
+          @click="toggleWide"
+        >
+          <Minimize2 v-if="wide" :size="13" :stroke-width="2" aria-hidden="true" />
+          <Maximize2 v-else :size="13" :stroke-width="2" aria-hidden="true" />
+          {{ wide ? t('articles.exitFullscreen') : t('articles.fullscreen') }}
+        </button>
       </div>
     </header>
 
     <!-- COVER -->
-    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-9">
+    <div class="mx-auto mt-8 md:mt-9" :class="shellClass">
       <div v-if="a.cover" class="card overflow-hidden p-0">
         <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
       </div>
@@ -283,7 +323,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </div>
 
     <!-- ALUR ARTIKEL: pembuka → daftar isi → isi -->
-    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-10">
+    <div class="mx-auto mt-8 md:mt-10" :class="shellClass">
       <!-- Paragraf pembuka -->
       <div v-if="introHtml" class="article-content" v-html="introHtml" />
 
@@ -351,10 +391,10 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </div>
 
     <!-- KOLOM KOMENTAR -->
-    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14 w-full max-w-3xl" />
+    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14" :class="shellClass" />
 
     <!-- PREV / NEXT -->
-    <nav v-if="olderArticle || newerArticle" class="mx-auto mt-14 grid w-full max-w-3xl gap-4 sm:grid-cols-2 md:mt-16" aria-label="Navigasi artikel">
+    <nav v-if="olderArticle || newerArticle" class="mx-auto mt-14 grid gap-4 sm:grid-cols-2 md:mt-16" :class="shellClass" aria-label="Navigasi artikel">
       <NuxtLink
         v-if="olderArticle"
         :to="`/articles/${(olderArticle as any).slug}`"
