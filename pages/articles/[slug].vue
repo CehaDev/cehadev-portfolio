@@ -299,7 +299,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </header>
 
     <!-- COVER -->
-    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-9">
+    <div class="mx-auto mt-8 w-full md:mt-9">
       <div v-if="a.cover" class="card overflow-hidden p-0">
         <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
       </div>
@@ -308,8 +308,8 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
     </div>
 
-    <!-- ALUR ARTIKEL + PANEL SAMPING (laptop & desktop) -->
-    <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 lg:grid-cols-[minmax(0,48rem)_minmax(0,230px)] lg:items-start xl:grid-cols-[minmax(0,220px)_minmax(0,48rem)_minmax(0,220px)]">
+    <!-- ALUR ARTIKEL + PANEL SAMPING — melebar penuh mengikuti layar -->
+    <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 lg:grid-cols-[minmax(0,1fr)_minmax(0,250px)] lg:items-start xl:grid-cols-[minmax(0,290px)_minmax(0,1fr)_minmax(0,290px)] xl:gap-10">
       <!-- Panel kiri: penulis & bagikan -->
       <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Penulis dan bagikan">
         <div class="card p-5 text-center">
@@ -342,6 +342,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 
       <!-- ISI ARTIKEL -->
       <div class="min-w-0">
+      <div class="mx-auto w-full max-w-[56rem]">
       <!-- Paragraf pembuka -->
       <div v-if="introHtml" class="article-content article-intro" v-html="introHtml" />
 
@@ -405,6 +406,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
         <span v-for="tag in a.tags" :key="tag" class="rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium text-text-secondary">
           #{{ tag }}
         </span>
+      </div>
       </div>
       </div>
 
