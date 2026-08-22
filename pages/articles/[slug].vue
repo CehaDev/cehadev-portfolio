@@ -169,7 +169,12 @@ onMounted(() => document.addEventListener('fullscreenchange', onFullscreenChange
 
 // Lebar konten mengikuti mode
 const shellClass = computed(() => (wide.value ? 'w-full' : 'w-full max-w-3xl'))
-const headerClass = computed(() => (wide.value ? 'max-w-3xl' : 'max-w-2xl'))
+const headerClass = computed(() => (wide.value ? 'w-full' : 'max-w-2xl'))
+const rootClass = computed(() =>
+  wide.value
+    ? 'min-h-[calc(100vh-76px)] px-3 py-6 sm:px-5 md:py-10'
+    : 'container-site min-h-[calc(100vh-76px)] py-12 md:py-16'
+)
 
 // ---- Share ----
 const copied = ref(false)
@@ -217,7 +222,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 </script>
 
 <template>
-  <div class="container-site min-h-[calc(100vh-76px)] py-12 md:py-16">
+  <div :class="rootClass">
     <!-- PROGRESS BACA -->
     <div class="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]" aria-hidden="true">
       <div class="h-full bg-gradient-brand shadow-btn-glow transition-[width] duration-100 ease-out" :style="{ width: `${progress}%` }" />
@@ -325,7 +330,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     <!-- ALUR ARTIKEL: pembuka → daftar isi → isi -->
     <div class="mx-auto mt-8 md:mt-10" :class="shellClass">
       <!-- Paragraf pembuka -->
-      <div v-if="introHtml" class="article-content" v-html="introHtml" />
+      <div v-if="introHtml" class="article-content" :class="{ 'article-wide': wide }" v-html="introHtml" />
 
       <!-- DAFTAR ISI (menyatu dengan artikel) -->
       <div v-if="toc.length >= 2" class="card my-8 overflow-hidden p-0 md:my-10">
@@ -379,7 +384,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
 
       <!-- Sisa konten -->
-      <div class="article-content" v-html="restHtml" />
+      <div class="article-content" :class="{ 'article-wide': wide }" v-html="restHtml" />
 
       <!-- TAGS -->
       <div v-if="(a.tags ?? []).length" class="mt-10 flex flex-wrap items-center gap-2 border-t border-border/60 pt-7">
@@ -424,7 +429,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </nav>
 
     <!-- ARTIKEL TERKAIT -->
-    <section v-if="others.length" class="mx-auto mt-14 w-full max-w-5xl md:mt-16">
+    <section v-if="others.length" class="mx-auto mt-14 md:mt-16" :class="shellClass">
       <h2 class="text-xl font-extrabold tracking-tight md:text-2xl">
         {{ lang === 'en' ? 'More Articles' : 'Artikel Lainnya' }}
       </h2>
@@ -438,6 +443,16 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 <style scoped>
 .article-content {
   @apply text-[15px] leading-relaxed text-text-secondary;
+}
+/* Mode layar penuh: teks sedikit diperbesar agar tetap nyaman */
+.article-content.article-wide {
+  @apply text-[17px];
+}
+.article-content.article-wide :deep(h2) {
+  @apply mt-12 text-3xl;
+}
+.article-content.article-wide :deep(h3) {
+  @apply text-2xl;
 }
 .article-content :deep(h2) {
   @apply mb-3 mt-10 scroll-mt-28 break-words text-2xl font-bold tracking-tight text-text;
