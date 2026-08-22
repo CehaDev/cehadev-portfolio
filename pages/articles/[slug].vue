@@ -273,7 +273,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </header>
 
     <!-- COVER -->
-    <div class="mx-auto mt-8 w-full md:mt-9">
+    <div class="mx-auto mt-8 w-full max-w-4xl md:mt-9">
       <div v-if="a.cover" class="card overflow-hidden p-0">
         <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
       </div>
@@ -282,8 +282,8 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
     </div>
 
-    <!-- ALUR ARTIKEL: pembuka → daftar isi → isi (lebar mengikuti kontainer seperti nav/footer) -->
-    <div class="mx-auto mt-9 w-full md:mt-11">
+    <!-- ALUR ARTIKEL: pembuka → daftar isi → isi (lebar standar nyaman dibaca) -->
+    <div class="mx-auto mt-9 w-full max-w-3xl md:mt-11">
       <!-- Paragraf pembuka -->
       <div v-if="introHtml" class="article-content" v-html="introHtml" />
 
