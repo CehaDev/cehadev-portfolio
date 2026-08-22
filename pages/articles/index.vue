@@ -304,7 +304,7 @@ const gradientFor = (slug: string) => gradients[slug.length % gradients.length]
     </div>
 
     <!-- GRID ARTIKEL -->
-    <div v-if="visibleList.length" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div v-if="visibleList.length" class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       <Reveal v-for="(a, i) in visibleList" :key="a.slug" :delay="(i % 3) * 80" :direction="i % 2 === 0 ? 'left' : 'up'" :parallax="10 + (i % 3) * 4">
         <ArticleCard :article="a as any" />
       </Reveal>

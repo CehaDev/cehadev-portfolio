@@ -43,7 +43,7 @@ const gradient = computed(() => gradients[(props.article.slug.length + props.art
 <template>
   <article class="card group relative flex h-full flex-col overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card-hover">
     <!-- Cover -->
-    <NuxtLink :to="`/articles/${article.slug}`" class="relative block h-44 overflow-hidden" aria-hidden="true" tabindex="-1">
+    <NuxtLink :to="`/articles/${article.slug}`" class="relative block h-32 overflow-hidden" aria-hidden="true" tabindex="-1">
       <img
         v-if="article.cover"
         :src="article.cover"
@@ -63,53 +63,53 @@ const gradient = computed(() => gradients[(props.article.slug.length + props.art
 
       <span
         v-if="article.category"
-        class="absolute left-3 top-3 rounded-full border border-white/20 bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm"
+        class="absolute left-2.5 top-2.5 rounded-full border border-white/20 bg-black/45 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm"
       >
         {{ article.category }}
       </span>
 
-      <span class="absolute bottom-3 left-3 inline-flex items-center gap-3 text-[10px] font-medium text-white/85">
+      <span class="absolute bottom-2.5 left-3 inline-flex items-center gap-2.5 text-[9px] font-medium text-white/85">
         <span class="inline-flex items-center gap-1">
-          <Calendar :size="11" :stroke-width="1.75" aria-hidden="true" />
+          <Calendar :size="10" :stroke-width="1.75" aria-hidden="true" />
           {{ dateLabel }}
         </span>
         <span class="inline-flex items-center gap-1">
-          <Clock3 :size="11" :stroke-width="1.75" aria-hidden="true" />
+          <Clock3 :size="10" :stroke-width="1.75" aria-hidden="true" />
           {{ t('articles.readTime', { min: minutes }) }}
         </span>
         <span v-if="views && views > 0" class="inline-flex items-center gap-1">
-          <Eye :size="11" :stroke-width="1.75" aria-hidden="true" />
+          <Eye :size="10" :stroke-width="1.75" aria-hidden="true" />
           {{ views }}
         </span>
       </span>
     </NuxtLink>
 
     <!-- Body -->
-    <div class="flex flex-1 flex-col gap-2.5 p-5">
+    <div class="flex flex-1 flex-col gap-2 p-4">
       <NuxtLink
         :to="`/articles/${article.slug}`"
-        class="text-[17px] font-bold leading-snug tracking-tight text-text transition-colors duration-300 group-hover:text-primary"
+        class="line-clamp-2 text-[15px] font-bold leading-snug tracking-tight text-text transition-colors duration-300 group-hover:text-primary"
       >
         {{ article.title }}
       </NuxtLink>
 
-      <p class="line-clamp-2 text-sm leading-relaxed text-text-secondary">
+      <p class="line-clamp-2 text-[13px] leading-relaxed text-text-secondary">
         {{ article.excerpt }}
       </p>
 
-      <div v-if="visibleTags.length" class="mt-1 flex flex-wrap items-center gap-1.5">
-        <span v-for="tag in visibleTags" :key="tag" class="rounded-full border border-border bg-bg-alt px-2 py-0.5 font-mono text-[10px] font-medium text-text-muted">
+      <div v-if="visibleTags.length" class="mt-0.5 flex flex-wrap items-center gap-1.5">
+        <span v-for="tag in visibleTags" :key="tag" class="rounded-full border border-border bg-bg-alt px-2 py-0.5 font-mono text-[9px] font-medium text-text-muted">
           #{{ tag }}
         </span>
-        <span v-if="extraTags > 0" class="font-mono text-[10px] font-medium text-text-muted">+{{ extraTags }}</span>
+        <span v-if="extraTags > 0" class="font-mono text-[9px] font-medium text-text-muted">+{{ extraTags }}</span>
       </div>
 
-      <div class="mt-auto flex items-center justify-between border-t border-border/60 pt-3.5">
-        <NuxtLink :to="`/articles/${article.slug}`" class="text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
+      <div class="mt-auto flex items-center justify-between border-t border-border/60 pt-3">
+        <NuxtLink :to="`/articles/${article.slug}`" class="text-[13px] font-semibold text-primary transition-colors hover:text-primary-violet">
           {{ t('articleCard.readArticle') }}
         </NuxtLink>
-        <span class="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-bg-alt text-text-secondary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-gradient-brand group-hover:text-white">
-          <ArrowUpRight :size="15" :stroke-width="2" />
+        <span class="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-bg-alt text-text-secondary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-gradient-brand group-hover:text-white">
+          <ArrowUpRight :size="13" :stroke-width="2" />
         </span>
       </div>
     </div>
