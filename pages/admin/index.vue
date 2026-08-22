@@ -403,12 +403,12 @@ const avatarGradients = [
             aria-hidden="true"
           >
             <img v-if="art.cover" :src="art.cover" alt="" class="h-full w-full object-cover" />
-            <template v-else>{{ (art.title ?? '?').charAt(0).toUpperCase() }}</template>
+            <template v-else>{{ lsId(art.title) ? lsId(art.title).charAt(0).toUpperCase() : '?' }}</template>
           </span>
           <div class="min-w-0 flex-1">
-            <p class="truncate text-sm font-semibold text-text">{{ art.title }}</p>
+            <p class="truncate text-sm font-semibold text-text">{{ lsId(art.title) || art.slug }}</p>
             <p class="mt-0.5 truncate text-xs text-text-muted">
-              {{ articleDate(art.datePublished) }}<span v-if="art.category"> · {{ art.category }}</span>
+              {{ articleDate(art.datePublished) }}<span v-if="lsId(art.category)"> · {{ lsId(art.category) }}</span>
             </p>
           </div>
           <span
