@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { ArrowLeft, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
 import { renderMarkdown, countWords } from '~/utils/markdown'
 
 const route = useRoute()
@@ -83,6 +83,44 @@ function goTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+// ---- Progress baca + scroll-spy daftar isi ----
+const progress = ref(0)
+const activeId = ref('')
+let raf = 0
+
+function updateReadingState() {
+  const doc = document.documentElement
+  const total = doc.scrollHeight - window.innerHeight
+  progress.value = total > 0 ? Math.min(100, Math.max(0, Math.round((window.scrollY / total) * 100))) : 0
+
+  let current = ''
+  for (const item of toc.value) {
+    const el = document.getElementById(item.id)
+    if (el && el.getBoundingClientRect().top <= 140) current = item.id
+  }
+  activeId.value = current || toc.value[0]?.id || ''
+}
+
+function onScroll() {
+  cancelAnimationFrame(raf)
+  raf = requestAnimationFrame(updateReadingState)
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  updateReadingState()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  cancelAnimationFrame(raf)
+})
+
+watch(html, () => nextTick(updateReadingState))
+
+// ---- Accordion daftar isi (mobile/tablet) ----
+const tocOpen = ref(false)
+
 // ---- Share ----
 const copied = ref(false)
 async function copyLink() {
@@ -130,113 +168,181 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 
 <template>
   <div class="container-site min-h-[calc(100vh-76px)] py-12 md:py-16">
+    <!-- PROGRESS BACA -->
+    <div class="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]" aria-hidden="true">
+      <div class="h-full bg-gradient-brand shadow-btn-glow transition-[width] duration-100 ease-out" :style="{ width: `${progress}%` }" />
+    </div>
+
     <NuxtLink to="/articles" class="inline-flex items-center gap-2 text-sm font-semibold text-text-secondary transition-colors hover:text-primary">
       <ArrowLeft :size="16" :stroke-width="2" />
       {{ t('articles.backToList') }}
     </NuxtLink>
 
-    <div class="mx-auto mt-8 grid max-w-6xl gap-10 xl:grid-cols-[230px_minmax(0,1fr)_230px]">
-      <!-- SIDEBAR KIRI: Daftar isi -->
-      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Daftar isi">
-        <div v-if="toc.length >= 2" class="card p-5">
-          <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-muted">
-            <Link2 :size="13" :stroke-width="2" aria-hidden="true" />
+    <!-- HEADER ARTIKEL -->
+    <header class="mx-auto mt-8 max-w-3xl text-center">
+      <span v-if="a.category" class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
+        {{ a.category }}
+      </span>
+      <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">{{ a.title }}</h1>
+      <p v-if="a.excerpt" class="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-text-secondary">{{ a.excerpt }}</p>
+
+      <!-- Kartu meta penulis -->
+      <div class="card mx-auto mt-7 flex w-fit flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-full px-6 py-3 text-xs font-medium text-text-muted">
+        <span class="inline-flex items-center gap-2">
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-brand text-sm font-extrabold text-white" aria-hidden="true">C</span>
+          CehaDev
+        </span>
+        <span class="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
+        <span class="inline-flex items-center gap-1.5">
+          <Calendar :size="13" :stroke-width="1.75" aria-hidden="true" />
+          {{ dateLabel }}
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <Clock3 :size="13" :stroke-width="1.75" aria-hidden="true" />
+          {{ t('articles.readTime', { min: minutes }) }}
+        </span>
+        <span v-if="views > 0" class="inline-flex items-center gap-1.5">
+          <Eye :size="13" :stroke-width="1.75" aria-hidden="true" />
+          {{ views }} {{ t('common.views') }}
+        </span>
+      </div>
+
+      <!-- SHARE -->
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <button
+          type="button"
+          class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[11px] font-medium transition-all duration-300"
+          :class="copied ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400' : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-primary'"
+          :aria-label="t('articles.copyLink')"
+          @click="copyLink"
+        >
+          <Check v-if="copied" :size="13" :stroke-width="2" aria-hidden="true" />
+          <Link2 v-else :size="13" :stroke-width="1.75" aria-hidden="true" />
+          {{ copied ? t('articles.linkCopied') : t('articles.copyLink') }}
+        </button>
+        <a
+          :href="shareUrls.wa"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-text-secondary transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-400"
+          :aria-label="t('articles.shareWhatsapp')"
+        >
+          <MessageCircle :size="15" :stroke-width="1.75" aria-hidden="true" />
+        </a>
+        <a
+          :href="shareUrls.x"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-9 items-center justify-center rounded-full border border-border bg-card px-3 text-sm font-bold text-text-secondary transition-all duration-300 hover:border-primary/50 hover:text-text"
+          :aria-label="t('articles.shareX')"
+        >
+          𝕏
+        </a>
+        <a
+          :href="shareUrls.fb"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-sm font-bold text-text-secondary transition-all duration-300 hover:border-blue-400/50 hover:text-blue-400"
+          :aria-label="t('articles.shareFacebook')"
+        >
+          f
+        </a>
+      </div>
+    </header>
+
+    <!-- COVER -->
+    <div class="mx-auto mt-9 max-w-4xl">
+      <div v-if="a.cover" class="card overflow-hidden p-0">
+        <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
+      </div>
+      <div v-else class="card flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br p-0" :class="gradient" aria-hidden="true">
+        <span class="font-mono text-6xl font-extrabold text-white/90">&lt;/&gt;</span>
+      </div>
+    </div>
+
+    <!-- DAFTAR ISI MOBILE (accordion) -->
+    <div v-if="toc.length >= 2" class="mx-auto mt-8 max-w-4xl xl:hidden">
+      <div class="card overflow-hidden p-0">
+        <button
+          type="button"
+          class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+          :aria-expanded="tocOpen"
+          aria-controls="toc-mobile"
+          @click="tocOpen = !tocOpen"
+        >
+          <span class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+            <ListTree :size="15" :stroke-width="2" class="text-primary" aria-hidden="true" />
             {{ t('articles.tableOfContents') }}
-          </p>
-          <nav class="mt-4 space-y-1 border-l border-border/70 pl-3">
+            <span class="rounded-full bg-bg-alt px-2 py-0.5 font-mono text-[10px] text-text-muted">{{ toc.length }}</span>
+          </span>
+          <ChevronRight :size="16" :stroke-width="2" class="shrink-0 text-text-muted transition-transform duration-300" :class="tocOpen ? 'rotate-90' : ''" aria-hidden="true" />
+        </button>
+        <div v-show="tocOpen" id="toc-mobile" class="border-t border-border/60 px-5 py-3">
+          <nav class="max-h-64 space-y-0.5 overflow-y-auto" aria-label="Daftar isi mobile">
             <button
-              v-for="item in toc"
+              v-for="(item, i) in toc"
               :key="item.id"
               type="button"
-              class="block w-full truncate rounded-md py-1 pr-1 text-left text-[12px] leading-snug transition-colors"
-              :class="item.depth === 2 ? 'font-medium text-text-secondary hover:text-primary' : 'pl-3 text-[11px] text-text-muted hover:text-primary'"
+              class="group flex w-full items-start gap-2.5 rounded-md py-1.5 pr-2 text-left transition-colors"
+              :class="item.depth === 3 ? 'pl-8' : 'pl-2'"
+              @click="goTo(item.id); tocOpen = false"
+            >
+              <span class="mt-0.5 font-mono text-[10px] leading-5 text-text-muted transition-colors group-hover:text-primary">{{ String(i + 1).padStart(2, '0') }}</span>
+              <span class="line-clamp-2 text-[13px] leading-snug transition-colors" :class="activeId === item.id ? 'font-semibold text-primary' : 'text-text-secondary group-hover:text-text'">
+                {{ item.text }}
+              </span>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- KONTEN -->
+    <div class="mx-auto mt-10 grid max-w-6xl gap-10 xl:grid-cols-[230px_minmax(0,1fr)_230px]">
+      <!-- SIDEBAR KIRI: Daftar isi modern dengan scroll-spy -->
+      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Daftar isi">
+        <div v-if="toc.length >= 2" class="card overflow-hidden p-0">
+          <div class="flex items-center justify-between border-b border-border/60 bg-bg-alt/50 px-5 py-4">
+            <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+              <ListTree :size="14" :stroke-width="2" class="text-primary" aria-hidden="true" />
+              {{ t('articles.tableOfContents') }}
+            </p>
+            <span class="font-mono text-[10px] tabular-nums text-text-muted">{{ progress }}%</span>
+          </div>
+
+          <!-- Track progress mini -->
+          <div class="h-0.5 w-full bg-border/50" aria-hidden="true">
+            <div class="h-full bg-gradient-brand transition-[width] duration-150 ease-out" :style="{ width: `${progress}%` }" />
+          </div>
+
+          <nav class="relative max-h-[52vh] space-y-0.5 overflow-y-auto p-4">
+            <button
+              v-for="(item, i) in toc"
+              :key="item.id"
+              type="button"
+              class="group relative flex w-full items-start gap-2 rounded-md py-1.5 pr-2 text-left transition-colors duration-200"
+              :class="[item.depth === 3 ? 'pl-7' : 'pl-2', activeId === item.id ? 'bg-primary/10' : 'hover:bg-bg-alt']"
               @click="goTo(item.id)"
             >
-              {{ item.text }}
+              <span
+                v-if="activeId === item.id"
+                class="absolute bottom-1.5 left-0 top-1.5 w-0.5 rounded-full bg-gradient-brand"
+                aria-hidden="true"
+              />
+              <span class="mt-0.5 font-mono text-[9px] leading-4 tabular-nums transition-colors duration-200" :class="activeId === item.id ? 'text-primary' : 'text-text-muted'">
+                {{ String(i + 1).padStart(2, '0') }}
+              </span>
+              <span class="line-clamp-2 text-[11.5px] leading-snug transition-colors duration-200" :class="activeId === item.id ? 'font-semibold text-primary' : item.depth === 2 ? 'text-text-secondary group-hover:text-text' : 'text-[10.5px] text-text-muted group-hover:text-text-secondary'">
+                {{ item.text }}
+              </span>
             </button>
           </nav>
         </div>
       </aside>
 
       <article>
-        <!-- HEADER -->
-        <header class="text-center">
-          <span v-if="a.category" class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
-            {{ a.category }}
-          </span>
-          <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">{{ a.title }}</h1>
-          <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-text-muted">
-            <span class="inline-flex items-center gap-1.5">
-              <Calendar :size="13" :stroke-width="1.75" aria-hidden="true" />
-              {{ t('articles.publishedOn') }} · {{ dateLabel }}
-            </span>
-            <span class="inline-flex items-center gap-1.5">
-              <Clock3 :size="13" :stroke-width="1.75" aria-hidden="true" />
-              {{ t('articles.readTime', { min: minutes }) }}
-            </span>
-            <span v-if="views > 0" class="inline-flex items-center gap-1.5">
-              <Eye :size="13" :stroke-width="1.75" aria-hidden="true" />
-              {{ views }} {{ t('common.views') }}
-            </span>
-          </div>
-
-          <!-- SHARE -->
-          <div class="mt-6 flex items-center justify-center gap-2">
-            <span class="mr-1 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-              <Share2 :size="13" :stroke-width="1.75" aria-hidden="true" />
-              {{ t('articles.share') }}
-            </span>
-            <button
-              type="button"
-              class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[11px] font-medium transition-all duration-300"
-              :class="copied ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400' : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-primary'"
-              :aria-label="t('articles.copyLink')"
-              @click="copyLink"
-            >
-              <Check v-if="copied" :size="13" :stroke-width="2" aria-hidden="true" />
-              <Link2 v-else :size="13" :stroke-width="1.75" aria-hidden="true" />
-              {{ copied ? t('articles.linkCopied') : t('articles.copyLink') }}
-            </button>
-            <a
-              :href="shareUrls.wa"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-text-secondary transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-400"
-              :aria-label="t('articles.shareWhatsapp')"
-            >
-              <MessageCircle :size="15" :stroke-width="1.75" aria-hidden="true" />
-            </a>
-            <a
-              :href="shareUrls.x"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex h-9 items-center justify-center rounded-full border border-border bg-card px-3 text-sm font-bold text-text-secondary transition-all duration-300 hover:border-primary/50 hover:text-text"
-              :aria-label="t('articles.shareX')"
-            >
-              𝕏
-            </a>
-            <a
-              :href="shareUrls.fb"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-sm font-bold text-text-secondary transition-all duration-300 hover:border-blue-400/50 hover:text-blue-400"
-              :aria-label="t('articles.shareFacebook')"
-            >
-              f
-            </a>
-          </div>
-        </header>
-
-        <!-- COVER -->
-        <div v-if="a.cover" class="card mt-8 overflow-hidden p-0">
-          <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
-        </div>
-        <div v-else class="card mt-8 flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br p-0" :class="gradient" aria-hidden="true">
-          <span class="font-mono text-6xl font-extrabold text-white/90">&lt;/&gt;</span>
-        </div>
-
         <!-- CONTENT -->
-        <div class="article-content mt-10" v-html="html ?? ''" />
+        <div class="article-content" v-html="html ?? ''" />
 
         <!-- TAGS -->
         <div v-if="(a.tags ?? []).length" class="mt-12 flex flex-wrap items-center gap-2 border-t border-border/60 pt-8">
@@ -250,6 +356,9 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       <!-- SIDEBAR KANAN: spacer agar artikel tetap center -->
       <div class="hidden xl:block" aria-hidden="true" />
     </div>
+
+    <!-- KOLOM KOMENTAR -->
+    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14 max-w-4xl" />
 
     <!-- PREV / NEXT -->
     <nav v-if="olderArticle || newerArticle" class="mx-auto mt-16 grid max-w-4xl gap-4 sm:grid-cols-2" aria-label="Navigasi artikel">

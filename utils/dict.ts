@@ -123,7 +123,23 @@ export const dict = {
   'articles.shareFacebook': { id: 'Bagikan ke Facebook', en: 'Share to Facebook' },
   'articles.prevArticle': { id: 'Sebelumnya', en: 'Previous' },
   'articles.nextArticle': { id: 'Selanjutnya', en: 'Next' },
-  'articleCard.readArticle': { id: 'Baca selengkapnya', en: 'Read article' }
+  'articleCard.readArticle': { id: 'Baca selengkapnya', en: 'Read article' },
+
+  'comments.title': { id: 'Komentar', en: 'Comments' },
+  'comments.subtitle': { id: 'Siapa saja boleh ikut berdiskusi — tanpa perlu login.', en: 'Anyone is welcome to join the discussion — no login needed.' },
+  'comments.namePlaceholder': { id: 'Nama Anda', en: 'Your Name' },
+  'comments.messagePlaceholder': { id: 'Tulis komentar Anda di sini...', en: 'Write your comment here...' },
+  'comments.submit': { id: 'Kirim Komentar', en: 'Post Comment' },
+  'comments.sending': { id: 'Mengirim...', en: 'Sending...' },
+  'comments.success': { id: 'Komentar berhasil dikirim. Terima kasih sudah ikut diskusi!', en: 'Comment posted successfully. Thanks for joining the discussion!' },
+  'comments.errorFallback': { id: 'Gagal mengirim komentar, coba lagi.', en: 'Failed to post comment, try again.' },
+  'comments.rateLimited': { id: 'Terlalu sering berkomentar. Tunggu beberapa menit lagi ya.', en: "You're commenting too fast. Please wait a few minutes." },
+  'comments.notice': { id: 'Komentar tampil publik — hindari membagikan data pribadi.', en: 'Comments are public — avoid sharing personal information.' },
+  'comments.reqName': { id: 'Nama minimal 2 karakter', en: 'Name must be at least 2 characters' },
+  'comments.reqMessage': { id: 'Komentar minimal 3 karakter', en: 'Comment must be at least 3 characters' },
+  'comments.newBadge': { id: 'Baru', en: 'New' },
+  'comments.emptyTitle': { id: 'Belum ada komentar', en: 'No comments yet' },
+  'comments.emptyDesc': { id: 'Jadilah yang pertama menyampaikan pendapat!', en: 'Be the first one to share your thoughts!' }
 } as const
 
 export type DictKey = keyof typeof dict

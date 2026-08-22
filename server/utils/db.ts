@@ -109,6 +109,16 @@ export async function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_chat_msg_conv ON chat_messages(conversation_id);
 
+    CREATE TABLE IF NOT EXISTS article_comments (
+      id TEXT PRIMARY KEY,
+      article_slug TEXT NOT NULL,
+      name TEXT NOT NULL,
+      message TEXT NOT NULL,
+      at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_article_comments_slug ON article_comments(article_slug);
+    CREATE INDEX IF NOT EXISTS idx_article_comments_at ON article_comments(at);
+
     CREATE TABLE IF NOT EXISTS security_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ts TEXT NOT NULL,

@@ -1,11 +1,13 @@
 import { createError } from 'h3'
 import helloWorld from '../../content/articles/hello-world.json'
+import optimasiNuxt from '../../content/articles/optimasi-website-nuxt.json'
+import tailwindTips from '../../content/articles/tailwind-tips-desain-modern.json'
 import { normalizeLS } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
 const ARTICLES_KEY = 'content_articles'
 
-const bundledArticles: Record<string, unknown>[] = [helloWorld]
+const bundledArticles: Record<string, unknown>[] = [helloWorld, optimasiNuxt, tailwindTips]
 
 function isValidSlug(slug: string) {
   return /^[a-z0-9][a-z0-9-]*$/.test(slug)

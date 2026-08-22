@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Newspaper, Search, X, ArrowDownWideNarrow, Sparkles } from 'lucide-vue-next'
+import { Newspaper, Search, X, ArrowDownWideNarrow, Sparkles, CalendarDays, Clock3, TrendingUp } from 'lucide-vue-next'
 
 const { data: articles } = await useArticlesContent()
 const { t } = useI18n()
@@ -16,8 +16,8 @@ const activeTag = ref('')
 const sortBy = ref<'newest' | 'oldest' | 'az'>('newest')
 const visibleCount = ref(6)
 
-const allList = computed(() => {
-  const list = [...(articles.value ?? [])]
+const allList = computed<any[]>(() => {
+  const list = [...((articles.value ?? []) as any[])]
   return list.sort((a, b) => String(b.datePublished ?? '').localeCompare(String(a.datePublished ?? '')))
 })
 
@@ -45,8 +45,8 @@ function matchesQuery(a: Record<string, unknown>) {
 const filtered = computed(() => {
   let list = allList.value
   const all = activeCategory.value === '' || activeCategory.value === t('articles.allCategory')
-  if (!all) list = list.filter((a) => a.category === activeCategory.value)
-  if (activeTag.value) list = list.filter((a) => ((a.tags as string[]) ?? []).includes(activeTag.value))
+  if (!all) list = list.filter((a: any) =>a.category === activeCategory.value)
+  if (activeTag.value) list = list.filter((a: any) =>((a.tags as string[]) ?? []).includes(activeTag.value))
   list = list.filter(matchesQuery)
   if (sortBy.value === 'oldest') list = [...list].reverse()
   else if (sortBy.value === 'az') list = [...list].sort((x, y) => String(x.title).localeCompare(String(y.title)))
@@ -57,8 +57,23 @@ const hasActiveFilter = computed(
   () => query.value.trim() !== '' || !(activeCategory.value === '' || activeCategory.value === t('articles.allCategory')) || !!activeTag.value || sortBy.value !== 'newest'
 )
 
+// ---- Bento editorial: 1 artikel utama + 2 pendamping ----
 const featured = computed(() => (hasActiveFilter.value ? null : allList.value[0] ?? null))
-const gridList = computed(() => (featured.value ? filtered.value.filter((a) => a.slug !== featured.value!.slug) : filtered.value))
+const bentoSlugs = computed(() => {
+  if (!featured.value) return []
+  return filtered.value
+    .filter((a: any) =>a.slug !== featured.value!.slug)
+    .slice(0, 2)
+    .map((a: any) => a.slug)
+})
+const bentoSide = computed(() =>
+  bentoSlugs.value.map((slug: string) => allList.value.find((a: any) => a.slug === slug)).filter(Boolean)
+)
+const gridList = computed(() => {
+  let list = filtered.value
+  if (featured.value) list = list.filter((a: any) =>a.slug !== featured.value!.slug)
+  return list.filter((a: any) =>!bentoSlugs.value.includes(a.slug))
+})
 const visibleList = computed(() => gridList.value.slice(0, visibleCount.value))
 
 watch([query, activeCategory, activeTag, sortBy], () => {
@@ -73,7 +88,11 @@ function resetFilters() {
 }
 
 function categoryCount(cat: string) {
-  return cat === t('articles.allCategory') ? allList.value.length : allList.value.filter((a) => a.category === cat).length
+  return cat === t('articles.allCategory') ? allList.value.length : allList.value.filter((a: any) =>a.category === cat).length
+}
+
+function readingMin(text: string) {
+  return Math.max(1, Math.round(String(text ?? '').trim().split(/\s+/).filter(Boolean).length / 200))
 }
 
 const totalArticles = computed(() => allList.value.length)
@@ -81,7 +100,7 @@ const totalArticles = computed(() => allList.value.length)
 const statItems = computed(() => [
   { label: 'Artikel', value: String(totalArticles.value) },
   { label: 'Kategori', value: String(categories.value.length - 1) },
-  { label: 'Tag', value: String(new Set(allList.value.flatMap((a) => (a.tags as string[]) ?? [])).size) }
+  { label: 'Tag', value: String(new Set(allList.value.flatMap((a: any) => (a.tags as string[]) ?? [])).size) }
 ])
 
 const dateLabelShort = (d: string) => {
@@ -91,35 +110,49 @@ const dateLabelShort = (d: string) => {
 }
 
 const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600', 'from-emerald-500 to-lime-600', 'from-amber-500 to-rose-600']
+const gradientFor = (slug: string) => gradients[slug.length % gradients.length]
 </script>
 
 <template>
-  <div class="container-site min-h-[calc(100vh-76px)] py-16 md:py-20">
-    <!-- HERO -->
-    <div class="text-center">
-      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-xs text-text-secondary shadow-card">
-        <span class="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-        {{ t('articles.badge') }}
-      </span>
-      <h1 class="mt-5 text-4xl font-extrabold tracking-tight md:text-5xl">
-        {{ t('articles.heroHead1') }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ t('articles.heroHead2') }}</span>
-      </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
-        {{ t('articles.heroDesc') }}
-      </p>
+  <div class="container-site min-h-[calc(100vh-76px)] py-14 md:py-16">
+    <!-- HERO EDITORIAL -->
+    <Reveal direction="up" :parallax="10">
+      <section class="card relative overflow-hidden p-7 md:p-10">
+        <div class="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-primary/15 blur-3xl" aria-hidden="true" />
+        <div class="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
 
-      <div class="mx-auto mt-8 grid max-w-md grid-cols-3 gap-3">
-        <Reveal v-for="(s, i) in statItems" :key="s.label" :delay="i * 80" direction="up" :parallax="8 + i * 3">
-          <div class="rounded-card border border-border bg-card px-3 py-5 text-center shadow-card">
-            <p class="font-mono text-xl font-extrabold leading-none text-text">{{ s.value }}</p>
-            <p class="mt-1.5 text-xs text-text-muted">{{ s.label }}</p>
+        <div class="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-2xl">
+            <span class="inline-flex items-center gap-2 rounded-full border border-border bg-bg-alt px-4 py-1.5 font-mono text-xs text-text-secondary">
+              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" aria-hidden="true" />
+              {{ t('articles.badge') }}
+            </span>
+            <h1 class="mt-5 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-5xl">
+              {{ t('articles.heroHead1') }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ t('articles.heroHead2') }}</span>
+            </h1>
+            <p class="mt-4 max-w-xl text-[15px] leading-relaxed text-text-secondary">
+              {{ t('articles.heroDesc') }}
+            </p>
           </div>
-        </Reveal>
-      </div>
-    </div>
 
-    <!-- TOOLBAR: search + sort -->
-    <div class="mx-auto mt-12 flex max-w-2xl flex-col gap-3 sm:flex-row">
+          <!-- Stat chips -->
+          <div class="flex gap-3">
+            <div
+              v-for="(s, i) in statItems"
+              :key="s.label"
+              class="min-w-[86px] rounded-card border border-border bg-bg-alt/60 px-4 py-3 backdrop-blur-sm"
+              :class="i > 0 ? 'hidden sm:block' : ''"
+            >
+              <p class="bg-gradient-brand bg-clip-text font-mono text-2xl font-extrabold leading-none text-transparent">{{ s.value }}</p>
+              <p class="mt-1 text-[11px] font-medium text-text-muted">{{ s.label }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </Reveal>
+
+    <!-- PANEL KONTROL: pencarian + urutan -->
+    <div class="mx-auto mt-8 flex max-w-3xl flex-col gap-3 sm:flex-row">
       <div class="relative flex-1">
         <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-text-muted" aria-hidden="true">
           <Search :size="16" :stroke-width="1.75" />
@@ -153,84 +186,125 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
       </div>
     </div>
 
-    <!-- FILTER KATEGORI -->
-    <div v-if="categories.length > 1" class="mt-6 flex flex-wrap justify-center gap-2.5" role="tablist" :aria-label="t('articles.filterAria')">
-      <button
-        v-for="cat in categories"
-        :key="cat"
-        type="button"
-        role="tab"
-        :aria-selected="activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory'))"
-        class="rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
-        :class="(activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory')))
-          ? 'border-transparent bg-gradient-brand text-white shadow-btn-glow'
-          : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
-        @click="activeCategory = cat"
-      >
-        {{ cat }}
-        <span class="ml-1.5 text-xs" :class="(activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory'))) ? 'text-white/80' : 'text-text-muted'">({{ categoryCount(cat) }})</span>
-      </button>
+    <!-- FILTER KATEGORI + TAG -->
+    <div v-if="categories.length > 1 || topTags.length" class="mt-5 space-y-3">
+      <div v-if="categories.length > 1" class="flex flex-wrap justify-center gap-2.5" role="tablist" :aria-label="t('articles.filterAria')">
+        <button
+          v-for="cat in categories"
+          :key="cat"
+          type="button"
+          role="tab"
+          :aria-selected="activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory'))"
+          class="rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+          :class="(activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory')))
+            ? 'border-transparent bg-gradient-brand text-white shadow-btn-glow'
+            : 'border-border bg-card text-text-secondary hover:border-primary/50 hover:text-text'"
+          @click="activeCategory = cat"
+        >
+          {{ cat }}
+          <span class="ml-1.5 text-xs" :class="(activeCategory === cat || (activeCategory === '' && cat === t('articles.allCategory'))) ? 'text-white/80' : 'text-text-muted'">({{ categoryCount(cat) }})</span>
+        </button>
+      </div>
+
+      <div v-if="topTags.length" class="flex flex-wrap justify-center gap-2" role="group" :aria-label="t('articles.tagFilterAria')">
+        <button
+          v-for="tag in topTags"
+          :key="tag"
+          type="button"
+          class="rounded-full border px-3 py-1 font-mono text-[11px] transition-all duration-300"
+          :class="activeTag === tag
+            ? 'border-primary/60 bg-primary/15 text-primary'
+            : 'border-border/70 bg-transparent text-text-muted hover:border-primary/40 hover:text-text-secondary'"
+          @click="activeTag = activeTag === tag ? '' : tag"
+        >
+          #{{ tag }}
+        </button>
+      </div>
     </div>
 
-    <!-- FILTER TAG -->
-    <div v-if="topTags.length" class="mt-4 flex flex-wrap justify-center gap-2" role="group" :aria-label="t('articles.tagFilterAria')">
-      <button
-        v-for="tag in topTags"
-        :key="tag"
-        type="button"
-        class="rounded-full border px-3 py-1 font-mono text-[11px] transition-all duration-300"
-        :class="activeTag === tag
-          ? 'border-primary/60 bg-primary/15 text-primary'
-          : 'border-border/70 bg-transparent text-text-muted hover:border-primary/40 hover:text-text-secondary'"
-        @click="activeTag = activeTag === tag ? '' : tag"
-      >
-        #{{ tag }}
-      </button>
-    </div>
-
-    <!-- ARTIKEL TERBARU (featured) -->
-    <Reveal v-if="featured" direction="up" :parallax="12">
-      <article class="card group relative mt-10 overflow-hidden p-0 transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover">
-        <div class="grid md:grid-cols-2">
-          <NuxtLink :to="`/articles/${featured.slug}`" class="relative block h-56 overflow-hidden border-b border-border/60 md:h-auto md:border-b-0 md:border-r" aria-hidden="true" tabindex="-1">
+    <!-- BENTO: artikel unggulan + 2 terbaru -->
+    <div v-if="featured && bentoSide.length" class="mt-12 grid gap-6 lg:grid-cols-5">
+      <!-- Kartu utama besar -->
+      <Reveal direction="left" :parallax="12" class="lg:col-span-3">
+        <article class="group relative min-h-[400px] overflow-hidden rounded-card border border-border shadow-card transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover">
+          <NuxtLink :to="`/articles/${featured.slug}`" class="absolute inset-0" aria-hidden="true" tabindex="-1">
             <img
               v-if="featured.cover"
               :src="featured.cover"
               :alt="featured.title"
               class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <span v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br transition-transform duration-700 group-hover:scale-105" :class="gradients[featured.slug.length % gradients.length]">
-              <span class="font-mono text-5xl font-extrabold text-white/90">&lt;/&gt;</span>
+            <span v-else class="block h-full w-full bg-gradient-to-br transition-transform duration-700 group-hover:scale-105" :class="gradientFor(featured.slug)">
+              <span class="flex h-full w-full items-center justify-center font-mono text-7xl font-extrabold text-white/90">&lt;/&gt;</span>
             </span>
-            <span class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-              <Sparkles :size="11" :stroke-width="2" aria-hidden="true" />
-              {{ t('articles.latestPost') }}
-            </span>
+            <span class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" aria-hidden="true" />
           </NuxtLink>
-          <div class="flex flex-col justify-center gap-4 p-7 md:p-9">
-            <div class="flex items-center gap-4 text-[11px] font-medium text-text-muted">
-              <span v-if="featured.category" class="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-semibold uppercase tracking-wider text-primary">
+
+          <div class="relative flex h-full min-h-[400px] flex-col justify-end p-7 md:p-9">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+                <Sparkles :size="11" :stroke-width="2" aria-hidden="true" />
+                {{ t('articles.latestPost') }}
+              </span>
+              <span v-if="featured.category" class="inline-flex items-center rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
                 {{ featured.category }}
               </span>
-              <span>{{ dateLabelShort(featured.datePublished) }}</span>
             </div>
-            <NuxtLink :to="`/articles/${featured.slug}`" class="text-2xl font-extrabold leading-tight tracking-tight text-text transition-colors hover:text-primary md:text-3xl">
+            <NuxtLink :to="`/articles/${featured.slug}`" class="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-white transition-colors hover:text-primary-violet md:text-3xl">
               {{ featured.title }}
             </NuxtLink>
-            <p class="line-clamp-3 text-sm leading-relaxed text-text-secondary">{{ featured.excerpt }}</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span v-for="tag in (featured.tags ?? []).slice(0, 4)" :key="tag" class="rounded-full border border-border bg-bg-alt px-2.5 py-0.5 font-mono text-[10px] font-medium text-text-muted">#{{ tag }}</span>
+            <p class="mt-3 line-clamp-2 max-w-xl text-sm leading-relaxed text-white/75">{{ featured.excerpt }}</p>
+            <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-medium text-white/70">
+              <span class="inline-flex items-center gap-1.5">
+                <CalendarDays :size="13" :stroke-width="1.75" aria-hidden="true" />
+                {{ dateLabelShort(featured.datePublished) }}
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <Clock3 :size="13" :stroke-width="1.75" aria-hidden="true" />
+                {{ t('articles.readTime', { min: readingMin(`${featured.excerpt} ${featured.title}`) }) }}
+              </span>
             </div>
-            <NuxtLink :to="`/articles/${featured.slug}`" class="btn-primary mt-1 w-fit !px-5 !py-2.5 text-sm">
-              {{ t('articles.readNow') }}
-            </NuxtLink>
           </div>
-        </div>
-      </article>
-    </Reveal>
+        </article>
+      </Reveal>
 
-    <!-- GRID -->
-    <div v-if="visibleList.length" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Dua kartu pendamping vertikal -->
+      <div class="flex flex-col gap-6 lg:col-span-2">
+        <Reveal v-for="(a, i) in bentoSide" :key="a!.slug" :delay="100 + i * 90" direction="up" :parallax="10">
+          <NuxtLink
+            :to="`/articles/${a!.slug}`"
+            class="card group flex h-full gap-4 overflow-hidden p-0 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-card-hover"
+          >
+            <span class="relative block w-32 shrink-0 self-stretch overflow-hidden sm:w-36" aria-hidden="true">
+              <img
+                v-if="a!.cover"
+                :src="a!.cover"
+                :alt="a!.title"
+                loading="lazy"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <span v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br transition-transform duration-700 group-hover:scale-105" :class="gradientFor(a!.slug)">
+                <span class="font-mono text-2xl font-extrabold text-white/90">&lt;/&gt;</span>
+              </span>
+            </span>
+            <span class="flex min-w-0 flex-1 flex-col justify-center gap-1.5 py-4 pr-4">
+              <span v-if="a!.category" class="text-[10px] font-bold uppercase tracking-wider text-primary">{{ a!.category }}</span>
+              <span class="line-clamp-2 text-sm font-bold leading-snug tracking-tight text-text transition-colors duration-300 group-hover:text-primary">
+                {{ a!.title }}
+              </span>
+              <span class="line-clamp-2 text-xs leading-relaxed text-text-muted">{{ a!.excerpt }}</span>
+              <span class="mt-1 inline-flex items-center gap-1.5 text-[11px] font-medium text-text-muted">
+                <TrendingUp :size="11" :stroke-width="1.75" aria-hidden="true" />
+                {{ dateLabelShort(a!.datePublished) }}
+              </span>
+            </span>
+          </NuxtLink>
+        </Reveal>
+      </div>
+    </div>
+
+    <!-- GRID ARTIKEL -->
+    <div v-if="visibleList.length" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <Reveal v-for="(a, i) in visibleList" :key="a.slug" :delay="(i % 3) * 80" :direction="i % 2 === 0 ? 'left' : 'up'" :parallax="10 + (i % 3) * 4">
         <ArticleCard :article="a as any" />
       </Reveal>

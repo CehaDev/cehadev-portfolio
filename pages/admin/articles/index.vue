@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2, Search, X, Eye, EyeOff, Tag } from 'lucide-vue-next'
+import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2, Search, X, Eye, EyeOff, Tag, MessageSquare, BarChart3, FolderOpen, FilePen } from 'lucide-vue-next'
 import { lsId } from '~/utils/localize'
 
 definePageMeta({
@@ -19,17 +19,54 @@ interface AdminArticleRow {
   datePublished: string
 }
 
+interface AdminCommentRow {
+  id: string
+  articleSlug: string
+  name: string
+  message: string
+  at: string
+}
+
 const { data: articles, refresh } = await useAsyncData('admin-articles-list', () =>
   useRequestFetch()<AdminArticleRow[]>('/api/admin/articles')
 )
 
+const { data: stats } = await useAsyncData('admin-articles-stats', () =>
+  useRequestFetch()<{ articles?: Array<{ slug: string; views: number }> }>('/api/stats')
+)
+
+const { data: allComments, refresh: refreshComments } = await useAsyncData<AdminCommentRow[]>('admin-article-comments', () =>
+  useRequestFetch()<AdminCommentRow[]>('/api/admin/comments')
+)
+
 const busy = ref<string | null>(null)
 const confirmDelete = ref<string | null>(null)
+const confirmDeleteComment = ref<string | null>(null)
 const query = ref('')
 
-const tab = ref<'all' | 'published' | 'draft'>('all')
+const tab = ref<'all' | 'published' | 'draft' | 'comments'>('all')
 const publishedCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'published').length)
 const draftCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'draft').length)
+
+const articleViews = (slug: string) => stats.value?.articles?.find((x) => x.slug === slug)?.views ?? 0
+
+const sumViews = computed(() =>
+  (articles.value ?? []).reduce((acc, a) => acc + articleViews(a.slug), 0)
+)
+const commentCountBySlug = computed(() => {
+  const map = new Map<string, number>()
+  for (const c of allComments.value ?? []) map.set(c.articleSlug, (map.get(c.articleSlug) ?? 0) + 1)
+  return map
+})
+const totalComments = computed(() => (allComments.value ?? []).length)
+
+const statCards = computed(() => [
+  { label: 'Total Artikel', value: String(articles.value?.length ?? 0), icon: Newspaper, tone: 'text-primary bg-primary/10' },
+  { label: 'Terbit', value: String(publishedCount.value), icon: FileCheck2, tone: 'text-emerald-400 bg-emerald-400/10' },
+  { label: 'Draft', value: String(draftCount.value), icon: FilePen, tone: 'text-amber-400 bg-amber-400/10' },
+  { label: 'Total Views', value: String(sumViews.value), icon: BarChart3, tone: 'text-cyan-400 bg-cyan-400/10' },
+  { label: 'Komentar', value: String(totalComments.value), icon: MessageSquare, tone: 'text-fuchsia-400 bg-fuchsia-400/10' }
+])
 
 function matchesQuery(a: AdminArticleRow) {
   const q = query.value.trim().toLowerCase()
@@ -50,16 +87,41 @@ function dateLabel(d: string) {
   return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(date)
 }
 
+function commentDateLabel(at: string) {
+  const date = new Date(at)
+  if (Number.isNaN(date.getTime())) return at
+  return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date)
+}
+
+function commentInitials(n: string) {
+  return n.split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('') || '?'
+}
+
 async function removePermanent(slug: string) {
   if (busy.value) return
   busy.value = slug
   try {
     await $fetch(`/api/admin/articles/${slug}`, { method: 'DELETE' })
     confirmDelete.value = null
-    await refresh()
+    await Promise.all([refresh(), refreshComments()])
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     alert(err.data?.statusMessage ?? 'Gagal menghapus artikel')
+  } finally {
+    busy.value = null
+  }
+}
+
+async function removeComment(id: string) {
+  if (busy.value) return
+  busy.value = `comment-${id}`
+  try {
+    await $fetch(`/api/admin/comments/${id}`, { method: 'DELETE' })
+    confirmDeleteComment.value = null
+    await refreshComments()
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    alert(err.data?.statusMessage ?? 'Gagal menghapus komentar')
   } finally {
     busy.value = null
   }
@@ -94,37 +156,44 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
           </span>
           <div>
             <h2 class="text-lg font-extrabold tracking-tight text-text">Kelola Artikel</h2>
-            <p class="mt-1 text-sm text-text-secondary">Tulis artikel markdown dua bahasa, atur jadwal terbit & SEO. {{ articles?.length ?? 0 }} artikel tersimpan.</p>
-            <div class="mt-3 flex flex-wrap gap-2 text-[11px] font-medium text-text-muted">
-              <span class="rounded-full border border-border bg-card px-2.5 py-1">Terbit: {{ publishedCount }}</span>
-              <span class="rounded-full border border-border bg-card px-2.5 py-1">Draft: {{ draftCount }}</span>
-            </div>
+            <p class="mt-1 text-sm text-text-secondary">Tulis artikel markdown dua bahasa, pantau performa & moderasi komentar.</p>
           </div>
         </div>
-        <div class="flex flex-col items-center gap-1">
-          <NuxtLink to="/admin/articles/new" class="btn-primary !py-2.5">
-            <Plus :size="16" :stroke-width="2" />
-            Tulis Artikel
-          </NuxtLink>
-          <span class="text-[10px] text-text-muted">Buat artikel baru</span>
+        <NuxtLink to="/admin/articles/new" class="btn-primary !py-2.5">
+          <Plus :size="16" :stroke-width="2" />
+          Tulis Artikel
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Kartu statistik -->
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div v-for="s in statCards" :key="s.label" class="card flex items-center gap-3.5 p-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" :class="s.tone" aria-hidden="true">
+          <component :is="s.icon" :size="19" :stroke-width="1.75" />
+        </span>
+        <div class="min-w-0">
+          <p class="truncate font-mono text-xl font-extrabold leading-tight text-text">{{ s.value }}</p>
+          <p class="truncate text-[11px] font-medium text-text-muted">{{ s.label }}</p>
         </div>
       </div>
     </div>
 
     <!-- Tab + pencarian -->
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="inline-flex items-center gap-1 rounded-btn border border-border bg-card p-1" role="tablist" aria-label="Filter artikel">
+      <div class="inline-flex items-center gap-1 overflow-x-auto rounded-btn border border-border bg-card p-1" role="tablist" aria-label="Filter artikel">
         <button
           v-for="tb in [
             { key: 'all', label: 'Semua', count: articles?.length ?? 0 },
             { key: 'published', label: 'Terbit', count: publishedCount },
-            { key: 'draft', label: 'Draft', count: draftCount }
+            { key: 'draft', label: 'Draft', count: draftCount },
+            { key: 'comments', label: 'Komentar', count: totalComments }
           ]"
           :key="tb.key"
           type="button"
           role="tab"
           :aria-selected="tab === tb.key"
-          class="inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-semibold transition-colors"
+          class="inline-flex shrink-0 items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-semibold transition-colors"
           :class="tab === tb.key ? 'bg-gradient-brand text-white shadow-btn-glow' : 'text-text-muted hover:text-text'"
           @click="tab = tb.key as any"
         >
@@ -133,7 +202,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
         </button>
       </div>
 
-      <div class="relative w-full sm:w-72">
+      <div v-if="tab !== 'comments'" class="relative w-full sm:w-72">
         <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-text-muted" aria-hidden="true">
           <Search :size="15" :stroke-width="1.75" />
         </span>
@@ -156,8 +225,44 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
       </div>
     </div>
 
-    <!-- List -->
-    <div class="card overflow-hidden p-0">
+    <!-- ===== TAB KOMENTAR ===== -->
+    <div v-if="tab === 'comments'" class="card overflow-hidden p-0">
+      <ul class="divide-y divide-border/60">
+        <li v-for="c in allComments ?? []" :key="c.id" class="flex items-start gap-4 px-7 py-4 transition-colors hover:bg-card/40">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-extrabold text-white" aria-hidden="true">
+            {{ commentInitials(c.name) }}
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+              <p class="text-sm font-bold text-text">{{ c.name }}</p>
+              <span class="font-mono text-[10px] text-text-muted">{{ commentDateLabel(c.at) }}</span>
+            </div>
+            <p class="mt-1 whitespace-pre-line break-words text-sm leading-relaxed text-text-secondary">{{ c.message }}</p>
+            <NuxtLink :to="`/articles/${c.articleSlug}`" target="_blank" class="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary">
+              /articles/{{ c.articleSlug }}
+              <ExternalLink :size="10" :stroke-width="1.75" />
+            </NuxtLink>
+          </div>
+          <button
+            type="button"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-btn border border-red-500/30 px-3.5 py-2 text-xs font-medium text-red-400 transition-colors hover:border-red-500/60 hover:bg-red-500/10"
+            @click="confirmDeleteComment = c.id"
+          >
+            <Trash2 :size="13" :stroke-width="1.75" />
+            Hapus
+          </button>
+        </li>
+        <li v-if="!(allComments ?? []).length" class="px-7 py-14 text-center">
+          <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+            <MessageSquare :size="22" :stroke-width="1.75" />
+          </span>
+          <p class="mt-3 text-sm font-medium text-text-secondary">Belum ada komentar masuk. Komentar pembaca akan muncul di sini untuk dimoderasi.</p>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== LIST ARTIKEL ===== -->
+    <div v-else class="card overflow-hidden p-0">
       <ul class="divide-y divide-border/60">
         <li v-for="(a, i) in currentList" :key="a.slug" class="flex items-center gap-4 px-7 py-4 transition-colors hover:bg-card/40">
           <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br text-sm font-extrabold text-white" :class="gradients[i % gradients.length]" aria-hidden="true">
@@ -175,7 +280,14 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
                 <Tag :size="10" :stroke-width="2" />
                 {{ lsId(a.category) }}
               </span>
-              <span v-if="(a.tags ?? []).length" class="truncate font-mono text-[10px] text-text-muted">{{ (a.tags ?? []).slice(0, 3).map((tg) => `#${tg}`).join(' ') }}</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-medium text-text-muted">
+                <BarChart3 :size="10" :stroke-width="2" />
+                {{ articleViews(a.slug) }} views
+              </span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-medium text-text-muted">
+                <MessageSquare :size="10" :stroke-width="2" />
+                {{ commentCountBySlug.get(a.slug) ?? 0 }} komentar
+              </span>
             </div>
           </div>
           <span class="hidden shrink-0 text-xs text-text-muted sm:block">{{ dateLabel(a.datePublished) }}</span>
@@ -221,7 +333,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
         </li>
         <li v-if="!currentList.length" class="px-7 py-14 text-center">
           <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
-            <Newspaper :size="22" :stroke-width="1.75" />
+            <FolderOpen :size="22" :stroke-width="1.75" />
           </span>
           <p class="mt-3 text-sm font-medium text-text-secondary">
             {{ query ? `Tidak ada artikel yang cocok dengan "${query}".` : 'Belum ada artikel' + (tab !== 'all' ? ' pada status ini.' : '. Klik "Tulis Artikel" untuk mulai.') }}
@@ -230,7 +342,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
       </ul>
     </div>
 
-    <!-- Modal konfirmasi -->
+    <!-- Modal konfirmasi hapus artikel -->
     <div v-if="confirmDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-label="Konfirmasi hapus artikel">
       <div class="card w-full max-w-sm p-7">
         <h3 class="text-lg font-bold text-text">Hapus permanen artikel?</h3>
@@ -241,6 +353,22 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
           <button type="button" class="btn-outline !px-4 !py-2.5" @click="confirmDelete = null">Batal</button>
           <button type="button" class="btn-primary !bg-red-600 !px-4 !py-2.5 !shadow-none" :disabled="busy === confirmDelete" @click="removePermanent(confirmDelete)">
             <LoaderCircle v-if="busy === confirmDelete" :size="15" class="animate-spin" />
+            <Trash2 v-else :size="15" :stroke-width="2" />
+            Ya, Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal konfirmasi hapus komentar -->
+    <div v-if="confirmDeleteComment" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-label="Konfirmasi hapus komentar">
+      <div class="card w-full max-w-sm p-7">
+        <h3 class="text-lg font-bold text-text">Hapus komentar?</h3>
+        <p class="mt-2 text-sm text-text-secondary">Komentar ini akan dihapus dan tidak akan tampil lagi di halaman artikel.</p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" class="btn-outline !px-4 !py-2.5" @click="confirmDeleteComment = null">Batal</button>
+          <button type="button" class="btn-primary !bg-red-600 !px-4 !py-2.5 !shadow-none" :disabled="busy === `comment-${confirmDeleteComment}`" @click="removeComment(confirmDeleteComment)">
+            <LoaderCircle v-if="busy === `comment-${confirmDeleteComment}`" :size="15" class="animate-spin" />
             <Trash2 v-else :size="15" :stroke-width="2" />
             Ya, Hapus
           </button>
