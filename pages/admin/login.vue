@@ -14,9 +14,8 @@ async function submit() {
   loading.value = true
   error.value = ''
   try {
-    const res = await $fetch<{ ok: boolean; pending?: boolean; devCode?: string }>('/api/auth/login', { method: 'POST', body: { password: password.value } })
-    if (res.devCode) sessionStorage.setItem('cehadev_dev_otp', res.devCode)
-    await navigateTo(res.pending ? '/admin/verify' : '/admin')
+    await $fetch('/api/auth/login', { method: 'POST', body: { password: password.value } })
+    await navigateTo('/admin')
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     error.value = err.data?.statusMessage ?? 'Gagal masuk, coba lagi'

@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  let me: { authenticated: boolean; pending: boolean } | null = null
+  let me: { authenticated: boolean } | null = null
   try {
-    me = await useRequestFetch()<{ authenticated: boolean; pending: boolean }>('/api/auth/me')
+    me = await useRequestFetch()<{ authenticated: boolean }>('/api/auth/me')
   } catch {
     /* sesi tidak valid */
   }
@@ -9,12 +9,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path === '/admin/login') {
     if (me?.authenticated) return navigateTo('/admin')
     return
-  }
-
-  if (to.path === '/admin/verify') {
-    if (me?.authenticated) return navigateTo('/admin')
-    if (me?.pending) return
-    return navigateTo('/admin/login')
   }
 
   if (me?.authenticated) return
