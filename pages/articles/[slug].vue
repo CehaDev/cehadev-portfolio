@@ -67,14 +67,32 @@ const dateLabel = computed(() => {
   return new Intl.DateTimeFormat(lang.value === 'en' ? 'en-US' : 'id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
 })
 
-// ---- Daftar isi dari heading h2/h3 ----
+// ---- HTML terbagi: paragraf pembuka → daftar isi → sisa konten ----
+const wrapTable = (s: string) => s.replace(/<table>/g, '<div class="table-scroll"><table>').replace(/<\/table>/g, '</table></div>')
+
+const introHtml = computed(() => {
+  const h = html.value ?? ''
+  const idx = h.indexOf('</p>')
+  return idx >= 0 ? wrapTable(h.slice(0, idx + 4)) : ''
+})
+
+const restHtml = computed(() => {
+  const h = html.value ?? ''
+  const idx = h.indexOf('</p>')
+  return wrapTable(idx >= 0 ? h.slice(idx + 4) : h)
+})
+
+// ---- Daftar isi dari heading h2/h3 (heading ber-<!--notoc--> dikecualikan) ----
 interface TocItem { id: string; text: string; depth: number }
 const toc = computed<TocItem[]>(() => {
   const out: TocItem[] = []
   const re = /<h([23]) id="([^"]*)">([\s\S]*?)<\/h\1>/g
   let m: RegExpExecArray | null
   while ((m = re.exec(html.value ?? ''))) {
-    out.push({ depth: Number(m[1]), id: m[2], text: m[3].replace(/<[^>]+>/g, '').trim() })
+    const raw = m[3]
+    const text = raw.replace(/<[^>]+>/g, '').trim()
+    if (/<!--\s*notoc\s*-->/i.test(raw)) continue
+    out.push({ depth: Number(m[1]), id: m[2], text })
   }
   return out
 })
@@ -118,8 +136,12 @@ onBeforeUnmount(() => {
 
 watch(html, () => nextTick(updateReadingState))
 
-// ---- Accordion daftar isi (mobile/tablet) ----
-const tocOpen = ref(false)
+// ---- Accordion daftar isi: terbuka di desktop, tertutup di layar kecil ----
+const tocOpen = ref(true)
+
+onMounted(() => {
+  if (window.innerWidth < 768) tocOpen.value = false
+})
 
 // ---- Share ----
 const copied = ref(false)
@@ -179,36 +201,36 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </NuxtLink>
 
     <!-- HEADER ARTIKEL -->
-    <header class="mx-auto mt-8 max-w-3xl text-center">
+    <header class="mx-auto mt-6 max-w-2xl text-center md:mt-8">
       <span v-if="a.category" class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
         {{ a.category }}
       </span>
-      <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">{{ a.title }}</h1>
+      <h1 class="mt-3 break-words text-[26px] font-extrabold leading-tight tracking-tight sm:text-3xl md:text-4xl">{{ a.title }}</h1>
       <p v-if="a.excerpt" class="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-text-secondary">{{ a.excerpt }}</p>
 
       <!-- Kartu meta penulis -->
-      <div class="card mx-auto mt-7 flex w-fit flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-full px-6 py-3 text-xs font-medium text-text-muted">
+      <div class="card mx-auto mt-7 flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-btn px-4 py-3 text-[11px] font-medium text-text-muted sm:rounded-full sm:px-6 sm:text-xs">
         <span class="inline-flex items-center gap-2">
-          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-brand text-sm font-extrabold text-white" aria-hidden="true">C</span>
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-brand text-sm font-extrabold text-white" aria-hidden="true">C</span>
           CehaDev
         </span>
         <span class="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
         <span class="inline-flex items-center gap-1.5">
-          <Calendar :size="13" :stroke-width="1.75" aria-hidden="true" />
+          <Calendar :size="13" :stroke-width="1.75" aria-hidden="true" class="shrink-0" />
           {{ dateLabel }}
         </span>
         <span class="inline-flex items-center gap-1.5">
-          <Clock3 :size="13" :stroke-width="1.75" aria-hidden="true" />
+          <Clock3 :size="13" :stroke-width="1.75" aria-hidden="true" class="shrink-0" />
           {{ t('articles.readTime', { min: minutes }) }}
         </span>
         <span v-if="views > 0" class="inline-flex items-center gap-1.5">
-          <Eye :size="13" :stroke-width="1.75" aria-hidden="true" />
+          <Eye :size="13" :stroke-width="1.75" aria-hidden="true" class="shrink-0" />
           {{ views }} {{ t('common.views') }}
         </span>
       </div>
 
       <!-- SHARE -->
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-[11px] font-medium transition-all duration-300"
@@ -251,23 +273,27 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </header>
 
     <!-- COVER -->
-    <div class="mx-auto mt-9 max-w-4xl">
+    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-9">
       <div v-if="a.cover" class="card overflow-hidden p-0">
         <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
       </div>
       <div v-else class="card flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br p-0" :class="gradient" aria-hidden="true">
-        <span class="font-mono text-6xl font-extrabold text-white/90">&lt;/&gt;</span>
+        <span class="font-mono text-5xl font-extrabold text-white/90 sm:text-6xl">&lt;/&gt;</span>
       </div>
     </div>
 
-    <!-- DAFTAR ISI MOBILE (accordion) -->
-    <div v-if="toc.length >= 2" class="mx-auto mt-8 max-w-4xl xl:hidden">
-      <div class="card overflow-hidden p-0">
+    <!-- ALUR ARTIKEL: pembuka → daftar isi → isi -->
+    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-10">
+      <!-- Paragraf pembuka -->
+      <div v-if="introHtml" class="article-content" v-html="introHtml" />
+
+      <!-- DAFTAR ISI (menyatu dengan artikel) -->
+      <div v-if="toc.length >= 2" class="card my-8 overflow-hidden p-0 md:my-10">
         <button
           type="button"
           class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
           :aria-expanded="tocOpen"
-          aria-controls="toc-mobile"
+          aria-controls="toc-inline"
           @click="tocOpen = !tocOpen"
         >
           <span class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
@@ -275,53 +301,25 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
             {{ t('articles.tableOfContents') }}
             <span class="rounded-full bg-bg-alt px-2 py-0.5 font-mono text-[10px] text-text-muted">{{ toc.length }}</span>
           </span>
-          <ChevronRight :size="16" :stroke-width="2" class="shrink-0 text-text-muted transition-transform duration-300" :class="tocOpen ? 'rotate-90' : ''" aria-hidden="true" />
-        </button>
-        <div v-show="tocOpen" id="toc-mobile" class="border-t border-border/60 px-5 py-3">
-          <nav class="max-h-64 space-y-0.5 overflow-y-auto" aria-label="Daftar isi mobile">
-            <button
-              v-for="(item, i) in toc"
-              :key="item.id"
-              type="button"
-              class="group flex w-full items-start gap-2.5 rounded-md py-1.5 pr-2 text-left transition-colors"
-              :class="item.depth === 3 ? 'pl-8' : 'pl-2'"
-              @click="goTo(item.id); tocOpen = false"
-            >
-              <span class="mt-0.5 font-mono text-[10px] leading-5 text-text-muted transition-colors group-hover:text-primary">{{ String(i + 1).padStart(2, '0') }}</span>
-              <span class="line-clamp-2 text-[13px] leading-snug transition-colors" :class="activeId === item.id ? 'font-semibold text-primary' : 'text-text-secondary group-hover:text-text'">
-                {{ item.text }}
-              </span>
-            </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- KONTEN -->
-    <div class="mx-auto mt-10 grid max-w-6xl gap-10 xl:grid-cols-[230px_minmax(0,1fr)_230px]">
-      <!-- SIDEBAR KIRI: Daftar isi modern dengan scroll-spy -->
-      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Daftar isi">
-        <div v-if="toc.length >= 2" class="card overflow-hidden p-0">
-          <div class="flex items-center justify-between border-b border-border/60 bg-bg-alt/50 px-5 py-4">
-            <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
-              <ListTree :size="14" :stroke-width="2" class="text-primary" aria-hidden="true" />
-              {{ t('articles.tableOfContents') }}
-            </p>
+          <span class="flex shrink-0 items-center gap-2.5">
             <span class="font-mono text-[10px] tabular-nums text-text-muted">{{ progress }}%</span>
-          </div>
+            <ChevronRight :size="16" :stroke-width="2" class="text-text-muted transition-transform duration-300" :class="tocOpen ? 'rotate-90' : ''" aria-hidden="true" />
+          </span>
+        </button>
 
-          <!-- Track progress mini -->
-          <div class="h-0.5 w-full bg-border/50" aria-hidden="true">
-            <div class="h-full bg-gradient-brand transition-[width] duration-150 ease-out" :style="{ width: `${progress}%` }" />
-          </div>
+        <!-- Track progress mini -->
+        <div class="h-0.5 w-full bg-border/50" aria-hidden="true">
+          <div class="h-full bg-gradient-brand transition-[width] duration-150 ease-out" :style="{ width: `${progress}%` }" />
+        </div>
 
-          <nav class="relative max-h-[52vh] space-y-0.5 overflow-y-auto p-4">
+        <div v-show="tocOpen" id="toc-inline" class="border-t border-border/60 px-4 py-3 sm:px-5">
+          <nav class="max-h-72 space-y-0.5 overflow-y-auto" aria-label="Daftar isi">
             <button
               v-for="(item, i) in toc"
               :key="item.id"
               type="button"
-              class="group relative flex w-full items-start gap-2 rounded-md py-1.5 pr-2 text-left transition-colors duration-200"
-              :class="[item.depth === 3 ? 'pl-7' : 'pl-2', activeId === item.id ? 'bg-primary/10' : 'hover:bg-bg-alt']"
+              class="group relative flex w-full items-start gap-2.5 rounded-md py-1.5 pr-2 text-left transition-colors duration-200"
+              :class="[item.depth === 3 ? 'pl-8' : 'pl-2', activeId === item.id ? 'bg-primary/10' : 'hover:bg-bg-alt']"
               @click="goTo(item.id)"
             >
               <span
@@ -329,39 +327,34 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
                 class="absolute bottom-1.5 left-0 top-1.5 w-0.5 rounded-full bg-gradient-brand"
                 aria-hidden="true"
               />
-              <span class="mt-0.5 font-mono text-[9px] leading-4 tabular-nums transition-colors duration-200" :class="activeId === item.id ? 'text-primary' : 'text-text-muted'">
+              <span class="mt-0.5 font-mono text-[10px] leading-5 tabular-nums transition-colors duration-200" :class="activeId === item.id ? 'text-primary' : 'text-text-muted'">
                 {{ String(i + 1).padStart(2, '0') }}
               </span>
-              <span class="line-clamp-2 text-[11.5px] leading-snug transition-colors duration-200" :class="activeId === item.id ? 'font-semibold text-primary' : item.depth === 2 ? 'text-text-secondary group-hover:text-text' : 'text-[10.5px] text-text-muted group-hover:text-text-secondary'">
+              <span class="line-clamp-2 text-[13px] leading-snug transition-colors duration-200" :class="activeId === item.id ? 'font-semibold text-primary' : item.depth === 2 ? 'text-text-secondary group-hover:text-text' : 'text-[12px] text-text-muted group-hover:text-text-secondary'">
                 {{ item.text }}
               </span>
             </button>
           </nav>
         </div>
-      </aside>
+      </div>
 
-      <article>
-        <!-- CONTENT -->
-        <div class="article-content" v-html="html ?? ''" />
+      <!-- Sisa konten -->
+      <div class="article-content" v-html="restHtml" />
 
-        <!-- TAGS -->
-        <div v-if="(a.tags ?? []).length" class="mt-12 flex flex-wrap items-center gap-2 border-t border-border/60 pt-8">
-          <Tag :size="14" :stroke-width="1.75" class="text-text-muted" aria-hidden="true" />
-          <span v-for="tag in a.tags" :key="tag" class="rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium text-text-secondary">
-            #{{ tag }}
-          </span>
-        </div>
-      </article>
-
-      <!-- SIDEBAR KANAN: spacer agar artikel tetap center -->
-      <div class="hidden xl:block" aria-hidden="true" />
+      <!-- TAGS -->
+      <div v-if="(a.tags ?? []).length" class="mt-10 flex flex-wrap items-center gap-2 border-t border-border/60 pt-7">
+        <Tag :size="14" :stroke-width="1.75" class="text-text-muted" aria-hidden="true" />
+        <span v-for="tag in a.tags" :key="tag" class="rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium text-text-secondary">
+          #{{ tag }}
+        </span>
+      </div>
     </div>
 
     <!-- KOLOM KOMENTAR -->
-    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14 max-w-4xl" />
+    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14 w-full max-w-3xl" />
 
     <!-- PREV / NEXT -->
-    <nav v-if="olderArticle || newerArticle" class="mx-auto mt-16 grid max-w-4xl gap-4 sm:grid-cols-2" aria-label="Navigasi artikel">
+    <nav v-if="olderArticle || newerArticle" class="mx-auto mt-14 grid w-full max-w-3xl gap-4 sm:grid-cols-2 md:mt-16" aria-label="Navigasi artikel">
       <NuxtLink
         v-if="olderArticle"
         :to="`/articles/${(olderArticle as any).slug}`"
@@ -391,7 +384,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </nav>
 
     <!-- ARTIKEL TERKAIT -->
-    <section v-if="others.length" class="mx-auto mt-16 max-w-5xl">
+    <section v-if="others.length" class="mx-auto mt-14 w-full max-w-5xl md:mt-16">
       <h2 class="text-xl font-extrabold tracking-tight md:text-2xl">
         {{ lang === 'en' ? 'More Articles' : 'Artikel Lainnya' }}
       </h2>
@@ -407,16 +400,16 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
   @apply text-[15px] leading-relaxed text-text-secondary;
 }
 .article-content :deep(h2) {
-  @apply mb-3 mt-10 scroll-mt-28 text-2xl font-bold tracking-tight text-text;
+  @apply mb-3 mt-10 scroll-mt-28 break-words text-2xl font-bold tracking-tight text-text;
 }
 .article-content :deep(h3) {
-  @apply mb-2.5 mt-8 scroll-mt-28 text-xl font-bold tracking-tight text-text;
+  @apply mb-2.5 mt-8 scroll-mt-28 break-words text-xl font-bold tracking-tight text-text;
 }
 .article-content :deep(h4) {
-  @apply mb-2 mt-6 scroll-mt-28 text-base font-bold text-text;
+  @apply mb-2 mt-6 scroll-mt-28 break-words text-base font-bold text-text;
 }
 .article-content :deep(p) {
-  @apply my-4;
+  @apply my-4 [overflow-wrap:anywhere];
 }
 .article-content :deep(a) {
   @apply font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:text-primary-violet hover:decoration-primary;
@@ -446,22 +439,26 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
   @apply my-6 w-full rounded-card border border-border/60;
 }
 .article-content :deep(code):not(:deep(pre code)) {
-  @apply rounded-md border border-border/70 bg-bg-alt px-1.5 py-0.5 font-mono text-[0.85em] text-primary;
+  @apply rounded-md border border-border/70 bg-bg-alt px-1.5 py-0.5 font-mono text-[0.85em] text-primary [overflow-wrap:anywhere];
 }
 .article-content :deep(pre) {
-  @apply my-6 overflow-x-auto rounded-xl border border-white/10 text-sm leading-relaxed shadow-card;
+  @apply my-6 max-w-full overflow-x-auto rounded-xl border border-white/10 text-sm leading-relaxed shadow-card;
 }
 .article-content :deep(pre code) {
-  @apply block bg-transparent p-5 font-mono;
+  @apply block bg-transparent p-4 font-mono sm:p-5;
 }
-.article-content :deep(table) {
-  @apply my-6 w-full border-collapse text-sm;
+/* Tabel bisa digeser horizontal di layar kecil */
+.article-content :deep(.table-scroll) {
+  @apply my-6 w-full overflow-x-auto rounded-xl border border-border/60 shadow-card;
+}
+.article-content :deep(.table-scroll table) {
+  @apply my-0 w-full min-w-[480px] border-collapse text-sm;
 }
 .article-content :deep(th),
 .article-content :deep(td) {
-  @apply border border-border px-3.5 py-2 text-left;
+  @apply border border-border px-3.5 py-2 text-left align-top;
 }
 .article-content :deep(th) {
-  @apply bg-card font-semibold text-text;
+  @apply whitespace-nowrap bg-card font-semibold text-text;
 }
 </style>
