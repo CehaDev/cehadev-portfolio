@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, ArrowUp, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
 import { renderMarkdown, countWords } from '~/utils/markdown'
 
 const route = useRoute()
@@ -101,6 +101,10 @@ function goTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+function scrollTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 // ---- Progress baca + scroll-spy daftar isi ----
 const progress = ref(0)
 const activeId = ref('')
@@ -189,7 +193,29 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 </script>
 
 <template>
-  <div class="container-site min-h-[calc(100vh-76px)] py-12 md:py-16">
+  <div class="container-site relative min-h-[calc(100vh-76px)] py-12 md:py-16">
+    <!-- Dekorasi lembut di belakang header -->
+    <div class="pointer-events-none absolute inset-x-0 top-8 mx-auto h-64 w-[40rem] max-w-full rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+
+    <!-- Tombol kembali ke atas -->
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="translate-y-3 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <button
+        v-show="progress > 12"
+        type="button"
+        class="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card/90 text-text-secondary shadow-lg backdrop-blur transition-colors duration-300 hover:border-primary/50 hover:text-primary"
+        :aria-label="t('common.backToTop')"
+        @click="scrollTop"
+      >
+        <ArrowUp :size="17" :stroke-width="2" aria-hidden="true" />
+      </button>
+    </Transition>
     <!-- PROGRESS BACA -->
     <div class="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]" aria-hidden="true">
       <div class="h-full bg-gradient-brand shadow-btn-glow transition-[width] duration-100 ease-out" :style="{ width: `${progress}%` }" />
@@ -282,8 +308,8 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
     </div>
 
-    <!-- ALUR ARTIKEL + PANEL SAMPING (desktop) -->
-    <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 xl:grid-cols-[minmax(0,240px)_minmax(0,48rem)_minmax(0,240px)]">
+    <!-- ALUR ARTIKEL + PANEL SAMPING (laptop & desktop) -->
+    <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 lg:grid-cols-[minmax(0,48rem)_minmax(0,230px)] lg:items-start xl:grid-cols-[minmax(0,220px)_minmax(0,48rem)_minmax(0,220px)]">
       <!-- Panel kiri: penulis & bagikan -->
       <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Penulis dan bagikan">
         <div class="card p-5 text-center">
@@ -317,7 +343,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       <!-- ISI ARTIKEL -->
       <div class="min-w-0">
       <!-- Paragraf pembuka -->
-      <div v-if="introHtml" class="article-content" v-html="introHtml" />
+      <div v-if="introHtml" class="article-content article-intro" v-html="introHtml" />
 
       <!-- DAFTAR ISI (menyatu dengan artikel) -->
       <div v-if="toc.length >= 2" class="card my-8 overflow-hidden p-0 md:my-10">
@@ -383,7 +409,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
 
       <!-- Panel kanan: progres, info & CTA -->
-      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Info artikel">
+      <aside class="hidden self-start lg:sticky lg:top-24 lg:block" aria-label="Info artikel">
         <div class="card p-5 text-center">
           <p class="text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.readingProgress') }}</p>
           <p class="mt-2 font-mono text-4xl font-extrabold tabular-nums text-primary">{{ progress }}<span class="text-lg">%</span></p>
@@ -466,7 +492,27 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 
 <style scoped>
 .article-content {
-  @apply text-[18px] leading-[1.8] text-text-secondary;
+  @apply text-[17px] leading-[1.75] text-text-secondary;
+}
+@media (min-width: 768px) {
+  .article-content {
+    @apply text-[18px] leading-[1.8];
+  }
+}
+/* Paragraf pembuka sedikit lebih menonjol (nuansa editorial) */
+.article-intro :deep(p:first-child) {
+  @apply text-[18px] font-medium leading-[1.75] text-text;
+}
+@media (min-width: 768px) {
+  .article-intro :deep(p:first-child) {
+    @apply text-[19px];
+  }
+}
+/* Judul bab tidak tertutup navbar saat lompat anchor */
+.article-content :deep(h2),
+.article-content :deep(h3),
+.article-content :deep(h4) {
+  scroll-margin-top: 96px;
 }
 .article-content :deep(h2) {
   @apply mb-3 mt-10 scroll-mt-28 break-words text-2xl font-bold tracking-tight text-text;
