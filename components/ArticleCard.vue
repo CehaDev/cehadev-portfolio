@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, Calendar, Clock3 } from 'lucide-vue-next'
+import { ArrowRight, Calendar, Clock3, Eye } from 'lucide-vue-next'
 
 interface ArticleCardData {
   slug: string
@@ -11,7 +11,7 @@ interface ArticleCardData {
   datePublished: string
 }
 
-const props = defineProps<{ article: ArticleCardData }>()
+const props = defineProps<{ article: ArticleCardData; views?: number }>()
 
 const { lang } = useLang()
 const { t } = useI18n()
@@ -19,7 +19,10 @@ const { t } = useI18n()
 function readingMin(text: string) {
   return Math.max(1, Math.round(text.trim().split(/\s+/).filter(Boolean).length / 200))
 }
-const minutes = computed(() => readingMin(props.article.excerpt ?? ''))
+const minutes = computed(() => readingMin(`${props.article.excerpt ?? ''} ${props.article.title ?? ''}`))
+
+const visibleTags = computed(() => (props.article.tags ?? []).slice(0, 2))
+const extraTags = computed(() => (props.article.tags?.length ?? 0) - visibleTags.value.length)
 
 const dateLabel = computed(() => {
   const d = new Date(props.article.datePublished)
@@ -72,6 +75,10 @@ const gradient = computed(() => gradients[(props.article.slug.length + props.art
           <Clock3 :size="12" :stroke-width="1.75" aria-hidden="true" />
           {{ t('articles.readTime', { min: minutes }) }}
         </span>
+        <span v-if="views && views > 0" class="ml-auto inline-flex items-center gap-1">
+          <Eye :size="12" :stroke-width="1.75" aria-hidden="true" />
+          {{ views }}
+        </span>
       </div>
 
       <NuxtLink :to="`/articles/${article.slug}`" class="text-lg font-semibold leading-snug text-text transition-colors hover:text-primary">
@@ -81,6 +88,13 @@ const gradient = computed(() => gradients[(props.article.slug.length + props.art
       <p class="line-clamp-3 text-sm leading-relaxed text-text-secondary">
         {{ article.excerpt }}
       </p>
+
+      <div v-if="visibleTags.length" class="flex flex-wrap items-center gap-1.5">
+        <span v-for="tag in visibleTags" :key="tag" class="rounded-full border border-border bg-bg-alt px-2 py-0.5 text-[10px] font-medium text-text-muted">
+          #{{ tag }}
+        </span>
+        <span v-if="extraTags > 0" class="text-[10px] font-medium text-text-muted">+{{ extraTags }}</span>
+      </div>
 
       <NuxtLink
         :to="`/articles/${article.slug}`"

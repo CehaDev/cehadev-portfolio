@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2 } from 'lucide-vue-next'
+import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2, Search, X, Eye, EyeOff, Tag } from 'lucide-vue-next'
 import { lsId } from '~/utils/localize'
 
 definePageMeta({
@@ -8,21 +8,40 @@ definePageMeta({
   adminTitle: 'Artikel'
 })
 
+interface AdminArticleRow {
+  slug: string
+  title: string
+  excerpt: string
+  category: string
+  tags?: string[]
+  cover?: string
+  status: 'published' | 'draft'
+  datePublished: string
+}
+
 const { data: articles, refresh } = await useAsyncData('admin-articles-list', () =>
-  useRequestFetch()('/api/admin/articles')
+  useRequestFetch()<AdminArticleRow[]>('/api/admin/articles')
 )
 
 const busy = ref<string | null>(null)
 const confirmDelete = ref<string | null>(null)
+const query = ref('')
 
 const tab = ref<'all' | 'published' | 'draft'>('all')
 const publishedCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'published').length)
 const draftCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'draft').length)
+
+function matchesQuery(a: AdminArticleRow) {
+  const q = query.value.trim().toLowerCase()
+  if (!q) return true
+  return [a.title, a.slug, a.category, ...(a.tags ?? [])].join(' ').toLowerCase().includes(q)
+}
+
 const currentList = computed(() => {
-  const list = articles.value ?? []
-  if (tab.value === 'published') return list.filter((a) => a.status === 'published')
-  if (tab.value === 'draft') return list.filter((a) => a.status === 'draft')
-  return list
+  let list = articles.value ?? []
+  if (tab.value === 'published') list = list.filter((a) => a.status === 'published')
+  else if (tab.value === 'draft') list = list.filter((a) => a.status === 'draft')
+  return list.filter(matchesQuery)
 })
 
 function dateLabel(d: string) {
@@ -41,6 +60,20 @@ async function removePermanent(slug: string) {
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     alert(err.data?.statusMessage ?? 'Gagal menghapus artikel')
+  } finally {
+    busy.value = null
+  }
+}
+
+async function toggleStatus(a: AdminArticleRow) {
+  if (busy.value) return
+  busy.value = `toggle-${a.slug}`
+  try {
+    await $fetch(`/api/admin/articles/${a.slug}`, { method: 'PUT', body: { ...a, status: a.status === 'published' ? 'draft' : 'published' } })
+    await refresh()
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    alert(err.data?.statusMessage ?? 'Gagal mengubah status artikel')
   } finally {
     busy.value = null
   }
@@ -78,7 +111,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
       </div>
     </div>
 
-    <!-- Tab -->
+    <!-- Tab + pencarian -->
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="inline-flex items-center gap-1 rounded-btn border border-border bg-card p-1" role="tablist" aria-label="Filter artikel">
         <button
@@ -99,6 +132,28 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
           <span class="rounded-full px-1.5 py-0.5 text-[10px] font-bold" :class="tab === tb.key ? 'bg-white/20 text-white' : 'bg-bg-alt text-text-muted'">{{ tb.count }}</span>
         </button>
       </div>
+
+      <div class="relative w-full sm:w-72">
+        <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-text-muted" aria-hidden="true">
+          <Search :size="15" :stroke-width="1.75" />
+        </span>
+        <input
+          v-model="query"
+          type="search"
+          class="input-field !py-2.5 !pl-10 !pr-9 text-sm"
+          placeholder="Cari judul, slug, kategori, tag..."
+          aria-label="Cari artikel"
+        />
+        <button
+          v-if="query"
+          type="button"
+          class="absolute inset-y-0 right-3 my-auto flex h-6 w-6 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-bg-alt hover:text-text"
+          aria-label="Bersihkan pencarian"
+          @click="query = ''"
+        >
+          <X :size="13" :stroke-width="2" />
+        </button>
+      </div>
     </div>
 
     <!-- List -->
@@ -111,10 +166,17 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
           </span>
           <div class="min-w-0 flex-1">
             <p class="truncate text-sm font-semibold text-text">{{ lsId(a.title) }}</p>
-            <NuxtLink :to="`/articles/${a.slug}`" target="_blank" class="mt-0.5 inline-flex items-center gap-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary">
-              /articles/{{ a.slug }}
-              <ExternalLink :size="10" :stroke-width="1.75" />
-            </NuxtLink>
+            <div class="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5">
+              <NuxtLink :to="`/articles/${a.slug}`" target="_blank" class="inline-flex items-center gap-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary">
+                /articles/{{ a.slug }}
+                <ExternalLink :size="10" :stroke-width="1.75" />
+              </NuxtLink>
+              <span v-if="lsId(a.category)" class="inline-flex items-center gap-1 text-[10px] font-medium text-text-muted">
+                <Tag :size="10" :stroke-width="2" />
+                {{ lsId(a.category) }}
+              </span>
+              <span v-if="(a.tags ?? []).length" class="truncate font-mono text-[10px] text-text-muted">{{ (a.tags ?? []).slice(0, 3).map((tg) => `#${tg}`).join(' ') }}</span>
+            </div>
           </div>
           <span class="hidden shrink-0 text-xs text-text-muted sm:block">{{ dateLabel(a.datePublished) }}</span>
           <span
@@ -128,6 +190,21 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
             {{ a.status === 'published' ? 'Terbit' : 'Draft' }}
           </span>
           <div class="flex shrink-0 items-center gap-3">
+            <button
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded-btn border px-3.5 py-2 text-xs font-medium transition-colors"
+              :class="a.status === 'published'
+                ? 'border-border text-text-secondary hover:border-amber-400/50 hover:bg-amber-400/10 hover:text-amber-400'
+                : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-400/10 hover:border-emerald-400/70'"
+              :title="a.status === 'published' ? 'Jadikan draft' : 'Terbitkan sekarang'"
+              :disabled="busy !== null"
+              @click="toggleStatus(a)"
+            >
+              <LoaderCircle v-if="busy === `toggle-${a.slug}`" :size="13" class="animate-spin" />
+              <EyeOff v-else-if="a.status === 'published'" :size="13" :stroke-width="1.75" />
+              <Eye v-else :size="13" :stroke-width="1.75" />
+              {{ a.status === 'published' ? 'Draft' : 'Terbitkan' }}
+            </button>
             <NuxtLink :to="`/admin/articles/${a.slug}`" class="btn-outline !px-4 !py-2 text-xs">
               <Pencil :size="13" :stroke-width="1.75" />
               Edit
@@ -143,8 +220,11 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
           </div>
         </li>
         <li v-if="!currentList.length" class="px-7 py-14 text-center">
-          <p class="text-sm font-medium text-text-secondary">
-            Belum ada artikel{{ tab !== 'all' ? ` pada status ini` : '' }}. Klik "Tulis Artikel" untuk mulai.
+          <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+            <Newspaper :size="22" :stroke-width="1.75" />
+          </span>
+          <p class="mt-3 text-sm font-medium text-text-secondary">
+            {{ query ? `Tidak ada artikel yang cocok dengan "${query}".` : 'Belum ada artikel' + (tab !== 'all' ? ' pada status ini.' : '. Klik "Tulis Artikel" untuk mulai.') }}
           </p>
         </li>
       </ul>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  Eye, Users, Mail, Plus, ArrowRight, Layers, Star, Inbox, FileText, FolderKanban, Activity, Globe, Sparkles, Play
+  Eye, Users, Mail, Plus, ArrowRight, Layers, Star, Inbox, FileText, FolderKanban, Newspaper, PenLine, Activity, Globe, Sparkles, Play
 } from 'lucide-vue-next'
 import { lsId } from '~/utils/localize'
 
@@ -27,6 +27,20 @@ const { data: projects, refresh } = await useAsyncData('admin-projects', () =>
   useRequestFetch()('/api/admin/projects')
 )
 
+interface AdminArticle {
+  slug: string
+  title: string
+  category: string
+  tags?: string[]
+  cover?: string
+  status: 'published' | 'draft'
+  datePublished: string
+}
+
+const { data: adminArticles } = await useAsyncData('admin-dash-articles', () =>
+  useRequestFetch()<AdminArticle[]>('/api/admin/articles')
+)
+
 interface InboxMessage {
   id: string
   name: string
@@ -45,6 +59,18 @@ const { data: projectTitles } = await useProjectsContent()
 
 const unreadMessages = computed(() => messages.value?.filter((m) => !m.read) ?? [])
 const recentMessages = computed(() => (messages.value ?? []).slice(0, 4))
+
+const publishedArticles = computed(() => (adminArticles.value ?? []).filter((a) => a.status === 'published').length)
+const draftArticles = computed(() => (adminArticles.value ?? []).filter((a) => a.status === 'draft').length)
+const latestArticles = computed(() =>
+  [...(adminArticles.value ?? [])].sort((x, y) => String(y.datePublished).localeCompare(String(x.datePublished))).slice(0, 5)
+)
+
+function articleDate(d: string) {
+  const date = new Date(d)
+  if (Number.isNaN(date.getTime())) return d
+  return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(date)
+}
 
 function messageTime(at: string) {
   const d = new Date(at)
@@ -68,6 +94,14 @@ const stats = computed(() => [
     icon: Users,
     color: '#3B82F6',
     spark: (analytics.value?.daily ?? []).slice(-14).map((d) => d.visitors)
+  },
+  {
+    label: 'Total Artikel',
+    value: adminArticles.value?.length ?? 0,
+    icon: Newspaper,
+    color: '#EC4899',
+    hint: `${publishedArticles.value} terbit · ${draftArticles.value} draft`,
+    spark: []
   },
   {
     label: 'Kunjungan Hari Ini',
@@ -159,14 +193,14 @@ const avatarGradients = [
             <span class="text-[10px] text-text-muted">Live preview project</span>
           </div>
           <div class="flex flex-col items-center gap-1">
-            <NuxtLink to="/admin/cv" class="btn-outline !py-2.5">
-              <FileText :size="16" :stroke-width="2" />
-              Kelola CV
+            <NuxtLink to="/admin/articles/new" class="btn-primary !py-2.5">
+              <PenLine :size="16" :stroke-width="2" />
+              Tulis Artikel
             </NuxtLink>
-            <span class="text-[10px] text-text-muted">Perbarui CV & unduh</span>
+            <span class="text-[10px] text-text-muted">Publikasikan tulisan</span>
           </div>
           <div class="flex flex-col items-center gap-1">
-            <NuxtLink to="/admin/projects/new" class="btn-primary !py-2.5">
+            <NuxtLink to="/admin/projects/new" class="btn-outline !py-2.5">
               <Plus :size="16" :stroke-width="2" />
               Tambah Project
             </NuxtLink>
@@ -177,7 +211,7 @@ const avatarGradients = [
     </div>
 
     <!-- Stat cards -->
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       <div v-for="s in stats" :key="s.label" class="card relative overflow-hidden p-6">
         <span class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-15" :style="{ backgroundColor: s.color }" aria-hidden="true" />
         <div class="flex items-start justify-between">
@@ -198,6 +232,7 @@ const avatarGradients = [
         </div>
         <p class="mt-4 text-3xl font-extrabold text-text"><CountUp :end="s.value" /></p>
         <p class="mt-1 text-sm font-medium text-text-secondary">{{ s.label }}</p>
+        <p v-if="'hint' in s && s.hint" class="mt-0.5 font-mono text-[10px] text-text-muted">{{ s.hint }}</p>
       </div>
     </div>
 
@@ -329,6 +364,75 @@ const avatarGradients = [
         </li>
         <li v-if="!latest.length" class="px-7 py-10 text-center text-sm text-text-muted">
           Belum ada project. Tambahkan project pertama Anda.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Artikel terbaru -->
+    <div class="card overflow-hidden p-0">
+      <div class="relative overflow-hidden border-b border-border px-7 py-6">
+        <div class="pointer-events-none absolute -left-10 -top-16 h-48 w-48 rounded-full bg-pink-500/10 blur-3xl" aria-hidden="true" />
+        <div class="relative flex flex-wrap items-center justify-between gap-5">
+          <div class="flex items-start gap-4">
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-btn-glow" aria-hidden="true">
+              <Newspaper :size="22" :stroke-width="1.75" />
+            </span>
+            <div>
+              <h3 class="flex items-center gap-2 text-base font-bold text-text">
+                Artikel Terbaru
+                <span class="rounded-full border border-border bg-card px-2 py-0.5 font-mono text-[10px] text-text-muted">{{ adminArticles?.length ?? 0 }}</span>
+              </h3>
+              <p class="mt-1 text-xs text-text-muted">{{ publishedArticles }} terbit · {{ draftArticles }} draft — tulis, jadwalkan, dan kelola artikel.</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <NuxtLink to="/admin/articles" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-violet">
+              Kelola Artikel
+              <ArrowRight :size="15" :stroke-width="2" />
+            </NuxtLink>
+            <span class="text-[10px] text-text-muted">Semua artikel & SEO</span>
+          </div>
+        </div>
+      </div>
+
+      <ul class="divide-y divide-border/60">
+        <li v-for="(art, i) in latestArticles" :key="art.slug" class="flex flex-wrap items-center gap-4 px-7 py-4 transition-colors hover:bg-card/40">
+          <span
+            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br text-sm font-extrabold text-white"
+            :class="avatarGradients[i % avatarGradients.length]"
+            aria-hidden="true"
+          >
+            <img v-if="art.cover" :src="art.cover" alt="" class="h-full w-full object-cover" />
+            <template v-else>{{ (art.title ?? '?').charAt(0).toUpperCase() }}</template>
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-semibold text-text">{{ art.title }}</p>
+            <p class="mt-0.5 truncate text-xs text-text-muted">
+              {{ articleDate(art.datePublished) }}<span v-if="art.category"> · {{ art.category }}</span>
+            </p>
+          </div>
+          <span
+            class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold"
+            :class="art.status === 'published'
+              ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-400'
+              : 'border-amber-400/30 bg-amber-400/10 text-amber-400'"
+          >
+            {{ art.status === 'published' ? 'Terbit' : 'Draft' }}
+          </span>
+          <div class="flex shrink-0 items-center gap-3">
+            <NuxtLink :to="`/admin/articles/${art.slug}`" class="btn-outline !px-4 !py-2 text-xs">Edit</NuxtLink>
+            <NuxtLink v-if="art.status === 'published'" :to="`/articles/${art.slug}`" target="_blank" class="btn-outline !px-4 !py-2 text-xs">
+              <Eye :size="13" :stroke-width="1.75" />
+              Lihat
+            </NuxtLink>
+          </div>
+        </li>
+        <li v-if="!latestArticles.length" class="px-7 py-10 text-center">
+          <p class="text-sm text-text-muted">Belum ada artikel.</p>
+          <NuxtLink to="/admin/articles/new" class="btn-outline mt-3 inline-flex !px-5 !py-2.5 text-xs">
+            <PenLine :size="13" :stroke-width="2" />
+            Tulis artikel pertama
+          </NuxtLink>
         </li>
       </ul>
     </div>

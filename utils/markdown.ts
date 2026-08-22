@@ -18,6 +18,17 @@ export async function renderMarkdown(src: string): Promise<string> {
         const text = this.parser.parseInline(tokens)
         const external = /^https?:\/\//.test(href)
         return `<a href="${href}"${title ? ` title="${title}"` : ''}${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${text}</a>`
+      },
+      heading({ tokens, depth }) {
+        const text = this.parser.parseInline(tokens)
+        const id = text
+          .replace(/<[^>]*>/g, '')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .slice(0, 80) || `bagian-${depth}`
+        return `<h${depth} id="${id}">${text}</h${depth}>`
       }
     }
   })
