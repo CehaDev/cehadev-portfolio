@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
 import { renderMarkdown, countWords } from '~/utils/markdown'
 
 const route = useRoute()
@@ -273,7 +273,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </header>
 
     <!-- COVER -->
-    <div class="mx-auto mt-8 w-full max-w-4xl md:mt-9">
+    <div class="mx-auto mt-8 w-full max-w-3xl md:mt-9">
       <div v-if="a.cover" class="card overflow-hidden p-0">
         <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
       </div>
@@ -282,8 +282,40 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
     </div>
 
-    <!-- ALUR ARTIKEL: pembuka → daftar isi → isi (lebar standar nyaman dibaca) -->
-    <div class="mx-auto mt-9 w-full max-w-3xl md:mt-11">
+    <!-- ALUR ARTIKEL + PANEL SAMPING (desktop) -->
+    <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 xl:grid-cols-[minmax(0,240px)_minmax(0,48rem)_minmax(0,240px)]">
+      <!-- Panel kiri: penulis & bagikan -->
+      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Penulis dan bagikan">
+        <div class="card p-5 text-center">
+          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-xl font-extrabold text-white shadow-btn-glow" aria-hidden="true">C</span>
+          <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.byAuthor') }}</p>
+          <p class="mt-0.5 text-sm font-bold text-text">CehaDev</p>
+          <p class="mt-2 text-xs leading-relaxed text-text-secondary">{{ t('articles.authorTagline') }}</p>
+        </div>
+
+        <div class="card mt-4 p-4">
+          <div class="flex flex-row justify-center gap-2 xl:flex-col xl:items-center">
+            <button
+              type="button"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card transition-all duration-300"
+              :class="copied ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400' : 'text-text-secondary hover:border-primary/50 hover:text-primary'"
+              :aria-label="t('articles.copyLink')"
+              @click="copyLink"
+            >
+              <Check v-if="copied" :size="14" :stroke-width="2" aria-hidden="true" />
+              <Link2 v-else :size="14" :stroke-width="2" aria-hidden="true" />
+            </button>
+            <a :href="shareUrls.wa" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-[10px] font-bold text-text-secondary transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-400" :aria-label="t('articles.shareWhatsapp')">WA</a>
+            <a :href="shareUrls.x" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-text-secondary transition-all duration-300 hover:border-border-strong hover:text-text" :aria-label="t('articles.shareX')">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1 2h6.5l4.4 5.9L18.9 2Zm-1.1 18h1.7L7.4 3.9H5.5L17.8 20Z"/></svg>
+            </a>
+            <a :href="shareUrls.fb" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-sm font-bold text-text-secondary transition-all duration-300 hover:border-blue-400/50 hover:text-blue-400" :aria-label="t('articles.shareFacebook')">f</a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ISI ARTIKEL -->
+      <div class="min-w-0">
       <!-- Paragraf pembuka -->
       <div v-if="introHtml" class="article-content" v-html="introHtml" />
 
@@ -348,6 +380,43 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
           #{{ tag }}
         </span>
       </div>
+      </div>
+
+      <!-- Panel kanan: progres, info & CTA -->
+      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Info artikel">
+        <div class="card p-5 text-center">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.readingProgress') }}</p>
+          <p class="mt-2 font-mono text-4xl font-extrabold tabular-nums text-primary">{{ progress }}<span class="text-lg">%</span></p>
+          <div class="mt-3 h-1 overflow-hidden rounded-full bg-bg-alt" aria-hidden="true">
+            <div class="h-full rounded-full bg-gradient-brand transition-[width] duration-150 ease-out" :style="{ width: `${progress}%` }" />
+          </div>
+        </div>
+
+        <div class="card mt-4 space-y-3 p-4">
+          <p class="px-1 text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.articleInfo') }}</p>
+          <div class="flex items-center gap-2.5 text-xs font-medium text-text-secondary">
+            <Calendar :size="13" :stroke-width="1.75" class="shrink-0 text-primary" aria-hidden="true" />
+            {{ dateLabel }}
+          </div>
+          <div class="flex items-center gap-2.5 text-xs font-medium text-text-secondary">
+            <Clock3 :size="13" :stroke-width="1.75" class="shrink-0 text-primary" aria-hidden="true" />
+            {{ t('articles.readTime', { min: minutes }) }}
+          </div>
+          <div v-if="a.category" class="flex items-center gap-2.5 text-xs font-medium text-text-secondary">
+            <Tag :size="13" :stroke-width="1.75" class="shrink-0 text-primary" aria-hidden="true" />
+            {{ a.category }}
+          </div>
+        </div>
+
+        <div class="card mt-4 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-5 text-center">
+          <MessageCircle :size="20" :stroke-width="1.75" class="mx-auto text-primary" aria-hidden="true" />
+          <p class="mt-2 text-xs leading-relaxed text-text-secondary">{{ t('articles.discussCta') }}</p>
+          <NuxtLink to="/contact" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-card !px-4 !py-2 text-xs font-semibold text-primary transition-all duration-300 hover:bg-gradient-brand hover:text-white hover:border-transparent">
+            {{ t('articles.contactMe') }}
+            <ArrowRight :size="13" :stroke-width="2" aria-hidden="true" />
+          </NuxtLink>
+        </div>
+      </aside>
     </div>
 
     <!-- KOLOM KOMENTAR -->
@@ -397,7 +466,7 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 
 <style scoped>
 .article-content {
-  @apply text-[17px] leading-[1.75] text-text-secondary;
+  @apply text-[18px] leading-[1.8] text-text-secondary;
 }
 .article-content :deep(h2) {
   @apply mb-3 mt-10 scroll-mt-28 break-words text-2xl font-bold tracking-tight text-text;

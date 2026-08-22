@@ -121,6 +121,15 @@ export const dict = {
   'articles.shareWhatsapp': { id: 'Bagikan ke WhatsApp', en: 'Share to WhatsApp' },
   'articles.shareX': { id: 'Bagikan ke X', en: 'Share to X' },
   'articles.shareFacebook': { id: 'Bagikan ke Facebook', en: 'Share to Facebook' },
+  'articles.byAuthor': { id: 'Ditulis oleh', en: 'Written by' },
+  'articles.authorTagline': {
+    id: 'Web developer yang menulis tentang Nuxt, Vue & Tailwind CSS.',
+    en: 'A web developer writing about Nuxt, Vue & Tailwind CSS.'
+  },
+  'articles.readingProgress': { id: 'Progres Membaca', en: 'Reading Progress' },
+  'articles.articleInfo': { id: 'Info Artikel', en: 'Article Info' },
+  'articles.discussCta': { id: 'Ada ide project? Mari wujudkan bersama.', en: 'Have a project idea? Let’s build it together.' },
+  'articles.contactMe': { id: 'Hubungi Saya', en: 'Contact Me' },
   'articles.prevArticle': { id: 'Sebelumnya', en: 'Previous' },
   'articles.nextArticle': { id: 'Selanjutnya', en: 'Next' },
   'articleCard.readArticle': { id: 'Baca selengkapnya', en: 'Read article' },
