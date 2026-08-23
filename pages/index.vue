@@ -27,7 +27,7 @@ const marqueeTech = computed(() => {
   return list?.length ? list : ['JavaScript', 'Vue.js', 'Nuxt.js', 'Tailwind CSS', 'Node.js', 'Git & GitHub']
 })
 
-const heroStats = computed(() => site.value?.stats?.slice(0, 4) ?? [])
+const heroStats = computed(() => (site.value?.stats ?? []).filter((s: any) => s.icon !== 'Clock'))
 
 function techFor(name: string) {
   return findTechByName(name)
@@ -195,7 +195,7 @@ const avatarButtons = computed(() => [
 
       <div class="container-site pb-8">
         <Reveal class="card border-border/60 bg-card/70 px-8 py-6 backdrop-blur" :delay="200" direction="up" :parallax="8">
-          <dl class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+          <dl class="grid grid-cols-2 gap-6 sm:grid-cols-3">
             <div v-for="s in heroStats" :key="s.label" class="text-center sm:text-left">
               <dd class="text-2xl font-extrabold text-text md:text-3xl">
                 <CountUp :end="s.end" :suffix="s.suffix ?? ''" />
