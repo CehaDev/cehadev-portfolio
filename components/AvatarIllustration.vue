@@ -3,8 +3,10 @@ const props = withDefaults(
   defineProps<{
     size?: number
     variant?: 'default' | 'laptop' | 'code'
+    src?: string
+    alt?: string
   }>(),
-  { size: 260, variant: 'default' }
+  { size: 260, variant: 'default', src: '', alt: 'Ilustrasi karakter CehaDev' }
 )
 </script>
 
@@ -13,13 +15,21 @@ const props = withDefaults(
     class="relative"
     :style="{ width: size + 'px', height: size + 'px' }"
     role="img"
-    aria-label="Ilustrasi karakter CehaDev"
+    :aria-label="alt"
   >
     <div class="absolute -inset-10 bg-glow-circle blur-2xl" aria-hidden="true" />
     <div
       class="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-border bg-card shadow-card"
     >
+      <img
+        v-if="src"
+        :src="src"
+        :alt="alt"
+        class="h-full w-full object-cover"
+        loading="lazy"
+      />
       <svg
+        v-else
         :viewBox="'0 0 200 200'"
         class="h-[82%] w-[82%]"
         fill="none"

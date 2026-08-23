@@ -119,7 +119,7 @@ function statIcon(icon: string) {
       <div class="container-site py-16 text-center md:py-24">
         <Reveal :parallax="20">
           <div class="relative mx-auto flex justify-center">
-            <AvatarIllustration :size="180" variant="code" />
+            <AvatarIllustration :size="180" variant="code" src="/my.webp" alt="Foto CehaDev" />
 
             <div class="animate-float absolute bottom-4 -left-2 z-10 rounded-xl border border-border bg-card/90 px-4 py-2.5 shadow-card backdrop-blur md:left-10">
               <p class="font-mono text-base font-bold text-text">2<span class="text-primary">+</span> <span class="text-xs font-medium text-text-muted">{{ headings.yearsShort ?? 'yrs' }}</span></p>
@@ -222,7 +222,7 @@ function statIcon(icon: string) {
                 class="pointer-events-none absolute -top-14 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
                 aria-hidden="true"
               />
-              <AvatarIllustration :size="116" variant="code" class="relative" />
+              <AvatarIllustration :size="116" variant="code" src="/my.webp" alt="Foto CehaDev" class="relative" />
               <h3 class="mt-4 text-xl font-extrabold text-text">{{ site?.name }}</h3>
               <p class="mt-1 text-sm text-text-secondary">{{ site?.role }}</p>
               <span
