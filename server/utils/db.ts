@@ -58,6 +58,14 @@ export async function ensureSchema() {
   if (_initialized) return
   const client = db()
 
+  // Migrasi ringan untuk database lama HARUS dijalankan lebih dulu,
+  // sebelum pembuatan indeks yang mereferensikan kolom baru.
+  try {
+    await client.execute('ALTER TABLE article_comments ADD COLUMN parent_id TEXT NOT NULL DEFAULT \'\'')
+  } catch {
+    // kolom sudah ada — aman diabaikan
+  }
+
   await client.executeMultiple(`
     CREATE TABLE IF NOT EXISTS kv (
       key TEXT PRIMARY KEY,
@@ -128,13 +136,6 @@ export async function ensureSchema() {
       details TEXT NOT NULL DEFAULT '{}'
     );
   `)
-
-  // Migrasi ringan untuk database lama: tambahkan kolom parent_id bila belum ada
-  try {
-    await client.execute('ALTER TABLE article_comments ADD COLUMN parent_id TEXT NOT NULL DEFAULT \'\'')
-  } catch {
-    // kolom sudah ada — aman diabaikan
-  }
 
   _initialized = true
 }
