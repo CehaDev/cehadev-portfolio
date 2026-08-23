@@ -1,0 +1,25 @@
+{
+  "slug": "memahami-composition-api-vue-3",
+  "title": {
+    "id": "Memahami Composition API di Vue 3 Tanpa Pusing",
+    "en": "Understanding the Composition API in Vue 3 Without the Headache"
+  },
+  "excerpt": {
+    "id": "Refs, reactive, computed, dan composable dijelaskan dengan bahasa sederhana plus contoh kode yang bisa langsung dicoba.",
+    "en": "Refs, reactive, computed, and composables explained in plain language with copy-paste ready examples."
+  },
+  "category": {
+    "id": "Tutorial",
+    "en": "Tutorial"
+  },
+  "tags": ["Vue", "Nuxt.js", "TypeScript"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-08-10",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Ketika pertama pindah dari Options API, saya juga bingung: kenapa harus `ref()` segalanya? Setelah beberapa bulan dipakai serius, Composition API justru terasa lebih *jujur* — data dan logika yang saling terkait bisa hidup berdekatan.\n\n## Ref vs Reactive\n\nAturan mainnya sederhana: pakai `ref` untuk nilai tunggal, `reactive` untuk objek yang bentuknya memang seperti state.\n\n```js\nimport { ref, reactive } from 'vue'\n\nconst counter = ref(0)               // angka, string, boolean\nconst form = reactive({              // objek form\n  name: '',\n  email: ''\n})\n```\n\nYang sering bikin tersandung adalah `.value`. Ingat saja: **di dalam script selalu `.value`, di template tidak perlu**.\n\n## Computed untuk Turunan Data\n\nHindari menulis fungsi yang dihitung ulang di banyak tempat. Bungkus jadi `computed` supaya otomatis di-cache:\n\n```js\nconst fullName = computed(() =>\n  `${form.name}`.trim() || 'Anonim'\n)\n```\n\n> Computed itu seperti rumus di spreadsheet: berubah kalau bahan bacanya berubah, tidak perlu dipanggil manual.\n\n## Composable: Logika yang Dipakai Bersama\n\nBagian favorit saya. Ambil contoh hook deteksi scroll:\n\n```ts\nexport function useScrollY() {\n  const y = ref(0)\n  const onScroll = () => (y.value = window.scrollY)\n  onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))\n  onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))\n  return { y }\n}\n```\n\nSekali ditulis, dipakai di mana saja — sidebar, progress bar, tombol back-to-top.\n\n## Kapan Tetap Pakai Options API?\n\nTidak ada dosa. Untuk komponen kecil yang state-nya statis, Options API masih lega dan mudah dibaca. Tapi begitu logika mulai saling silang — fetch + polling + cleanup — Composition API jauh lebih rapi.\n\nSelamat mencoba, dan jangan lupa TypeScript-kan composables kamu!",
+    "en": "When I first moved from the Options API, I was confused too: why `ref()` everything? After a few months of serious use, the Composition API actually feels more *honest* — related data and logic can live right next to each other.\n\n## Ref vs Reactive\n\nThe rule of thumb is simple: use `ref` for single values, `reactive` for objects that are shaped like state.\n\n```js\nimport { ref, reactive } from 'vue'\n\nconst counter = ref(0)               // numbers, strings, booleans\nconst form = reactive({              // a form object\n  name: '',\n  email: ''\n})\n```\n\nThe usual trip-up is `.value`. Just remember: **always `.value` in script, never needed in templates**.\n\n## Computed for Derived Data\n\nAvoid writing functions that get recalculated in many places. Wrap them in `computed` so they are cached automatically:\n\n```js\nconst fullName = computed(() =>\n  `${form.name}`.trim() || 'Anonymous'\n)\n```\n\n> A computed is like a spreadsheet formula: it updates when its inputs change, no manual calls needed.\n\n## Composables: Shared Logic\n\nMy favorite part. Take a scroll-detection hook:\n\n```ts\nexport function useScrollY() {\n  const y = ref(0)\n  const onScroll = () => (y.value = window.scrollY)\n  onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))\n  onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))\n  return { y }\n}\n```\n\nWrite it once, use it anywhere — sidebars, progress bars, back-to-top buttons.\n\n## When to Stick With the Options API?\n\nNo shame in it. For small components with static state, the Options API is still roomy and readable. But once logic starts crossing wires — fetching + polling + cleanup — the Composition API is far tidier.\n\nGive it a try, and don't forget to TypeScript-ify your composables!"
+  }
+}

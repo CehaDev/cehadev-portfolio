@@ -68,7 +68,7 @@ onMounted(() => {
       if (!ticking) {
         requestAnimationFrame(() => {
           if (!node.isConnected) {
-            window.removeEventListener('scroll', onScroll, { passive: true })
+            window.removeEventListener('scroll', onScroll)
             return
           }
           const rect = node.getBoundingClientRect()

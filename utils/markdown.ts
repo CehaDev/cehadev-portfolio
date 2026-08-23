@@ -11,7 +11,7 @@ export async function renderMarkdown(src: string): Promise<string> {
     renderer: {
       code({ text, lang }) {
         const i = blocks.length
-        blocks.push({ text, lang })
+        blocks.push({ text, lang: lang ?? '' })
         return `<span data-mdcode="${i}"></span>`
       },
       link({ href, title, tokens }) {

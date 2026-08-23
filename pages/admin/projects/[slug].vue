@@ -11,8 +11,8 @@ definePageMeta({
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
-const { data: project } = await useAsyncData('admin-project-edit', () =>
-  useRequestFetch()(`/api/admin/projects/${slug.value}`)
+const { data: project } = await useAsyncData<Record<string, any> | null>('admin-project-edit', () =>
+  useRequestFetch()<Record<string, any>>(`/api/admin/projects/${slug.value}`)
 )
 
 useHead({ title: `Edit ${lsId(project.value?.title) || slug.value} | Admin` })

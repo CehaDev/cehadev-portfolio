@@ -1,0 +1,25 @@
+{
+  "slug": "dari-javascript-ke-typescript",
+  "title": {
+    "id": "Dari JavaScript ke TypeScript dengan Tenang",
+    "en": "From JavaScript to TypeScript, Calmly"
+  },
+  "excerpt": {
+    "id": "Tidak perlu rewrite total. Ini jalur realistis beradaptasi dari JavaScript murni ke TypeScript tanpa drama.",
+    "en": "No full rewrite needed. Here's a realistic path to adapt from plain JavaScript to TypeScript without the drama."
+  },
+  "category": {
+    "id": "Catatan",
+    "en": "Notes"
+  },
+  "tags": ["TypeScript", "JavaScript", "Karier"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-07-18",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Dulu saya menunda TypeScript karena merasa \"nanti dulu, project-nya kecil\". Ternyata makin lama makin mahal untuk mulai. Kalau kamu masih di fase yang sama, ini jalur yang saya rekomendasikan.\n\n## Mulai dari Mode Longgar\n\nJangan langsung `strict: true`. Nyalakan TypeScript dengan pengaturan lunak dulu:\n\n```json\n{\n  \"compilerOptions\": {\n    \"strict\": false,\n    \"noImplicitAny\": true,\n    \"allowJs\": true\n  }\n}\n```\n\nFile `.js` lama tetap jalan, sementara file baru mulai ditulis sebagai `.ts`.\n\n## Tiping yang Praktis Dulu\n\nPrioritaskan bagian yang paling sering jadi sumber bug:\n\n1. **Respons API** — definisikan interface bentuk data\n2. **Parameter fungsi** — tipe input/output\n3. **Event handler** — biarkan inferensi Vue/React bekerja\n\n```ts\ninterface ArticleComment {\n  id: string\n  name: string\n  message: string\n  at: string\n}\n\nfunction renderComment(c: ArticleComment) {\n  // sekarang editor tahu c.message itu string\n}\n```\n\n> Type bukan formalitas — type adalah *dokumentasi yang tidak bisa bohong*.\n\n## `any` Itu Utang, Bukan Solusi\n\nSadar bahwa kadang `any` menggoda. Trik saya: pakai `unknown` lalu sempitkan.\n\n```ts\nfunction parse(input: unknown): ArticleComment {\n  const o = input as Record<string, unknown>\n  return {\n    id: String(o.id),\n    name: String(o.name ?? 'Anonim'),\n    message: String(o.message),\n    at: new Date(String(o.at)).toISOString()\n  }\n}\n```\n\nLebih panjang sedikit, tapi runtime-nya aman.\n\n## Yang Saya Rasakan Setelah Setahun\n\nRefactor jadi tidak menakutkan. Ganti nama field? Compiler yang bilang bagian mana yang rusak. Bug kelas *undefined is not a function* praktis hilang.\n\nPelan-pelan saja. Konsisten lebih penting daripada cepat.",
+    "en": "I used to postpone TypeScript thinking \"later, the project is small.\" Turns out the longer I waited, the more expensive it got to start. If you're in the same phase, here's the path I recommend.\n\n## Start Loose\n\nDon't jump straight to `strict: true`. Turn on TypeScript with soft settings first:\n\n```json\n{\n  \"compilerOptions\": {\n    \"strict\": false,\n    \"noImplicitAny\": true,\n    \"allowJs\": true\n  }\n}\n```\n\nOld `.js` files keep working while new files start as `.ts`.\n\n## Type What Matters First\n\nPrioritize the parts that cause the most bugs:\n\n1. **API responses** — define interfaces for data shapes\n2. **Function parameters** — input and output types\n3. **Event handlers** — let Vue/React inference do the work\n\n```ts\ninterface ArticleComment {\n  id: string\n  name: string\n  message: string\n  at: string\n}\n\nfunction renderComment(c: ArticleComment) {\n  // the editor now knows c.message is a string\n}\n```\n\n> Types aren't ceremony — types are *documentation that cannot lie*.\n\n## `any` Is Debt, Not a Solution\n\nI know how tempting `any` can be. My trick: use `unknown` then narrow it down.\n\n```ts\nfunction parse(input: unknown): ArticleComment {\n  const o = input as Record<string, unknown>\n  return {\n    id: String(o.id),\n    name: String(o.name ?? 'Anonymous'),\n    message: String(o.message),\n    at: new Date(String(o.at)).toISOString()\n  }\n}\n```\n\nA little longer, but safe at runtime.\n\n## How It Feels After a Year\n\nRefactoring stops being scary. Rename a field? The compiler tells you exactly what broke. The classic *undefined is not a function* bug class practically disappears.\n\nTake it slow. Consistency matters more than speed."
+  }
+}

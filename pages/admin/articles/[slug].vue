@@ -10,8 +10,8 @@ definePageMeta({
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
-const { data: article, error } = await useAsyncData(`admin-article-${slug.value}`, () =>
-  useRequestFetch()(`/api/admin/articles/${slug.value}`)
+const { data: article, error } = await useAsyncData<Record<string, any> | null>(`admin-article-${slug.value}`, () =>
+  useRequestFetch()<Record<string, any>>(`/api/admin/articles/${slug.value}`)
 )
 
 if (error.value || !article.value) {

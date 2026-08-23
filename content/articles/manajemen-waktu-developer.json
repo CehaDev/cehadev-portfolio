@@ -1,0 +1,25 @@
+{
+  "slug": "manajemen-waktu-developer",
+  "title": {
+    "id": "Manajemen Waktu untuk Developer yang Sibuk Ngoding",
+    "en": "Time Management for Developers Who Are Busy Writing Code"
+  },
+  "excerpt": {
+    "id": "Deep work, aturan dua menit, dan cara saya berhenti merasa sibuk tapi tidak menghasilkan apa-apa.",
+    "en": "Deep work, the two-minute rule, and how I stopped feeling busy while producing nothing."
+  },
+  "category": {
+    "id": "Produktivitas",
+    "en": "Productivity"
+  },
+  "tags": ["Produktivitas", "Karier", "Catatan"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-07-10",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Ada masa ketika hari terasa penuh tapi commit kosong. Rapat, notifikasi, \"cepat tanya sebentar\" — semuanya menggerus blok pikir yang sebenarnya dibutuhkan untuk ngoding. Ini sistem yang menyelamatkan saya.\n\n## Blok Deep Work\n\nSekarang saya memblok **dua sesi 90 menit** setiap hari khusus untuk pekerjaan butuh konsentrasi tinggi:\n\n- Notifikasi HP: mati total\n- Chat: status *fokus*, balas setelah sesi\n- Tab browser: maksimal tiga\n\n> Fokus bukan bakat, fokus adalah *infrastruktur*. Kalau lingkungannya tidak mendukung, kemauan pribadi tidak akan cukup.\n\n## Aturan Dua Menit untuk Tugas Kecil\n\nSemua permintaan kecil — review singkat, balas pesan, rename variabel — dikumpulkan jadi satu *batch* dan dikerjakan bersamaan di sore hari. Kalau di bawah dua menit dan benar-benar mendesak, kerjakan langsung; kalau tidak, catat.\n\n## Tulis Rencana Besok, Malam Ini\n\nLima menit sebelum pulang/berhenti kerja, saya tulis tiga hal terpenting untuk besok. Bukan sepuluh. **Tiga**.\n\n```md\n## Tomorrow\n- [ ] Selesaikan endpoint comments (test + docs)\n- [ ] Review PR tim frontend\n- [ ] Riset opsi caching image\n```\n\nPagi berikutnya tidak ada energi terbuang untuk mikir \"mulai dari mana\".\n\n## Ukur Output, Bukan Jam\n\nBerhenti bangga dengan jam lembur. Yang penting:\n\n1. Apa yang *selesai* minggu ini?\n2. Fitur mana yang benar-benar dipakai user?\n3. Bug apa yang berhasil dicegah, bukan sekadar dipadamkan?\n\nSejak ganti ukuran dari \"jam duduk\" ke \"hasil nyata\", pekerjaan terasa lebih ringan dan justru lebih banyak selesai.\n\nKalau kamu punya sistem sendiri, saya senang banget kalau dibagikan di kolom komentar!",
+    "en": "There was a time when my days felt full but my commits were empty. Meetings, notifications, \"quick question\" interruptions — all of them erode the deep-focus blocks coding actually requires. Here's the system that saved me.\n\n## Deep Work Blocks\n\nI now block **two 90-minute sessions** every day exclusively for high-concentration work:\n\n- Phone notifications: fully off\n- Chat: *focus* status, replies after the session\n- Browser tabs: three max\n\n> Focus isn't a talent, focus is *infrastructure*. If your environment doesn't support it, willpower alone won't be enough.\n\n## The Two-Minute Rule for Small Tasks\n\nAll tiny requests — quick reviews, message replies, variable renames — get collected into a single batch and handled together in the afternoon. If it's under two minutes and truly urgent, do it now; otherwise write it down.\n\n## Write Tomorrow's Plan Tonight\n\nFive minutes before stopping work, I write the three most important things for tomorrow. Not ten. **Three**.\n\n```md\n## Tomorrow\n- [ ] Finish the comments endpoint (tests + docs)\n- [ ] Review the frontend team's PR\n- [ ] Research image caching options\n```\n\nThe next morning wastes zero energy wondering \"where do I start\".\n\n## Measure Output, Not Hours\n\nStop being proud of overtime. What matters is:\n\n1. What actually *shipped* this week?\n2. Which features do users genuinely use?\n3. Which bugs were prevented rather than just extinguished?\n\nSince switching my metric from \"hours seated\" to \"real outcomes\", work feels lighter and paradoxically more gets done.\n\nIf you have your own system, I'd love to hear it in the comments!"
+  }
+}

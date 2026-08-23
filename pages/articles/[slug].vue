@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, ArrowUp, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, Share2, ChevronLeft, ChevronRight, ListTree } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, ArrowUp, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, ChevronLeft, ChevronRight, ListTree, TrendingUp, Sparkles } from 'lucide-vue-next'
 import { renderMarkdown, countWords } from '~/utils/markdown'
+import { lsId } from '~/utils/localize'
 
 const route = useRoute()
 const { lang } = useLang()
@@ -61,11 +62,44 @@ const { data: stats } = await useAsyncData(`stats-article-${route.params.slug}`,
 )
 const views = computed(() => stats.value?.articles?.find((x) => x.slug === route.params.slug)?.views ?? 0)
 
+// Pembaruan real-time: polling statistik kunjungan selagi halaman terbuka
+let statsTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  const fetchStats = useRequestFetch()
+  statsTimer = setInterval(async () => {
+    try {
+      const fresh = await fetchStats<StatsShape>('/api/stats')
+      if (fresh) stats.value = fresh
+    } catch {}
+  }, 15000)
+})
+onBeforeUnmount(() => {
+  if (statsTimer) clearInterval(statsTimer)
+})
+
+// Artikel populer: peringkat kunjungan terbanyak
+const popular = computed(() => {
+  const bySlug = new Map((articles.value ?? []).map((x: any) => [String(x.slug), x]))
+  return (stats.value?.articles ?? [])
+    .filter((r) => bySlug.has(String(r.slug)))
+    .slice()
+    .sort((x, y) => y.views - x.views)
+    .slice(0, 5)
+    .map((r) => ({ ...(bySlug.get(String(r.slug)) as any), views: r.views }))
+})
+
 const dateLabel = computed(() => {
   const d = new Date(a.value.datePublished)
   if (Number.isNaN(d.getTime())) return a.value.datePublished
   return new Intl.DateTimeFormat(lang.value === 'en' ? 'en-US' : 'id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
 })
+
+// Tanggal singkat untuk daftar artikel terbaru
+function shortDate(date: string) {
+  const d = new Date(date)
+  if (Number.isNaN(d.getTime())) return date
+  return new Intl.DateTimeFormat(lang.value === 'en' ? 'en-US' : 'id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
+}
 
 // ---- HTML terbagi: paragraf pembuka → daftar isi → sisa konten ----
 const wrapTable = (s: string) => s.replace(/<table>/g, '<div class="table-scroll"><table>').replace(/<\/table>/g, '</table></div>')
@@ -183,6 +217,9 @@ const others = computed(() => {
   return ranked.slice(0, 3)
 })
 
+// Artikel terbaru: urutan terbit paling baru, tanpa artikel yang sedang dibaca
+const latest = computed(() => sorted.value.filter((x: any) => x.slug !== route.params.slug).slice(0, 4))
+
 const gradients = [
   'from-violet-500 to-indigo-600',
   'from-cyan-500 to-blue-600',
@@ -298,53 +335,72 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
       </div>
     </header>
 
-    <!-- COVER -->
-    <div class="mx-auto mt-8 w-full md:mt-9">
-      <div v-if="a.cover" class="card overflow-hidden p-0">
-        <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
-      </div>
-      <div v-else class="card flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br p-0" :class="gradient" aria-hidden="true">
-        <span class="font-mono text-5xl font-extrabold text-white/90 sm:text-6xl">&lt;/&gt;</span>
-      </div>
-    </div>
-
     <!-- ALUR ARTIKEL + PANEL SAMPING — melebar penuh mengikuti layar -->
     <div class="mx-auto mt-9 grid w-full grid-cols-1 gap-8 md:mt-11 lg:grid-cols-[minmax(0,1fr)_minmax(0,250px)] lg:items-start xl:grid-cols-[minmax(0,290px)_minmax(0,1fr)_minmax(0,290px)] xl:gap-10">
-      <!-- Panel kiri: penulis & bagikan -->
-      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Penulis dan bagikan">
-        <div class="card p-5 text-center">
-          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-xl font-extrabold text-white shadow-btn-glow" aria-hidden="true">C</span>
-          <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.byAuthor') }}</p>
-          <p class="mt-0.5 text-sm font-bold text-text">CehaDev</p>
-          <p class="mt-2 text-xs leading-relaxed text-text-secondary">{{ t('articles.authorTagline') }}</p>
+      <!-- Panel kiri: artikel sering dikunjungi & artikel terbaru -->
+      <aside class="hidden self-start xl:sticky xl:top-24 xl:block" aria-label="Artikel sering dikunjungi dan artikel terbaru">
+        <div v-if="popular.length" class="card p-4">
+          <p class="flex items-center gap-1.5 px-1 pb-2.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+            <TrendingUp :size="12" :stroke-width="2" class="text-primary" aria-hidden="true" />
+            <span class="flex-1">{{ t('articles.popular') }}</span>
+            <span class="relative flex h-2 w-2" :title="t('articles.liveUpdate')">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" aria-hidden="true" />
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
+              <span class="sr-only">{{ t('articles.liveUpdate') }}</span>
+            </span>
+          </p>
+          <ol class="space-y-0.5">
+            <li v-for="(p, i) in popular" :key="p.slug">
+              <NuxtLink :to="`/articles/${p.slug}`" class="group flex items-start gap-2.5 rounded-lg px-1 py-1.5 transition-colors duration-200 hover:bg-bg-alt">
+                <span class="mt-0.5 shrink-0 font-mono text-[10px] tabular-nums" :class="i === 0 ? 'text-primary' : 'text-text-muted'" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
+                <span class="min-w-0 flex-1">
+                  <span class="line-clamp-2 block text-xs font-semibold leading-snug text-text transition-colors duration-200 group-hover:text-primary">{{ lsId(p.title) || p.slug }}</span>
+                  <span class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-medium text-text-muted">
+                    <Eye :size="10" :stroke-width="1.75" aria-hidden="true" />
+                    {{ p.views }} {{ t('common.views') }}
+                  </span>
+                </span>
+              </NuxtLink>
+            </li>
+          </ol>
         </div>
 
-        <div class="card mt-4 p-4">
-          <div class="flex flex-row justify-center gap-2 xl:flex-col xl:items-center">
-            <button
-              type="button"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card transition-all duration-300"
-              :class="copied ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400' : 'text-text-secondary hover:border-primary/50 hover:text-primary'"
-              :aria-label="t('articles.copyLink')"
-              @click="copyLink"
-            >
-              <Check v-if="copied" :size="14" :stroke-width="2" aria-hidden="true" />
-              <Link2 v-else :size="14" :stroke-width="2" aria-hidden="true" />
-            </button>
-            <a :href="shareUrls.wa" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-[10px] font-bold text-text-secondary transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-400" :aria-label="t('articles.shareWhatsapp')">WA</a>
-            <a :href="shareUrls.x" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-text-secondary transition-all duration-300 hover:border-border-strong hover:text-text" :aria-label="t('articles.shareX')">
-              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1 2h6.5l4.4 5.9L18.9 2Zm-1.1 18h1.7L7.4 3.9H5.5L17.8 20Z"/></svg>
-            </a>
-            <a :href="shareUrls.fb" target="_blank" rel="noopener noreferrer" class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-sm font-bold text-text-secondary transition-all duration-300 hover:border-blue-400/50 hover:text-blue-400" :aria-label="t('articles.shareFacebook')">f</a>
-          </div>
+        <!-- ARTIKEL TERBARU: otomatis mengikuti artikel yang baru terbit -->
+        <div v-if="latest.length" class="card mt-4 p-4">
+          <p class="flex items-center gap-1.5 px-1 pb-2.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+            <Sparkles :size="12" :stroke-width="2" class="text-primary" aria-hidden="true" />
+            {{ t('articles.latest') }}
+          </p>
+          <ol class="space-y-0.5">
+            <li v-for="(l, i) in latest" :key="l.slug">
+              <NuxtLink :to="`/articles/${l.slug}`" class="group flex items-start gap-2.5 rounded-lg px-1 py-1.5 transition-colors duration-200 hover:bg-bg-alt">
+                <span class="mt-0.5 shrink-0 font-mono text-[10px] tabular-nums" :class="i === 0 ? 'text-primary' : 'text-text-muted'" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
+                <span class="min-w-0 flex-1">
+                  <span class="line-clamp-2 block text-xs font-semibold leading-snug text-text transition-colors duration-200 group-hover:text-primary">{{ lsId(l.title) || l.slug }}</span>
+                  <span class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-medium text-text-muted">
+                    <Calendar :size="10" :stroke-width="1.75" aria-hidden="true" />
+                    {{ shortDate(l.datePublished) }}
+                  </span>
+                </span>
+              </NuxtLink>
+            </li>
+          </ol>
         </div>
       </aside>
 
       <!-- ISI ARTIKEL -->
       <div class="min-w-0">
       <div class="mx-auto w-full max-w-[56rem]">
+      <!-- GAMBAR UTAMA (di dalam alur artikel) -->
+      <div v-if="a.cover" class="card overflow-hidden p-0">
+        <img :src="a.cover" :alt="a.title" loading="lazy" class="aspect-video w-full object-cover" />
+      </div>
+      <div v-else class="card flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br p-0" :class="gradient" aria-hidden="true">
+        <span class="font-mono text-5xl font-extrabold text-white/90 sm:text-6xl">&lt;/&gt;</span>
+      </div>
+
       <!-- Paragraf pembuka -->
-      <div v-if="introHtml" class="article-content article-intro" v-html="introHtml" />
+      <div v-if="introHtml" class="article-content article-intro mt-8" v-html="introHtml" />
 
       <!-- DAFTAR ISI (menyatu dengan artikel) -->
       <div v-if="toc.length >= 2" class="card my-8 overflow-hidden p-0 md:my-10">
@@ -448,44 +504,53 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
     </div>
 
     <!-- KOLOM KOMENTAR -->
-    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-14 w-full" />
+    <ArticleComments :slug="String(route.params.slug)" class="mx-auto mt-10 w-full" />
 
     <!-- PREV / NEXT -->
-    <nav v-if="olderArticle || newerArticle" class="mx-auto mt-14 grid w-full gap-4 sm:grid-cols-2 md:mt-16" aria-label="Navigasi artikel">
+    <nav
+      v-if="olderArticle || newerArticle"
+      class="mx-auto mt-10 flex w-full flex-col gap-3 sm:flex-row"
+      aria-label="Navigasi artikel"
+    >
       <NuxtLink
         v-if="olderArticle"
         :to="`/articles/${(olderArticle as any).slug}`"
-        class="card group flex flex-col gap-1.5 p-5 transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover"
+        class="group flex flex-1 items-center gap-3 rounded-full border border-border bg-card py-2 pl-2.5 pr-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card-hover"
       >
-        <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-text-muted transition-colors group-hover:text-primary">
-          <ChevronLeft :size="12" :stroke-width="2" aria-hidden="true" />
-          {{ t('articles.prevArticle') }}
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-bg-alt text-text-secondary transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-brand group-hover:text-white" aria-hidden="true">
+          <ChevronLeft :size="15" :stroke-width="2" />
         </span>
-        <span class="line-clamp-2 text-sm font-semibold leading-snug text-text transition-colors group-hover:text-primary">
-          {{ (olderArticle as any).title }}
+        <span class="min-w-0">
+          <span class="block text-[9px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.prevArticle') }}</span>
+          <span class="mt-0.5 block truncate text-[13px] font-semibold leading-snug text-text transition-colors group-hover:text-primary">
+            {{ (olderArticle as any).title }}
+          </span>
         </span>
       </NuxtLink>
       <NuxtLink
         v-if="newerArticle"
         :to="`/articles/${(newerArticle as any).slug}`"
-        class="card group flex flex-col items-end gap-1.5 p-5 text-right transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover sm:col-start-2"
+        class="group flex flex-1 flex-row-reverse items-center gap-3 rounded-full border border-border bg-card py-2 pl-5 pr-2.5 text-right transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card-hover"
       >
-        <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-text-muted transition-colors group-hover:text-primary">
-          {{ t('articles.nextArticle') }}
-          <ChevronRight :size="12" :stroke-width="2" aria-hidden="true" />
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-bg-alt text-text-secondary transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-brand group-hover:text-white" aria-hidden="true">
+          <ChevronRight :size="15" :stroke-width="2" />
         </span>
-        <span class="line-clamp-2 text-sm font-semibold leading-snug text-text transition-colors group-hover:text-primary">
-          {{ (newerArticle as any).title }}
+        <span class="min-w-0">
+          <span class="block text-[9px] font-bold uppercase tracking-wider text-text-muted">{{ t('articles.nextArticle') }}</span>
+          <span class="mt-0.5 block truncate text-[13px] font-semibold leading-snug text-text transition-colors group-hover:text-primary">
+            {{ (newerArticle as any).title }}
+          </span>
         </span>
       </NuxtLink>
     </nav>
 
     <!-- ARTIKEL TERKAIT -->
-    <section v-if="others.length" class="mx-auto mt-14 w-full md:mt-16">
-      <h2 class="text-xl font-extrabold tracking-tight md:text-2xl">
+    <section v-if="others.length" class="mx-auto mt-10 w-full md:mt-12">
+      <h2 class="flex items-center gap-2 text-lg font-extrabold tracking-tight md:text-xl">
         {{ lang === 'en' ? 'More Articles' : 'Artikel Lainnya' }}
+        <span class="h-px flex-1 bg-border/60" aria-hidden="true" />
       </h2>
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ArticleCard v-for="o in others" :key="o.slug" :article="o as any" />
       </div>
     </section>
@@ -552,8 +617,14 @@ const gradient = computed(() => gradients[(a.value.slug?.length ?? 0) % gradient
 .article-content :deep(hr) {
   @apply my-8 border-border/60;
 }
+/* Gambar di dalam artikel: tidak full-width, rata tengah */
 .article-content :deep(img) {
-  @apply my-6 w-full rounded-card border border-border/60;
+  @apply mx-auto my-6 block h-auto w-full max-w-md rounded-card border border-border/60;
+}
+@media (min-width: 768px) {
+  .article-content :deep(img) {
+    @apply max-w-lg;
+  }
 }
 .article-content :deep(code):not(:deep(pre code)) {
   @apply rounded-md border border-border/70 bg-bg-alt px-1.5 py-0.5 font-mono text-[0.85em] text-primary [overflow-wrap:anywhere];

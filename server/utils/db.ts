@@ -114,10 +114,12 @@ export async function ensureSchema() {
       article_slug TEXT NOT NULL,
       name TEXT NOT NULL,
       message TEXT NOT NULL,
-      at TEXT NOT NULL
+      at TEXT NOT NULL,
+      parent_id TEXT NOT NULL DEFAULT ''
     );
     CREATE INDEX IF NOT EXISTS idx_article_comments_slug ON article_comments(article_slug);
     CREATE INDEX IF NOT EXISTS idx_article_comments_at ON article_comments(at);
+    CREATE INDEX IF NOT EXISTS idx_article_comments_parent ON article_comments(parent_id);
 
     CREATE TABLE IF NOT EXISTS security_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,6 +128,13 @@ export async function ensureSchema() {
       details TEXT NOT NULL DEFAULT '{}'
     );
   `)
+
+  // Migrasi ringan untuk database lama: tambahkan kolom parent_id bila belum ada
+  try {
+    await client.execute('ALTER TABLE article_comments ADD COLUMN parent_id TEXT NOT NULL DEFAULT \'\'')
+  } catch {
+    // kolom sudah ada — aman diabaikan
+  }
 
   _initialized = true
 }

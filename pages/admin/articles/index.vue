@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2, Search, X, Eye, EyeOff, Tag, MessageSquare, BarChart3, FolderOpen, FilePen } from 'lucide-vue-next'
+import { Plus, Newspaper, Pencil, Trash2, ExternalLink, LoaderCircle, FileEdit, FileCheck2, Search, X, Eye, EyeOff, Tag, MessageSquare, BarChart3, FolderOpen, FilePen, Users, Activity } from 'lucide-vue-next'
 import { lsId } from '~/utils/localize'
 
 definePageMeta({
@@ -25,6 +25,7 @@ interface AdminCommentRow {
   name: string
   message: string
   at: string
+  parentId?: string
 }
 
 const { data: articles, refresh } = await useAsyncData('admin-articles-list', () =>
@@ -44,9 +45,47 @@ const confirmDelete = ref<string | null>(null)
 const confirmDeleteComment = ref<string | null>(null)
 const query = ref('')
 
-const tab = ref<'all' | 'published' | 'draft' | 'comments'>('all')
+const tab = ref<'all' | 'published' | 'draft' | 'comments' | 'analytics'>('all')
 const publishedCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'published').length)
 const draftCount = computed(() => (articles.value ?? []).filter((a) => a.status === 'draft').length)
+
+// ---- Analitik artikel ----
+interface ArticleAnalytics {
+  total: { views: number; readers: number; views7d: number; trendPct: number | null }
+  daily: Array<{ date: string; views: number; visitors: number }>
+  devices: Array<{ label: string; value: number }>
+  browsers: Array<{ label: string; value: number }>
+  sources: Array<{ label: string; value: number }>
+  articles: Array<{ slug: string; views: number; readers: number; views7d: number; viewsPrev7d: number }>
+}
+
+const { data: articleAnalytics } = await useAsyncData('admin-articles-analytics', () =>
+  useRequestFetch()<ArticleAnalytics>('/api/admin/analytics/articles')
+)
+
+const titleBySlug = computed(() => {
+  const map = new Map<string, string>()
+  for (const a of articles.value ?? []) map.set(a.slug, a.title)
+  return map
+})
+
+const chartLabels = computed(() => (articleAnalytics.value?.daily ?? []).map((d) => d.date.slice(5).replace('-', '/')))
+const chartViews = computed(() => (articleAnalytics.value?.daily ?? []).map((d) => d.views))
+const chartVisitors = computed(() => (articleAnalytics.value?.daily ?? []).map((d) => d.visitors))
+
+function trendOf(row: { views7d: number; viewsPrev7d: number }): { label: string; up: boolean } | null {
+  if (row.viewsPrev7d > 0) {
+    const pct = Math.round(((row.views7d - row.viewsPrev7d) / row.viewsPrev7d) * 100)
+    if (pct === 0) return null
+    return { label: `${pct > 0 ? '+' : ''}${pct}%`, up: pct > 0 }
+  }
+  return row.views7d > 0 ? { label: 'Baru', up: true } : null
+}
+
+const avgViewsPerArticle = computed(() => {
+  const n = (articles.value ?? []).filter((a) => a.status === 'published').length
+  return n > 0 ? Math.round((articleAnalytics.value?.total.views ?? 0) / n) : 0
+})
 
 const articleViews = (slug: string) => stats.value?.articles?.find((x) => x.slug === slug)?.views ?? 0
 
@@ -59,6 +98,13 @@ const commentCountBySlug = computed(() => {
   return map
 })
 const totalComments = computed(() => (allComments.value ?? []).length)
+
+// Peta id → nama untuk menampilkan konteks "membalas @nama"
+const commentNameById = computed(() => {
+  const map = new Map<string, string>()
+  for (const c of allComments.value ?? []) map.set(c.id, c.name)
+  return map
+})
 
 const statCards = computed(() => [
   { label: 'Total Artikel', value: String(articles.value?.length ?? 0), icon: Newspaper, tone: 'text-primary bg-primary/10' },
@@ -131,7 +177,8 @@ async function toggleStatus(a: AdminArticleRow) {
   if (busy.value) return
   busy.value = `toggle-${a.slug}`
   try {
-    await $fetch(`/api/admin/articles/${a.slug}`, { method: 'PUT', body: { ...a, status: a.status === 'published' ? 'draft' : 'published' } })
+    const url: string = `/api/admin/articles/${a.slug}`
+    await useRequestFetch()(url, { method: 'PUT', body: { ...a, status: a.status === 'published' ? 'draft' : 'published' } })
     await refresh()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
@@ -187,7 +234,8 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
             { key: 'all', label: 'Semua', count: articles?.length ?? 0 },
             { key: 'published', label: 'Terbit', count: publishedCount },
             { key: 'draft', label: 'Draft', count: draftCount },
-            { key: 'comments', label: 'Komentar', count: totalComments }
+            { key: 'comments', label: 'Komentar', count: totalComments },
+            { key: 'analytics', label: 'Analitik', count: sumViews }
           ]"
           :key="tb.key"
           type="button"
@@ -202,7 +250,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
         </button>
       </div>
 
-      <div v-if="tab !== 'comments'" class="relative w-full sm:w-72">
+      <div v-if="tab !== 'comments' && tab !== 'analytics'" class="relative w-full sm:w-72">
         <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-text-muted" aria-hidden="true">
           <Search :size="15" :stroke-width="1.75" />
         </span>
@@ -225,6 +273,129 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
       </div>
     </div>
 
+    <!-- ===== TAB ANALITIK ARTIKEL ===== -->
+    <template v-if="tab === 'analytics'">
+      <!-- Kartu metrik ringkas -->
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div class="card flex items-center gap-3.5 p-4">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400" aria-hidden="true"><Eye :size="19" :stroke-width="1.75" /></span>
+          <div class="min-w-0">
+            <p class="truncate font-mono text-xl font-extrabold leading-tight text-text">{{ articleAnalytics?.total.views ?? 0 }}</p>
+            <p class="truncate text-[11px] font-medium text-text-muted">Total Views Artikel</p>
+          </div>
+        </div>
+        <div class="card flex items-center gap-3.5 p-4">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-400/10 text-primary" aria-hidden="true"><Users :size="19" :stroke-width="1.75" /></span>
+          <div class="min-w-0">
+            <p class="truncate font-mono text-xl font-extrabold leading-tight text-text">{{ articleAnalytics?.total.readers ?? 0 }}</p>
+            <p class="truncate text-[11px] font-medium text-text-muted">Pembaca Unik</p>
+          </div>
+        </div>
+        <div class="card flex items-center gap-3.5 p-4">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-400" aria-hidden="true"><Activity :size="19" :stroke-width="1.75" /></span>
+          <div class="min-w-0">
+            <p class="truncate font-mono text-xl font-extrabold leading-tight text-text">
+              {{ articleAnalytics?.total.views7d ?? 0 }}
+              <span
+                v-if="articleAnalytics?.total.trendPct != null"
+                class="ml-1 align-middle font-sans text-[10px] font-bold"
+                :class="(articleAnalytics.total.trendPct ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'"
+              >{{ (articleAnalytics.total.trendPct ?? 0) >= 0 ? '▲' : '▼' }} {{ Math.abs(articleAnalytics.total.trendPct ?? 0) }}%</span>
+            </p>
+            <p class="truncate text-[11px] font-medium text-text-muted">Views 7 Hari Terakhir</p>
+          </div>
+        </div>
+        <div class="card flex items-center gap-3.5 p-4">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-400" aria-hidden="true"><Newspaper :size="19" :stroke-width="1.75" /></span>
+          <div class="min-w-0">
+            <p class="truncate font-mono text-xl font-extrabold leading-tight text-text">{{ avgViewsPerArticle }}</p>
+            <p class="truncate text-[11px] font-medium text-text-muted">Rata-rata per Artikel</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tren harian -->
+      <div class="card p-7">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h3 class="text-base font-extrabold tracking-tight text-text">Tren Pembaca Artikel — 30 Hari Terakhir</h3>
+            <p class="mt-1 text-xs text-text-muted">Garis solid = kunjungan halaman artikel, garis putus-putus = pembaca unik</p>
+          </div>
+        </div>
+        <div class="mt-5">
+          <AreaChart :labels="chartLabels" :values="chartViews" :secondary="chartVisitors" :height="230" />
+        </div>
+      </div>
+
+      <!-- Perangkat, browser & sumber -->
+      <div class="grid gap-6 lg:grid-cols-3">
+        <div class="card p-6">
+          <h3 class="text-sm font-extrabold tracking-tight text-text">Perangkat Pembaca</h3>
+          <div class="mt-5">
+            <DonutChart v-if="(articleAnalytics?.devices ?? []).length" :items="articleAnalytics!.devices" />
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-extrabold tracking-tight text-text">Browser</h3>
+          <div class="mt-5">
+            <BarList :items="(articleAnalytics?.browsers ?? []).map((b) => ({ label: b.label, value: b.value }))" color="#38BDF8" />
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-extrabold tracking-tight text-text">Sumber Kunjungan</h3>
+          <div class="mt-5">
+            <BarList :items="(articleAnalytics?.sources ?? []).map((s) => ({ label: s.label, value: s.value }))" color="#8B5CF6" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Performa per artikel -->
+      <div class="card overflow-hidden p-0">
+        <div class="flex items-center justify-between px-7 py-5">
+          <div>
+            <h3 class="text-base font-extrabold tracking-tight text-text">Performa per Artikel</h3>
+            <p class="mt-1 text-xs text-text-muted">Diurutkan berdasarkan total views — bandingkan tren mingguan tiap artikel</p>
+          </div>
+        </div>
+        <ul class="divide-y divide-border/60 border-t border-border/60">
+          <li v-for="(row, i) in articleAnalytics?.articles ?? []" :key="row.slug" class="flex items-center gap-4 px-7 py-3.5 transition-colors hover:bg-card/40">
+            <span class="w-7 shrink-0 font-mono text-xs tabular-nums" :class="i === 0 ? 'font-bold text-primary' : 'text-text-muted'">{{ String(i + 1).padStart(2, '0') }}</span>
+            <div class="min-w-0 flex-1">
+              <NuxtLink :to="`/articles/${row.slug}`" target="_blank" class="block truncate text-sm font-semibold text-text transition-colors hover:text-primary">
+                {{ titleBySlug.get(row.slug) || row.slug }}
+              </NuxtLink>
+              <span class="font-mono text-[10px] text-text-muted">/articles/{{ row.slug }}</span>
+            </div>
+            <div class="hidden shrink-0 items-center gap-2 sm:flex" aria-hidden="true">
+              <div class="h-1.5 w-28 overflow-hidden rounded-full bg-bg-alt">
+                <div
+                  class="h-full rounded-full bg-gradient-brand transition-all duration-700"
+                  :style="{ width: Math.max((row.views / Math.max(articleAnalytics?.articles[0]?.views ?? 1, 1)) * 100, 2) + '%' }"
+                />
+              </div>
+            </div>
+            <div class="shrink-0 text-right">
+              <p class="font-mono text-sm font-bold text-text">{{ row.views }}</p>
+              <p class="text-[10px] text-text-muted">{{ row.readers }} unik</p>
+            </div>
+            <div class="w-20 shrink-0 text-right">
+              <p class="font-mono text-xs font-bold text-text-secondary">{{ row.views7d }}<span class="ml-1 font-normal text-text-muted">7d</span></p>
+              <span
+                v-if="trendOf(row)"
+                class="text-[10px] font-bold"
+                :class="trendOf(row)!.up ? 'text-emerald-400' : 'text-red-400'"
+              >{{ trendOf(row)!.up ? '▲' : '▼' }} {{ trendOf(row)!.label }}</span>
+              <span v-else class="text-[10px] text-text-muted">—</span>
+            </div>
+          </li>
+          <li v-if="!(articleAnalytics?.articles ?? []).length" class="px-7 py-14 text-center">
+            <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true"><BarChart3 :size="22" :stroke-width="1.75" /></span>
+            <p class="mt-3 text-sm font-medium text-text-secondary">Belum ada kunjungan ke halaman artikel.</p>
+          </li>
+        </ul>
+      </div>
+    </template>
+
     <!-- ===== TAB KOMENTAR ===== -->
     <div v-if="tab === 'comments'" class="card overflow-hidden p-0">
       <ul class="divide-y divide-border/60">
@@ -236,6 +407,9 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
             <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
               <p class="text-sm font-bold text-text">{{ c.name }}</p>
               <span class="font-mono text-[10px] text-text-muted">{{ commentDateLabel(c.at) }}</span>
+              <span v-if="c.parentId && commentNameById.get(c.parentId)" class="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[9px] font-semibold text-primary">
+                Membalas @{{ commentNameById.get(c.parentId) }}
+              </span>
             </div>
             <p class="mt-1 whitespace-pre-line break-words text-sm leading-relaxed text-text-secondary">{{ c.message }}</p>
             <NuxtLink :to="`/articles/${c.articleSlug}`" target="_blank" class="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary">

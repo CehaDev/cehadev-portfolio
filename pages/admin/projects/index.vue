@@ -9,7 +9,7 @@ definePageMeta({
 })
 
 const { data: projects, refresh } = await useAsyncData('admin-projects-list', () =>
-  useRequestFetch()('/api/admin/projects')
+  useRequestFetch()<Array<Record<string, any>>>('/api/admin/projects')
 )
 
 const tab = ref<'active' | 'archived'>('active')

@@ -24,7 +24,7 @@ const { data: analytics } = await useAsyncData('admin-dash-analytics', () =>
 )
 
 const { data: projects, refresh } = await useAsyncData('admin-projects', () =>
-  useRequestFetch()('/api/admin/projects')
+  useRequestFetch()<Array<Record<string, any>>>('/api/admin/projects')
 )
 
 interface AdminArticle {

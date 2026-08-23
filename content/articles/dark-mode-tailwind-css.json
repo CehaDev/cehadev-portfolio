@@ -1,0 +1,25 @@
+{
+  "slug": "dark-mode-tailwind-css",
+  "title": {
+    "id": "Membangun Dark Mode yang Benar dengan Tailwind CSS",
+    "en": "Building Dark Mode Properly with Tailwind CSS"
+  },
+  "excerpt": {
+    "id": "Strategi token warna CSS variables, class strategy vs data-attribute, dan trik menghindari flash putih saat halaman dimuat.",
+    "en": "Color-token strategy with CSS variables, class strategy vs data-attribute, and tricks to avoid the white flash on page load."
+  },
+  "category": {
+    "id": "Tutorial",
+    "en": "Tutorial"
+  },
+  "tags": ["Tailwind CSS", "Desain", "CSS"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-08-02",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Dark mode bukan sekadar membalik warna. Salah implementasi, hasilnya abu-abu kusam yang melelahkan mata. Ini resep yang saya pakai di situs ini.\n\n## Langkah 1: Token Warna dengan CSS Variables\n\nJangan hardcode warna di mana-mana. Definisikan token di `:root`, lalu ganti nilainya saat mode gelap aktif:\n\n```css\n:root {\n  --color-bg: 255 255 255;\n  --color-text: 23 23 23;\n}\n.dark {\n  --color-bg: 10 10 15;\n  --color-text: 240 240 245;\n}\n```\n\nDi Tailwind, daftarkan sebagai warna semantic:\n\n```ts\ncolors: {\n  bg: 'rgb(var(--color-bg) / <alpha-value>)',\n  text: 'rgb(var(--color-text) / <alpha-value>)'\n}\n```\n\nSekarang `bg-bg text-text` otomatis ikut berubah — komponen tidak perlu tahu ada dark mode.\n\n## Langkah 2: Simpan Preferensi\n\nTiga pilihan itu cukup: *terang*, *gelap*, *ikuti sistem*.\n\n```js\nconst theme = useCookie('theme', { default: () => 'system' })\nconst isDark = computed(() =>\n  theme.value === 'dark' ||\n  (theme.value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)\n)\n```\n\n## Hindari FOUC (Flash of Unstyled Content)\n\nKesalahan klasik: halaman sempat putih sesaat sebelum JS jalan. Solusinya, inline script kecil **sebelum** CSS utama dievaluasi:\n\n```html\n<script>\n  const t = localStorage.theme ?? 'system'\n  if (t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches))\n    document.documentElement.classList.add('dark')\n</script>\n```\n\n> Prinsipnya: keputusan tema harus terjadi lebih dulu daripada render pertama, bukan setelahnya.\n\n## Kontras Itu Raja\n\nBeberapa angka praktis dari pengalaman saya:\n\n1. Teks utama minimal rasio kontras **7:1** di mode gelap\n2. Hindari hitam murni `#000` — pakai near-black seperti `#0A0A0F`\n3. Border butuh lebih terang di dark mode (`white/10`) supaya kartu tetap terlihat\n\nDark mode yang baik malah membuat hierarki visual lebih jelas. Selamat mencoba!",
+    "en": "Dark mode is not just inverting colors. Get it wrong and you end up with dull gray that tires the eyes. Here's the recipe I use on this site.\n\n## Step 1: Color Tokens with CSS Variables\n\nDon't hardcode colors everywhere. Define tokens in `:root`, then swap their values when dark mode is active:\n\n```css\n:root {\n  --color-bg: 255 255 255;\n  --color-text: 23 23 23;\n}\n.dark {\n  --color-bg: 10 10 15;\n  --color-text: 240 240 245;\n}\n```\n\nIn Tailwind, register them as semantic colors:\n\n```ts\ncolors: {\n  bg: 'rgb(var(--color-bg) / <alpha-value>)',\n  text: 'rgb(var(--color-text) / <alpha-value>)'\n}\n```\n\nNow `bg-bg text-text` changes automatically — components never need to know dark mode exists.\n\n## Step 2: Persist the Preference\n\nThree choices are enough: *light*, *dark*, *follow system*.\n\n```js\nconst theme = useCookie('theme', { default: () => 'system' })\nconst isDark = computed(() =>\n  theme.value === 'dark' ||\n  (theme.value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)\n)\n```\n\n## Avoid FOUC (Flash of Unstyled Content)\n\nClassic mistake: the page flashes white for a moment before JS runs. The fix is a tiny inline script **before** the main CSS is evaluated:\n\n```html\n<script>\n  const t = localStorage.theme ?? 'system'\n  if (t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches))\n    document.documentElement.classList.add('dark')\n</script>\n```\n\n> The principle: the theme decision must happen before the first render, not after.\n\n## Contrast Is King\n\nA few practical numbers from my experience:\n\n1. Primary text needs at least a **7:1** contrast ratio in dark mode\n2. Avoid pure black `#000` — use near-black like `#0A0A0F`\n3. Borders need to be lighter in dark mode (`white/10`) so cards stay visible\n\nGood dark mode actually makes your visual hierarchy clearer. Happy building!"
+  }
+}

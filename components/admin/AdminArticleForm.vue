@@ -42,7 +42,7 @@ const form = reactive({
 
 watch(
   () => form.title.id,
-  (val) => {
+  (val: string) => {
     if (!slugTouched.value) {
       form.slug = val
         .toLowerCase()
@@ -94,7 +94,7 @@ const previewMode = ref<PreviewTab>('edit')
 const previewHtml = ref<Record<'id' | 'en', string>>({ id: '', en: '' })
 let previewSeq = 0
 
-watch(previewMode, async (mode) => {
+watch(previewMode, async (mode: PreviewTab) => {
   if (mode !== 'preview') return
   const seq = ++previewSeq
   const [idHtml, enHtml] = await Promise.all([renderMarkdown(form.content.id || ''), renderMarkdown(form.content.en || '')])
@@ -115,7 +115,7 @@ async function save() {
       title: form.title,
       excerpt: form.excerpt,
       category: form.category,
-      tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: form.tags.split(',').map((t: string) => t.trim()).filter(Boolean),
       cover: form.cover,
       status: form.status,
       datePublished: form.datePublished,
@@ -171,7 +171,7 @@ async function save() {
           </div>
           <div>
             <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">Ringkasan / Excerpt</label>
-            <LocaleTextarea v-model="form.excerpt" rows="3" placeholder-id="Muncul di kartu artikel & deskripsi SEO..." placeholder-en="Shown on cards & SEO description..." />
+            <LocaleTextarea v-model="form.excerpt" :rows="3" placeholder-id="Muncul di kartu artikel & deskripsi SEO..." placeholder-en="Shown on cards & SEO description..." />
           </div>
         </div>
         <div class="space-y-4">
@@ -308,7 +308,7 @@ async function save() {
       </div>
       <div>
         <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">Deskripsi SEO Kustom</label>
-        <LocaleTextarea v-model="form.seoDescription" rows="2" placeholder-id="Default: ringkasan artikel" placeholder-en="Default: article excerpt" />
+        <LocaleTextarea v-model="form.seoDescription" :rows="2" placeholder-id="Default: ringkasan artikel" placeholder-en="Default: article excerpt" />
       </div>
     </section>
   </form>

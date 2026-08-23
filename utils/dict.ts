@@ -121,11 +121,9 @@ export const dict = {
   'articles.shareWhatsapp': { id: 'Bagikan ke WhatsApp', en: 'Share to WhatsApp' },
   'articles.shareX': { id: 'Bagikan ke X', en: 'Share to X' },
   'articles.shareFacebook': { id: 'Bagikan ke Facebook', en: 'Share to Facebook' },
-  'articles.byAuthor': { id: 'Ditulis oleh', en: 'Written by' },
-  'articles.authorTagline': {
-    id: 'Web developer yang menulis tentang Nuxt, Vue & Tailwind CSS.',
-    en: 'A web developer writing about Nuxt, Vue & Tailwind CSS.'
-  },
+  'articles.popular': { id: 'Artikel Sering Dikunjungi', en: 'Most Visited Articles' },
+  'articles.liveUpdate': { id: 'Diperbarui otomatis secara real-time', en: 'Updated automatically in real-time' },
+  'articles.latest': { id: 'Artikel Terbaru', en: 'Latest Articles' },
   'articles.readingProgress': { id: 'Progres Membaca', en: 'Reading Progress' },
   'articles.articleInfo': { id: 'Info Artikel', en: 'Article Info' },
   'articles.discussCta': { id: 'Ada ide project? Mari wujudkan bersama.', en: 'Have a project idea? Let’s build it together.' },
@@ -147,6 +145,9 @@ export const dict = {
   'comments.reqName': { id: 'Nama minimal 2 karakter', en: 'Name must be at least 2 characters' },
   'comments.reqMessage': { id: 'Komentar minimal 3 karakter', en: 'Comment must be at least 3 characters' },
   'comments.newBadge': { id: 'Baru', en: 'New' },
+  'comments.reply': { id: 'Balas', en: 'Reply' },
+  'comments.replyingTo': { id: 'Membalas', en: 'Replying to' },
+  'comments.cancelReply': { id: 'Batalkan balasan', en: 'Cancel reply' },
   'comments.emptyTitle': { id: 'Belum ada komentar', en: 'No comments yet' },
   'comments.emptyDesc': { id: 'Jadilah yang pertama menyampaikan pendapat!', en: 'Be the first one to share your thoughts!' }
 } as const

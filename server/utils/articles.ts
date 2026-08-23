@@ -2,12 +2,28 @@ import { createError } from 'h3'
 import helloWorld from '../../content/articles/hello-world.json'
 import optimasiNuxt from '../../content/articles/optimasi-website-nuxt.json'
 import tailwindTips from '../../content/articles/tailwind-tips-desain-modern.json'
+import compositionApi from '../../content/articles/memahami-composition-api-vue-3.json'
+import darkModeTailwind from '../../content/articles/dark-mode-tailwind-css.json'
+import deployNuxtVercel from '../../content/articles/deploy-nuxt-vercel.json'
+import javascriptKeTypescript from '../../content/articles/dari-javascript-ke-typescript.json'
+import manajemenWaktu from '../../content/articles/manajemen-waktu-developer.json'
+import desainPortofolio from '../../content/articles/desain-portofolio-menarik.json'
 import { normalizeLS } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
 const ARTICLES_KEY = 'content_articles'
 
-const bundledArticles: Record<string, unknown>[] = [helloWorld, optimasiNuxt, tailwindTips]
+const bundledArticles: Record<string, unknown>[] = [
+  helloWorld,
+  optimasiNuxt,
+  tailwindTips,
+  compositionApi,
+  darkModeTailwind,
+  deployNuxtVercel,
+  javascriptKeTypescript,
+  manajemenWaktu,
+  desainPortofolio
+]
 
 function isValidSlug(slug: string) {
   return /^[a-z0-9][a-z0-9-]*$/.test(slug)

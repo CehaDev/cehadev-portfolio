@@ -1,0 +1,25 @@
+{
+  "slug": "desain-portofolio-menarik",
+  "title": {
+    "id": "Anatomi Portofolio Developer yang Membuat Rekruter Berhenti Scroll",
+    "en": "The Anatomy of a Developer Portfolio That Makes Recruiters Stop Scrolling"
+  },
+  "excerpt": {
+    "id": "Struktur halaman, cara menulis studi kasus project, dan detail mikro yang membuat portofolio terasa profesional.",
+    "en": "Page structure, how to write project case studies, and the micro-details that make a portfolio feel professional."
+  },
+  "category": {
+    "id": "Desain",
+    "en": "Design"
+  },
+  "tags": ["Desain", "Portfolio", "UX"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-07-03",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Portofolio adalah *landing page* pribadi — dan rekruter adalah user-nya. Mereka scroll cepat, keputusan dalam hitungan detik. Ini anatomi yang saya pelajari lewat banyak eksperimen.\n\n## Aturan 5 Detik\n\nKunjungan pertama harus langsung menjawab tiga pertanyaan:\n\n1. Siapa kamu? (nama + peran)\n2. Apa keahlian intimu? (stack, bukan semua tools)\n3. Apa langkah selanjutnya? (CTA jelas: lihat project / hubungi)\n\nHero yang baik itu pendek. Satu kalimat nilai jual, satu CTA. Selesai.\n\n## Project: Tulis Studi Kasus, Bukan Katalog\n\nPerbedaan terbesar antara portofolio biasa dengan yang memorable ada di *studi kasus*:\n\n- **Masalah** apa yang diselesaikan?\n- **Keputusan teknis** apa yang diambil, dan kenapa?\n- **Hasil**nya apa? (angka lebih bagus: performa naik 40%, dsb.)\n\n> Screenshot bagus menarik perhatian; cerita masalah-solusi-hasil yang membuat orang percaya kamu bisa memecahkan masalah mereka.\n\n## Detail Mikro yang Sering Diremehkan\n\nHal-hal kecil ini yang membuat situs terasa \"mahal\":\n\n1. Transisi halus tapi tidak berlebihan (150–300ms)\n2. State hover/focus di **semua** elemen interaktif\n3. Loading skeleton, bukan spinner kosong\n4. Dark mode yang benar-benar dipoles\n5. Meta tag OG rapi — share link ke WA/Slack tetap cantik\n\n## Jangan Sempurnakan Sendirian\n\nTunjukkan draft ke 3–5 orang. Tanyakan satu hal: \"setelah lihat 10 detik, kesan pertamamu apa?\" Jawabannya hampir selalu membuka blind spot.\n\nPortofolio terbaik bukan yang paling ramai animasi — tapi yang paling *jelas*. Semoga membantu!",
+    "en": "A portfolio is your personal *landing page* — and recruiters are its users. They scroll fast and decide in seconds. Here's the anatomy I learned through lots of experimentation.\n\n## The 5-Second Rule\n\nA first visit must instantly answer three questions:\n\n1. Who are you? (name + role)\n2. What are your core skills? (your stack, not every tool)\n3. What's the next step? (a clear CTA: view work / contact)\n\nA good hero is short. One value sentence, one CTA. Done.\n\n## Projects: Write Case Studies, Not Catalogs\n\nThe biggest difference between ordinary portfolios and memorable ones is the *case study*:\n\n- What **problem** did you solve?\n- What **technical decisions** did you make, and why?\n- What was the **result**? (numbers are better: 40% performance gain, etc.)\n\n> Nice screenshots grab attention; problem-solution-result stories make people believe you can solve *their* problems.\n\n## Micro-Details People Underrate\n\nThese small things make a site feel expensive:\n\n1. Smooth but restrained transitions (150–300ms)\n2. Hover/focus states on **every** interactive element\n3. Loading skeletons instead of empty spinners\n4. Dark mode that's actually polished\n5. Clean OG meta tags — shared links still look great in WA/Slack\n\n## Don't Polish Alone\n\nShow your draft to 3–5 people. Ask one thing: \"after seeing it for 10 seconds, what's your first impression?\" The answer almost always exposes a blind spot.\n\nThe best portfolio isn't the one with the most animations — it's the *clearest* one. Hope this helps!"
+  }
+}

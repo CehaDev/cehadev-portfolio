@@ -1,0 +1,25 @@
+{
+  "slug": "deploy-nuxt-vercel",
+  "title": {
+    "id": "Deploy Nuxt ke Vercel: Checklist Sebelum Production",
+    "en": "Deploying Nuxt to Vercel: A Pre-Production Checklist"
+  },
+  "excerpt": {
+    "id": "Environment variables, SSR vs prerender, caching, sampai monitoring — semua yang perlu dicek sebelum tombol deploy ditekan.",
+    "en": "Environment variables, SSR vs prerender, caching, up to monitoring — everything to check before hitting the deploy button."
+  },
+  "category": {
+    "id": "Tutorial",
+    "en": "Tutorial"
+  },
+  "tags": ["Nuxt.js", "Vercel", "DevOps"],
+  "cover": "",
+  "status": "published",
+  "datePublished": "2026-07-24",
+  "seoTitle": { "id": "", "en": "" },
+  "seoDescription": { "id": "", "en": "" },
+  "content": {
+    "id": "Deploy pertama selalu terasa magis. Tapi yang membedakan *hobby project* dengan production adalah checklist di menit-menit terakhir. Ini punya saya.\n\n## 1. Environment Variables: Jangan Sampai Bocor\n\nPisahkan tiga jenis variabel:\n\n- `NUXT_PUBLIC_*` → aman diekspos ke browser\n- Kunci API / token → hanya di server, tanpa prefix `public`\n- Konfigurasi per-environment → pakai preview environment Vercel untuk staging\n\n```bash\n# .env lokal (jangan di-commit!)\nTURSO_DATABASE_URL=libsql://...\nTURSO_AUTH_TOKEN=...\n```\n\n> Aturan sederhana: kalau file `.env` kamu hilang besok pagi, apakah ada yang panik? Kalau ya, berarti ada kredensial di dalamnya — pastikan tidak pernah masuk git.\n\n## 2. Tentukan Rendering Strategy\n\nTidak semua halaman butuh SSR penuh:\n\n```ts\nrouteRules: {\n  '/': 'prerender',\n  '/articles/**': 'swr',          // cache + revalidate\n  '/admin/**': 'ssr'              // dinamis, selalu segar\n}\n```\n\nHalaman landing cukup `prerender` — cepat dan murah. Artikel pakai `swr` supaya pembaca dapat halaman instan dari cache.\n\n## 3. Database di Serverless\n\nKalau pakai SQLite lokal, saatnya migrasi ke Turso (libSQL) karena serverless tidak punya filesystem persisten. Pola koneksinya:\n\n```ts\nimport { createClient } from '@libsql/client'\n\nexport const client = createClient({\n  url: process.env.TURSO_DATABASE_URL!,\n  authToken: process.env.TURSO_AUTH_TOKEN\n})\n```\n\n## 4. Monitoring Minimalis\n\nMinimal aktifkan ini sebelum hari-H:\n\n1. **Analytics** — Vercel Analytics atau Plausible\n2. **Error tracking** — Sentry free tier sudah cukup\n3. **Uptime ping** — gratis pakai cron-monitoring mana pun\n\n## Penutup\n\nChecklist ini bukan aturan baku, tapi lima menit terakhir sebelum deploy adalah investasi termurah untuk tidur nyenyak. Deploy dengan tenang!",
+    "en": "The first deploy always feels magical. But what separates a *hobby project* from production is the last-minute checklist. Here's mine.\n\n## 1. Environment Variables: No Leaks\n\nSeparate three kinds of variables:\n\n- `NUXT_PUBLIC_*` → safe to expose to the browser\n- API keys / tokens → server only, no `public` prefix\n- Per-environment config → use Vercel's preview environments for staging\n\n```bash\n# local .env (never commit this!)\nTURSO_DATABASE_URL=libsql://...\nTURSO_AUTH_TOKEN=...\n```\n\n> Simple rule: if your `.env` file disappeared tomorrow morning, would anyone panic? If yes, it holds credentials — make sure it never enters git.\n\n## 2. Choose a Rendering Strategy\n\nNot every page needs full SSR:\n\n```ts\nrouteRules: {\n  '/': 'prerender',\n  '/articles/**': 'swr',          // cache + revalidate\n  '/admin/**': 'ssr'              // dynamic, always fresh\n}\n```\n\nA landing page can just be `prerender` — fast and cheap. Articles can use `swr` so readers get instant cached pages.\n\n## 3. Databases on Serverless\n\nIf you're using a local SQLite file, it's time to migrate to Turso (libSQL) because serverless has no persistent filesystem. The connection pattern:\n\n```ts\nimport { createClient } from '@libsql/client'\n\nexport const client = createClient({\n  url: process.env.TURSO_DATABASE_URL!,\n  authToken: process.env.TURSO_AUTH_TOKEN\n})\n```\n\n## 4. Minimalist Monitoring\n\nAt minimum, turn these on before launch day:\n\n1. **Analytics** — Vercel Analytics or Plausible\n2. **Error tracking** — Sentry's free tier is enough\n3. **Uptime pings** — any free cron monitor works\n\n## Closing\n\nThis checklist isn't gospel, but the last five minutes before deploying are the cheapest investment for sleeping well. Ship with confidence!"
+  }
+}

@@ -176,3 +176,73 @@ export async function getAnalyticsOverview() {
     browsers: [...browsers.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value)
   }
 }
+
+// ---- Analitik khusus halaman artikel ----
+
+function referrerBucket(referrer: string): 'Google' | 'Sosial Media' | 'Langsung' | 'Lainnya' {
+  if (!referrer) return 'Langsung'
+  if (/google\./i.test(referrer)) return 'Google'
+  if (/facebook|fb\.|twitter|x\.com|t\.co|linkedin|reddit|whatsapp|wa\.me|telegram|t\.me|instagram/i.test(referrer)) return 'Sosial Media'
+  return 'Lainnya'
+}
+
+export async function getArticlesAnalytics(days = 30) {
+  const allVisits = await listVisits()
+  // Hanya kunjungan ke daftar & halaman artikel
+  const visits = allVisits.filter((v) => v.path === '/articles' || v.path.startsWith('/articles/'))
+
+  const sessions = new Set<string>()
+  let views7d = 0
+  let viewsPrev7d = 0
+  const dayMs = 86_400_000
+
+  const bySlug = new Map<string, { slug: string; views: number; visitors: Set<string>; views7d: number; viewsPrev7d: number }>()
+  const devicesMap = new Map<string, number>()
+  const browsersMap = new Map<string, number>()
+  const referrersMap = new Map<string, number>()
+
+  for (const v of visits) {
+    if (v.session) sessions.add(v.session)
+
+    const ageDays = Math.floor((Date.now() - new Date(v.at).getTime()) / dayMs)
+    if (ageDays < 7) views7d++
+    else if (ageDays < 14) viewsPrev7d++
+
+    const slug = v.path.startsWith('/articles/')
+      ? v.path.replace('/articles/', '').split('/')[0]
+      : ''
+
+    if (slug && /^[a-z0-9][a-z0-9-]*$/.test(slug)) {
+      const entry = bySlug.get(slug) ?? { slug, views: 0, visitors: new Set<string>(), views7d: 0, viewsPrev7d: 0 }
+      entry.views++
+      if (v.session) entry.visitors.add(v.session)
+      if (ageDays < 7) entry.views7d++
+      else if (ageDays < 14) entry.viewsPrev7d++
+      bySlug.set(slug, entry)
+    }
+
+    devicesMap.set(v.device, (devicesMap.get(v.device) ?? 0) + 1)
+    browsersMap.set(v.browser, (browsersMap.get(v.browser) ?? 0) + 1)
+    const bucket = referrerBucket(v.referrer)
+    referrersMap.set(bucket, (referrersMap.get(bucket) ?? 0) + 1)
+  }
+
+  const daily = dailySeries(visits, days)
+
+  return {
+    total: {
+      views: visits.length,
+      readers: sessions.size,
+      views7d,
+      trendPct: viewsPrev7d > 0 ? Math.round(((views7d - viewsPrev7d) / viewsPrev7d) * 100) : null
+    },
+    daily: daily.map((d) => ({ date: d.date, views: d.views, visitors: d.visitors })),
+    devices: [...devicesMap.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value),
+    browsers: [...browsersMap.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value),
+    sources: ['Google', 'Sosial Media', 'Langsung', 'Lainnya']
+      .map((label) => ({ label, value: referrersMap.get(label) ?? 0 })),
+    articles: [...bySlug.values()]
+      .map(({ visitors, ...rest }) => ({ ...rest, readers: visitors.size }))
+      .sort((a, b) => b.views - a.views)
+  }
+}
