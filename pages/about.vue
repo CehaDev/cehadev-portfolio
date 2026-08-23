@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Database, Clock, FolderGit2, Target, Download } from 'lucide-vue-next'
+import { Quote, MapPin, Mail, Phone, Globe, CheckCircle2, Code2, Braces, Boxes, Terminal, Palette, Wrench, Monitor, Database, Download } from 'lucide-vue-next'
 import { findTechByName } from '~/composables/useSkills'
 
 const { data: site } = await useSiteSettings()
@@ -14,13 +14,6 @@ useCanonical('/about')
 const headings = computed(() => site.value?.headings?.about ?? {})
 
 const { data: skills } = await useSkillsContent()
-
-const statIcons = {
-  Clock,
-  FolderGit2,
-  Code2,
-  Target
-}
 
 const facts = computed(() => [
   { icon: MapPin, label: headings.value.factLocation ?? 'Lokasi', value: site.value?.location },
@@ -80,20 +73,8 @@ const stackGroups = computed(() => {
   return groups.map((g) => ({ ...g, icon: categoryIcons[g.category] ?? Code2 }))
 })
 
-const stats = computed(() => {
-  const list = site.value?.stats ?? []
-  if (!list.length) return []
-  const hours = list.find((s: any) => s.icon === 'Clock')
-  const rest = list.filter((s: any) => s.icon !== 'Clock')
-  return [hours, ...rest].filter(Boolean) as NonNullable<typeof hours>[]
-})
-
 function techColor(name: string) {
   return findTechByName(name)?.color ?? '#8B5CF6'
-}
-
-function statIcon(icon: string) {
-  return statIcons[icon as keyof typeof statIcons]
 }
 </script>
 
@@ -157,27 +138,6 @@ function statIcon(icon: string) {
         </Reveal>
       </div>
 
-      <!-- STATS -->
-      <div class="container-site pb-16">
-        <Reveal class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border/60 lg:grid-cols-4" direction="up" :parallax="10">
-          <div
-            v-for="s in stats"
-            :key="s.label"
-            class="flex flex-col items-center justify-center gap-1.5 bg-card p-6 text-center"
-          >
-            <span
-              class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
-              aria-hidden="true"
-            >
-              <component :is="statIcon(s.icon)" :size="20" :stroke-width="1.5" />
-            </span>
-            <dd class="font-mono text-2xl font-extrabold tracking-tight text-text">
-              <CountUp :end="s.end" :suffix="s.suffix ?? ''" />
-            </dd>
-            <dt class="text-xs font-medium text-text-secondary">{{ s.label }} <span class="text-text-muted">· {{ s.sub }}</span></dt>
-          </div>
-        </Reveal>
-      </div>
     </section>
 
     <!-- 01 · TENTANG SAYA -->
