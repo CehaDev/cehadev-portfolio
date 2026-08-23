@@ -179,16 +179,16 @@ function dateLabelShort(d: string) {
       </Reveal>
     </section>
 
-    <!-- KONTROL: kategori + urutan (tombol polos tanpa band) -->
-    <div class="mt-9 flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
-      <div class="flex flex-wrap gap-2" role="tablist" :aria-label="t('articles.filterAria')">
+    <!-- KONTROL: kategori + urutan (mobile: stack per baris, desktop: sebaris) -->
+    <div class="mt-9 flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-4 lg:gap-y-2.5">
+      <div class="flex min-w-0 flex-wrap gap-2" role="tablist" :aria-label="t('articles.filterAria')">
         <button
           v-for="cat in categories"
           :key="cat"
           type="button"
           role="tab"
           :aria-selected="isActiveCat(cat)"
-          class="rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300"
+          class="whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 sm:px-4 sm:py-2"
           :class="isActiveCat(cat)
             ? 'bg-gradient-brand text-white shadow-btn-glow'
             : 'bg-bg-alt text-text-secondary hover:text-text'"
@@ -199,12 +199,12 @@ function dateLabelShort(d: string) {
       </div>
 
       <!-- Segmented control urutan -->
-      <div class="flex items-center rounded-full bg-bg-alt p-1" role="group" :aria-label="t('articles.sortAria')">
+      <div class="flex shrink-0 items-center self-start rounded-full bg-bg-alt p-1 lg:self-auto" role="group" :aria-label="t('articles.sortAria')">
         <button
           v-for="opt in sortOptions"
           :key="opt.value"
           type="button"
-          class="rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300"
+          class="whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300"
           :class="sortBy === opt.value
             ? 'bg-gradient-brand text-white shadow-btn-glow'
             : 'text-text-muted hover:text-text'"
@@ -216,13 +216,13 @@ function dateLabelShort(d: string) {
       </div>
     </div>
 
-    <!-- TAG (mobile/tablet: di atas daftar) -->
-    <div v-if="topTags.length" class="mt-5 flex flex-wrap items-center gap-1.5 xl:hidden" role="group" :aria-label="t('articles.tagFilterAria')">
+    <!-- TAG (mobile/tablet: satu baris scroll horizontal, tanpa tumpang tindih) -->
+    <div v-if="topTags.length" class="mt-5 flex items-center gap-1.5 overflow-x-auto pb-1 xl:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="group" :aria-label="t('articles.tagFilterAria')">
       <button
         v-for="tag in topTags"
         :key="tag"
         type="button"
-        class="rounded-full bg-bg-alt px-2.5 py-1 font-mono text-[10px] text-text-muted transition-all duration-300 hover:text-primary"
+        class="shrink-0 whitespace-nowrap rounded-full bg-bg-alt px-2.5 py-1 font-mono text-[10px] text-text-muted transition-all duration-300 hover:text-primary"
         :class="activeTag === tag ? '!bg-primary/15 font-bold text-primary' : ''"
         @click="activeTag = activeTag === tag ? '' : tag"
       >
@@ -231,7 +231,7 @@ function dateLabelShort(d: string) {
       <button
         v-if="hasActiveFilter"
         type="button"
-        class="ml-1 inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary"
+        class="ml-1 inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 font-mono text-[10px] text-text-muted transition-colors hover:text-primary"
         :aria-label="t('articles.resetFilter')"
         @click="resetFilters"
       >

@@ -77,7 +77,7 @@ const dateLabel = computed(() => {
       </p>
 
       <!-- Meta ringkas di dasar kartu -->
-      <div class="mt-auto flex items-center justify-between gap-2 pt-2.5 text-[10px] font-medium text-text-muted">
+      <div class="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-2.5 text-[10px] font-medium text-text-muted">
         <span class="inline-flex min-w-0 items-center gap-2.5">
           <span class="inline-flex items-center gap-1 whitespace-nowrap">
             <CalendarDays :size="10" :stroke-width="1.75" aria-hidden="true" />
