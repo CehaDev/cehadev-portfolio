@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft, ArrowRight, ArrowUp, Calendar, Clock3, Tag, Eye, Link2, Check, MessageCircle, ChevronLeft, ChevronRight, ListTree, TrendingUp, Sparkles } from 'lucide-vue-next'
-import { renderMarkdown, countWords } from '~/utils/markdown'
+import { countWords } from '~/utils/markdown'
 import { lsId } from '~/utils/localize'
 
 const route = useRoute()
@@ -49,7 +49,7 @@ const minutes = computed(() => Math.max(1, Math.round(countWords(a.value.content
 
 const { data: html } = await useAsyncData(
   `article-html-${route.params.slug}`,
-  () => renderMarkdown(a.value?.content ?? ''),
+  () => $fetch<{ html: string }>('/api/content/render', { method: 'POST', body: { md: a.value?.content ?? '' } }).then((r) => r.html),
   { watch: [lang] }
 )
 
@@ -62,16 +62,17 @@ const { data: stats } = await useAsyncData(`stats-article-${route.params.slug}`,
 )
 const views = computed(() => stats.value?.articles?.find((x) => x.slug === route.params.slug)?.views ?? 0)
 
-// Pembaruan real-time: polling statistik kunjungan selagi halaman terbuka
+// Pembaruan statistik berkala (hemat baterai/kuota: berhenti saat tab tidak aktif)
 let statsTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
   const fetchStats = useRequestFetch()
   statsTimer = setInterval(async () => {
+    if (document.hidden) return
     try {
       const fresh = await fetchStats<StatsShape>('/api/stats')
       if (fresh) stats.value = fresh
     } catch {}
-  }, 15000)
+  }, 60000)
 })
 onBeforeUnmount(() => {
   if (statsTimer) clearInterval(statsTimer)

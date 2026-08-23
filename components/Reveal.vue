@@ -7,7 +7,7 @@ const props = withDefaults(
     direction?: 'up' | 'down' | 'left' | 'right' | 'scale' | 'blur' | 'none'
     parallax?: number
   }>(),
-  { delay: 0, duration: 1400, as: 'div', direction: 'up', parallax: 0 }
+  { delay: 0, duration: 650, as: 'div', direction: 'up', parallax: 0 }
 )
 
 const el = ref<HTMLElement | null>(null)
@@ -22,17 +22,17 @@ const hiddenClass = computed(() => {
     case 'none':
       return ''
     case 'down':
-      return '-translate-y-10 opacity-0'
+      return '-translate-y-5 opacity-0'
     case 'left':
-      return 'translate-x-[-40px] opacity-0'
+      return 'translate-x-[-24px] opacity-0'
     case 'right':
-      return 'translate-x-[40px] opacity-0'
+      return 'translate-x-[24px] opacity-0'
     case 'scale':
-      return 'scale-[0.9] opacity-0'
+      return 'scale-[0.96] opacity-0'
     case 'blur':
-      return 'translate-y-3 scale-[1.02] opacity-0 blur-[10px]'
+      return 'translate-y-2 scale-[1.01] opacity-0 blur-[6px]'
     default:
-      return 'translate-y-10 opacity-0'
+      return 'translate-y-6 opacity-0'
   }
 })
 
@@ -56,11 +56,11 @@ onMounted(() => {
         }
       })
     },
-    { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+    { threshold: 0.05, rootMargin: '0px 0px 120px 0px' }
   )
   observer.observe(node)
 
-  const fallbackTimer = setTimeout(show, 3000) as unknown as ReturnType<typeof setTimeout>
+  const fallbackTimer = setTimeout(show, 1200) as unknown as ReturnType<typeof setTimeout>
 
   if (props.parallax !== 0) {
     let ticking = false

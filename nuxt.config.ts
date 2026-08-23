@@ -15,7 +15,13 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/admin/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
+    '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    // Konten publik jarang berubah — cache di edge CDN agar navigasi antar halaman instan
+    '/api/content/site': { swr: 600 },
+    '/api/content/articles': { swr: 600 },
+    '/api/content/projects': { swr: 600 },
+    '/api/content/skills': { swr: 600 },
+    '/api/content/cv': { swr: 600 }
   },
   app: {
     head: {
@@ -44,7 +50,11 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', href: '/icon-96.png', sizes: '96x96' },
         { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap'
+        }
       ],
       script: [
         {

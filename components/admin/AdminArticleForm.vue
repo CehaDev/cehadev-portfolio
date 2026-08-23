@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { LoaderCircle, Save, ImagePlus, Trash2, Eye, PencilLine } from 'lucide-vue-next'
-import { renderMarkdown } from '~/utils/markdown'
 
 interface LsValue { id: string; en: string }
 
@@ -97,8 +96,11 @@ let previewSeq = 0
 watch(previewMode, async (mode: PreviewTab) => {
   if (mode !== 'preview') return
   const seq = ++previewSeq
-  const [idHtml, enHtml] = await Promise.all([renderMarkdown(form.content.id || ''), renderMarkdown(form.content.en || '')])
-  if (seq === previewSeq) previewHtml.value = { id: idHtml, en: enHtml }
+  const [idRes, enRes] = await Promise.all([
+    $fetch<{ html: string }>('/api/content/render', { method: 'POST', body: { md: form.content.id || '' } }),
+    $fetch<{ html: string }>('/api/content/render', { method: 'POST', body: { md: form.content.en || '' } })
+  ])
+  if (seq === previewSeq) previewHtml.value = { id: idRes.html, en: enRes.html }
 })
 
 async function save() {

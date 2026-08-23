@@ -1,3 +1,4 @@
+import { Marked } from 'marked'
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import langJavascript from 'shiki/dist/langs/javascript.mjs'
@@ -53,12 +54,62 @@ function getHighlighter() {
   return highlighterPromise
 }
 
-export function isShikiLang(lang: string): boolean {
+export function isServerShikiLang(lang: string): boolean {
   return lang in shikiLangs
 }
 
-export async function codeToHtml(code: string, lang: string, theme = 'github-dark') {
+export async function highlightCode(code: string, langRaw: string, theme = 'github-dark') {
   const hl = await getHighlighter()
-  const safeLang = isShikiLang(lang) ? lang : 'text'
+  const safeLang = isServerShikiLang((langRaw || '').trim().split(/\s+/)[0] || '')
+    ? (langRaw.trim().split(/\s+/)[0] as string)
+    : 'text'
   return hl.codeToHtml(code, { lang: safeLang, theme })
+}
+
+export async function renderMarkdown(src: string): Promise<string> {
+  if (!src.trim()) return ''
+
+  const blocks: Array<{ text: string; lang: string }> = []
+  const md = new Marked({
+    gfm: true,
+    breaks: true,
+    renderer: {
+      code({ text, lang }) {
+        const i = blocks.length
+        blocks.push({ text, lang: lang ?? '' })
+        return `<span data-mdcode="${i}"></span>`
+      },
+      link({ href, title, tokens }) {
+        const text = this.parser.parseInline(tokens)
+        const external = /^https?:\/\//.test(href)
+        return `<a href="${href}"${title ? ` title="${title}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}` : ''}>${text}</a>`
+      },
+      heading({ tokens, depth }) {
+        const text = this.parser.parseInline(tokens)
+        const id = text
+          .replace(/<[^>]*>/g, '')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .slice(0, 80) || `bagian-${depth}`
+        return `<h${depth} id="${id}">${text}</h${depth}>`
+      }
+    }
+  })
+
+  let html = md.parse(src) as string
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]
+    let codeHtml: string
+    try {
+      codeHtml = await highlightCode(block.text, block.lang)
+    } catch {
+      codeHtml = `<pre><code>${block.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`
+    }
+    html = html.replace(`<span data-mdcode="${i}"></span>`, () => codeHtml)
+  }
+
+  return html
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { AlertCircle, FileCode2, Folder, FolderOpen, Globe, LoaderCircle, Play, PanelLeftClose, PanelLeft } from 'lucide-vue-next'
-import { codeToHtml } from '~/utils/shiki'
 import type { CodeFile } from '~/utils/demoCode'
 import { codeLangLabel, codeLangClass } from '~/utils/demoCode'
 
@@ -88,7 +87,8 @@ async function highlight() {
   if (!f || highlighted.value[f.name] !== undefined) return
   loading.value = true
   try {
-    highlighted.value[f.name] = await codeToHtml(f.content, f.language)
+    const res = await $fetch<{ html: string }>('/api/content/render', { method: 'POST', body: { code: f.content, lang: f.language } })
+    highlighted.value[f.name] = res.html
   } catch {
     highlighted.value[f.name] = ''
   } finally {

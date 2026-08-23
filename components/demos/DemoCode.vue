@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { Check, Copy, FileCode2, LoaderCircle } from 'lucide-vue-next'
-import { codeToHtml, isShikiLang } from '~/utils/shiki'
 import type { CodeFile } from '~/utils/demoCode'
 import { codeLangLabel, codeLangClass } from '~/utils/demoCode'
 
@@ -31,8 +30,11 @@ async function highlight() {
   loading.value = true
   error.value = ''
   try {
-    const lang = isShikiLang(activeFile.value.language) ? activeFile.value.language : 'text'
-    highlighted.value[idx] = await codeToHtml(activeFile.value.content, lang)
+    const res = await $fetch<{ html: string }>('/api/content/render', {
+      method: 'POST',
+      body: { code: activeFile.value.content, lang: activeFile.value.language }
+    })
+    highlighted.value[idx] = res.html
   } catch (e) {
     highlighted.value[idx] = ''
     error.value = String((e as Error)?.message ?? e)
