@@ -26,5 +26,8 @@
     "nuxt": "^3.21.11",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.3.10"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
