@@ -176,17 +176,16 @@ function techColor(name: string) {
         </div>
 
         <Reveal class="lg:sticky lg:top-24" direction="right" :parallax="15">
-          <div class="card overflow-hidden">
-            <div class="relative flex flex-col items-center px-6 pb-6 pt-9 text-center">
-              <div
-                class="pointer-events-none absolute -top-14 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
-                aria-hidden="true"
-              />
-              <AvatarIllustration :size="116" variant="code" src="/my.webp" alt="Foto CehaDev" class="relative" />
-              <h3 class="mt-4 text-xl font-extrabold text-text">{{ site?.name }}</h3>
-              <p class="mt-1 text-sm text-text-secondary">{{ site?.role }}</p>
+          <div class="card group relative overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-card-hover">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-brand" aria-hidden="true" />
+            <div
+              class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-3xl opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+              aria-hidden="true"
+            />
+
+            <div class="relative px-6 pb-6 pt-8">
               <span
-                class="mt-4 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-[11px] font-medium text-success"
+                class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-[11px] font-medium text-success"
               >
                 <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
                   <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
@@ -194,19 +193,31 @@ function techColor(name: string) {
                 </span>
                 {{ site?.heroBadge }}
               </span>
+
+              <h3 class="mt-4 text-2xl font-extrabold tracking-tight text-text">
+                {{ site?.name }}
+              </h3>
+              <p class="bg-gradient-brand mt-1.5 bg-clip-text text-sm font-semibold text-transparent">
+                {{ site?.role }}
+              </p>
+
+              <div class="mt-5 h-px w-full bg-gradient-to-r from-primary/40 via-border to-transparent" aria-hidden="true" />
             </div>
 
-            <div class="border-t border-border bg-bg/60 px-5 py-3">
+            <div class="relative space-y-1 px-4 pb-5">
               <div
                 v-for="f in facts"
                 :key="f.label"
-                class="flex items-center gap-3.5 rounded-xl px-3 py-2.5 transition-colors duration-300 hover:bg-card"
+                class="group/fact flex items-center gap-3.5 rounded-xl border border-transparent px-3 py-2.5 transition-all duration-300 hover:border-border hover:bg-bg-alt"
               >
-                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
-                  <component :is="f.icon" :size="18" :stroke-width="1.5" />
+                <span
+                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover/fact:bg-primary/20"
+                  aria-hidden="true"
+                >
+                  <component :is="f.icon" :size="17" :stroke-width="1.5" />
                 </span>
-                <div class="min-w-0">
-                  <p class="text-xs text-text-muted">{{ f.label }}</p>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-medium uppercase tracking-wider text-text-muted">{{ f.label }}</p>
                   <p class="truncate text-sm font-semibold text-text">{{ f.value }}</p>
                 </div>
               </div>
