@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
   modules: ['@nuxtjs/tailwindcss'],
+  features: {
+    inlineStyles: false
+  },
   experimental: {
     appManifest: false
   },
@@ -42,18 +45,22 @@ export default defineNuxtConfig({
         ...(googleVerification ? [{ name: 'google-site-verification', content: googleVerification }] : [])
       ],
       link: [
-        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' },
-        { rel: 'icon', type: 'image/png', href: '/favicon-16x16.png', sizes: '16x16' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
-        { rel: 'icon', type: 'image/png', href: '/icon-96.png', sizes: '96x96' },
         { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
         {
+          rel: 'preload',
+          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap',
+          as: 'style',
+          onload: 'this.onload=null;this.rel="stylesheet"'
+        },
+        {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap'
+          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap',
+          media: 'print',
+          onload: 'this.media="all"'
         }
       ],
       script: [

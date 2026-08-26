@@ -37,7 +37,7 @@ export default <Partial<Config>>{
         success: '#22C55E'
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif']
       },
       borderRadius: {
         btn: '10px',
