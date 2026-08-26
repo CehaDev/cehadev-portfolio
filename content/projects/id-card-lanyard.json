@@ -1,0 +1,192 @@
+{
+  "slug": "id-card-lanyard",
+  "title": {
+    "id": "ID Card Lanyard Component",
+    "en": "ID Card Lanyard Component"
+  },
+  "tagline": {
+    "id": "Komponen Vue.js interaktif dengan efek tali lanyard SVG dinamis, drag physics, dan 3D tilt.",
+    "en": "Interactive Vue.js component with dynamic SVG lanyard rope, drag physics, and 3D tilt."
+  },
+  "description": {
+    "id": "Komponen ID Card yang bisa di-drag dengan tali lanyard SVG yang fleksibel mengikuti pergerakan kartu. Menggunakan cubic bezier paths, spring-back physics, dan gradient overlay untuk efek visual yang realistis. Fully reusable — tinggal pasang props.",
+    "en": "A draggable ID Card component with flexible SVG lanyard rope that follows card movement. Uses cubic bezier paths, spring-back physics, and gradient overlays for realistic visual effects. Fully reusable — just pass props."
+  },
+  "tags": [
+    { "id": "Vue.js", "en": "Vue.js" },
+    { "id": "SVG", "en": "SVG" },
+    { "id": "CSS3", "en": "CSS3" },
+    { "id": "Component", "en": "Component" }
+  ],
+  "tech": ["vue", "tailwind", "javascript"],
+  "category": {
+    "id": "UI Component",
+    "en": "UI Component"
+  },
+  "year": "2026",
+  "role": {
+    "id": "Frontend Developer",
+    "en": "Frontend Developer"
+  },
+  "duration": {
+    "id": "1 Minggu",
+    "en": "1 Week"
+  },
+  "featured": false,
+  "archived": false,
+  "githubUrl": "https://github.com/CehaDev/cehadev-portfolio",
+  "demo": {
+    "enabled": true,
+    "type": "code",
+    "title": {
+      "id": "Source Code & Cara Pakai",
+      "en": "Source Code & How to Use"
+    },
+    "note": {
+      "id": "Komponen Vue 3 (Composition API + <script setup>). Copy-paste ke project kamu, pass props, selesai.",
+      "en": "Vue 3 component (Composition API + <script setup>). Copy-paste into your project, pass props, done."
+    },
+    "code": {
+      "files": [
+        {
+          "name": "IdCard.vue",
+          "language": "html",
+          "content": "<script setup lang=\"ts\">\nimport type { Component } from 'vue'\n\ninterface Fact {\n  icon?: Component\n  label: string\n  value?: string\n}\n\nconst props = withDefaults(defineProps<{\n  name?: string\n  role?: string\n  badge?: string\n  photo?: string\n  photoAlt?: string\n  facts?: Fact[]\n  footerText?: string\n  hint?: string\n  uid?: string\n}>(), {\n  name: 'Your Name',\n  role: 'Your Role',\n  badge: 'Available',\n  photo: '',\n  photoAlt: 'Photo',\n  facts: () => [],\n  footerText: 'yoursite.id',\n  hint: '↕ Geser ID card ke mana saja',\n  uid: () => Math.random().toString(36).slice(2, 8)\n})\n\n// ── Drag + Spring Physics ──\nconst idCardRef = ref<HTMLElement | null>(null)\nconst offsetX = ref(0)\nconst offsetY = ref(0)\nconst tiltX = ref(0)\nconst tiltY = ref(0)\nconst isDragging = ref(false)\nconst isWobbling = ref(false)\nconst velocityX = ref(0)\nconst velocityY = ref(0)\nlet pointerId = 0\nlet lastX = 0, lastY = 0, lastTime = 0, animFrame = 0\n\nfunction onDragStart(e: PointerEvent) {\n  if (!idCardRef.value) return\n  e.preventDefault()\n  isDragging.value = true\n  isWobbling.value = false\n  cancelAnimationFrame(animFrame)\n  pointerId = e.pointerId\n  lastX = e.clientX\n  lastY = e.clientY\n  lastTime = performance.now()\n  velocityX.value = 0\n  velocityY.value = 0\n  ;(e.target as HTMLElement).setPointerCapture(e.pointerId)\n}\n\nfunction onDragMove(e: PointerEvent) {\n  if (!isDragging.value || e.pointerId !== pointerId) return\n  const now = performance.now()\n  const dt = Math.max(now - lastTime, 1)\n  const dx = e.clientX - lastX\n  const dy = e.clientY - lastY\n  const dist = Math.hypot(offsetX.value + dx, offsetY.value + dy)\n  const rubber = 1 / (1 + dist * 0.001) // rubber-band resistance\n  offsetX.value += dx * rubber\n  offsetY.value += dy * rubber\n  velocityX.value = dx / dt * 16\n  velocityY.value = dy / dt * 16\n  tiltX.value = Math.max(-18, Math.min(18, -velocityX.value * 1.2))\n  tiltY.value = Math.max(-12, Math.min(12, velocityY.value * 1.2))\n  lastX = e.clientX\n  lastY = e.clientY\n  lastTime = now\n}\n\nfunction springBack() {\n  const stiffness = 0.08, damping = 0.78, threshold = 0.3\n  velocityX.value = (velocityX.value - offsetX.value * stiffness) * damping\n  velocityY.value = (velocityY.value - offsetY.value * stiffness) * damping\n  offsetX.value += velocityX.value\n  offsetY.value += velocityY.value\n  tiltX.value *= 0.92\n  tiltY.value *= 0.92\n  if (Math.abs(offsetX.value) > threshold || Math.abs(velocityX.value) > threshold) {\n    animFrame = requestAnimationFrame(springBack)\n  } else {\n    offsetX.value = offsetY.value = tiltX.value = tiltY.value = 0\n    isWobbling.value = true\n    setTimeout(() => { isWobbling.value = false }, 600)\n  }\n}\n\nfunction onDragEnd() {\n  isDragging.value = false\n  springBack()\n}\n\n// ── Lanyard SVG Paths (cubic bezier) ──\nconst lanyardData = computed(() => {\n  const hx = 130, hy = 12\n  const bx = 130 + offsetX.value\n  const by = 186 + offsetY.value\n  const sw = 4.5\n  const dx = bx - hx, dy = by - hy\n  const c1xL = hx - 38 + dx * 0.08, c1yL = hy + dy * 0.32\n  const c2xL = bx - 8 + dx * 0.15, c2yL = hy + dy * 0.72\n  const c1xR = hx + 38 + dx * 0.08, c1yR = hy + dy * 0.32\n  const c2xR = bx + 8 + dx * 0.15, c2yR = hy + dy * 0.72\n  return {\n    lo: `M${hx-sw} ${hy} C${c1xL-sw} ${c1yL} ${c2xL-sw} ${c2yL} ${bx-sw} ${by}`,\n    li: `M${hx} ${hy} C${c1xL} ${c1yL+4} ${c2xL} ${c2yL+4} ${bx} ${by}`,\n    ri: `M${hx} ${hy} C${c1xR} ${c1yR+4} ${c2xR} ${c2yR+4} ${bx} ${by}`,\n    ro: `M${hx+sw} ${hy} C${c1xR+sw} ${c1yR} ${c2xR+sw} ${c2yR} ${bx+sw} ${by}`\n  }\n})\n</script>\n\n<template>\n  <div class=\"id-card-wrapper\">\n    <!-- Hook anchor -->\n    <div class=\"id-card-hook\">\n      <div class=\"hook-ring\"></div>\n      <div class=\"hook-dot\"></div>\n    </div>\n\n    <!-- Lanyard SVG (fixed, paths track card) -->\n    <svg class=\"id-card-lanyard\" viewBox=\"0 0 260 420\">\n      <defs>\n        <linearGradient :id=\"`sf-${uid}\" x1=\"50%\" y1=\"0\" x2=\"50%\" y2=\"100%\">\n          <stop offset=\"0%\" stop-color=\"#8B5CF6\" />\n          <stop offset=\"92%\" stop-color=\"#5B21B6\" />\n          <stop offset=\"100%\" stop-color=\"#5B21B6\" stop-opacity=\"0\" />\n        </linearGradient>\n      </defs>\n      <path :d=\"lanyardData.lo\" :stroke=\"`url(#sf-${uid})`\" stroke-width=\"9\" fill=\"none\" />\n      <path :d=\"lanyardData.ro\" :stroke=\"`url(#sf-${uid})`\" stroke-width=\"9\" fill=\"none\" />\n    </svg>\n\n    <!-- Card assembly (moves with drag) -->\n    <div class=\"id-card-assembly\" :style=\"{ transform: `translate(${offsetX}px, ${offsetY}px)` }\">\n      <div ref=\"idCardRef\" class=\"id-card\"\n        :class=\"{ dragging: isDragging, wobbling: isWobbling }\"\n        :style=\"{ transform: `perspective(800px) rotateY(${tiltX}deg) rotateX(${tiltY}deg)` }\"\n        @pointerdown=\"onDragStart\" @pointermove=\"onDragMove\"\n        @pointerup=\"onDragEnd\" @pointercancel=\"onDragEnd\">\n        <!-- Stripe, photo, name, facts, footer -->\n        <div class=\"id-card-stripe\"></div>\n        <div class=\"id-card-body\">\n          <img v-if=\"photo\" :src=\"photo\" :alt=\"photoAlt\" class=\"id-card-photo\" />\n          <h3>{{ name }}</h3>\n          <p>{{ role }}</p>\n          <div class=\"id-card-status\">{{ badge }}</div>\n          <div v-for=\"f in facts\" :key=\"f.label\" class=\"id-card-fact\">\n            <span>{{ f.label }}</span><span>{{ f.value }}</span>\n          </div>\n        </div>\n        <div class=\"id-card-footer\">\n          <span>{{ footerText }}</span>\n        </div>\n      </div>\n    </div>\n    <p class=\"id-card-hint\">{{ hint }}</p>\n  </div>\n</template>"
+        },
+        {
+          "name": "Cara Pakai.vue",
+          "language": "html",
+          "content": "<!-- 1. Copy IdCard.vue ke components/ -->\n<!-- 2. Gunakan di page mana saja: -->\n\n<template>\n  <IdCard\n    name=\"CehaDev\"\n    role=\"Web Developer\"\n    badge=\"Available\"\n    photo=\"/foto-profil.jpg\"\n    :facts=\"[\n      { label: 'Lokasi', value: 'Indonesia' },\n      { label: 'Email', value: 'hi@cehadev.id' },\n      { label: 'Website', value: 'cehadev.id' }\n    ]\"\n    footer-text=\"cehadev.id\"\n    hint=\"Geser ID card ke mana saja\"\n  />\n</template>\n\n<!-- Props yang tersedia:\n  name       — Nama di kartu (default: 'Your Name')\n  role       — Jabatan/role (default: 'Your Role')\n  badge      — Status badge hijau (default: 'Available')\n  photo      — URL foto profil\n  photoAlt   — Alt text foto\n  facts      — Array [{icon, label, value}] untuk info\n  footerText — Text di footer kartu\n  hint       — Teks hint di bawah kartu\n  uid        — Unique ID untuk SVG gradients (auto-generated)\n\nSlots:\n  default    — Ganti bagian facts dengan custom content\n  photo      — Ganti area foto dengan custom content\n  footer     — Ganti footer dengan custom content\n-->"
+        },
+        {
+          "name": "Penjelasan Physics.js",
+          "language": "javascript",
+          "content": "// ═══ CARA KERJA DRAG PHYSICS ═══\n\n// 1. RUBBER-BAND RESISTANCE\n// Saat card di-drag, resistance naik seiring jarak:\nconst rubber = 1 / (1 + dist * 0.001)\n// dist=0 → rubber=1 (bebas), dist=500 → rubber=0.67 (melambat)\n\n// 2. SPRING-BACK ANIMATION\n// Setelah dilepas, card kembali ke posisi awal:\nvelocity = (velocity - offset * stiffness) * damping\n// stiffness=0.08 → kembali pelan\n// damping=0.78 → overshoot sedikit (efek spring)\n\n// 3. 3D TILT FROM VELOCITY\n// Tilt mengikuti kecepatan drag:\ntiltX = clamp(-velocityX * 1.2, -18, 18) // derajat\n// Kiri → tilt kiri, kanan → tilt kanan\n\n// 4. WOBBLE ON RELEASE\n// Setelah spring selesai, card bergetar sekali:\nanimation: idCardWobble 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)\n// cubic-bezier overshoot = efek getar natural\n\n// ═══ LANYARD SVG PATHS ═══\n\n// Tali menggunakan Cubic Bezier (C) dengan 4 kontrol titik:\n// M startX startY                    — mulai dari hook\n// C ctrl1X ctrl1Y ctrl2X ctrl2Y endX endY  — curve ke buckle\n\n// Hook posisi: (130, 12) — fixed, tidak bergerak\n// Buckle posisi: (130 + offsetX, 186 + offsetY) — ikut card\n\n// Control points bergeser proporsional dengan offset:\nconst c1x = hookX - 38 + dx * 0.08  // titik kontrol 1\nconst c1y = hookY + dy * 0.32        // 32% dari total jarak\nconst c2x = buckleX - 8 + dx * 0.15  // titik kontrol 2  \nconst c2y = hookY + dy * 0.72        // 72% dari total jarak\n\n// Hasil: S-curve natural yang fleksibel mengikuti card"
+        },
+        {
+          "name": "CSS Highlights.css",
+          "language": "css",
+          "content": "/* ═══ KEY CSS TECHNIQUES ═══ */\n\n/* 1. SVG overflow: visible — tali render di luar SVG bounds */\n.id-card-lanyard {\n  position: absolute;\n  top: 0;\n  width: 260px;\n  height: 420px;\n  overflow: visible; /* CRITICAL */\n  pointer-events: none;\n  z-index: 10;\n}\n\n/* 2. Gradient fade — tali transparan di dekat buckle */\nlinearGradient {\n  stop[92%] { stop-opacity: 1 }   /* opaque sampai 92% */\n  stop[100%] { stop-opacity: 0 }  /* fade di 100% */\n}\n/* objectBoundingBox → fade selalu di ujung bawah path */\n\n/* 3. 3D Perspective tilt */\n.id-card {\n  transform-style: preserve-3d;\n  transform: perspective(800px) rotateY(Xdeg) rotateX(Ydeg);\n}\n\n/* 4. Wobble animation — overshoot cubic-bezier */\n@keyframes idCardWobble {\n  0%  { transform: perspective(800px) rotateY(0) rotateX(0); }\n  20% { transform: perspective(800px) rotateY(4deg) rotateX(-2deg); }\n  40% { transform: perspective(800px) rotateY(-3deg) rotateX(1.5deg); }\n  60% { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }\n  80% { transform: perspective(800px) rotateY(-1deg) rotateX(0.5deg); }\n  100% { transform: perspective(800px) rotateY(0) rotateX(0); }\n}\n\n/* 5. Glow border — mask-composite exclude */\n.id-card-glow {\n  background: linear-gradient(135deg, #8B5CF6, #3B82F6, #8B5CF6);\n  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);\n  mask-composite: exclude; /* hanya border yang glowing */\n  padding: 2px;\n}\n\n/* 6. Unique SVG IDs — hindari konflik saat multiple instance */\nlinearGradient :id=\"`strapFill-${uid}\""
+        }
+      ]
+    }
+  },
+  "detail": {
+    "overview": {
+      "id": "ID Card Lanyard adalah komponen Vue.js interaktif yang menampilkan kartu identitas digital dengan tali lanyard SVG yang fleksibel. Ketika pengguna menggeser kartu, tali lanyard secara real-time mengikuti pergerakan menggunakan cubic bezier paths yang dihitung dinamis.\n\nKomponen ini menggabungkan beberapa teknik frontend tingkat lanjut: drag physics dengan rubber-band resistance, spring-back animation, 3D perspective tilt, dan SVG path computation. Semuanya berjalan di 60fps tanpa library eksternal — murni Vue 3 Composition API + CSS.\n\nDirancang sebagai komponen reusable yang bisa dipasang di project mana saja. Cukup pass props (nama, role, foto, facts) dan komponen langsung siap digunakan.",
+      "en": "ID Card Lanyard is an interactive Vue.js component that displays a digital identity card with a flexible SVG lanyard rope. When users drag the card, the lanyard dynamically follows using cubic bezier paths computed in real-time.\n\nThe component combines several advanced frontend techniques: drag physics with rubber-band resistance, spring-back animation, 3D perspective tilt, and SVG path computation. Everything runs at 60fps with no external libraries — pure Vue 3 Composition API + CSS.\n\nDesigned as a reusable component for any project. Just pass props (name, role, photo, facts) and it's ready to use."
+    },
+    "featureHighlights": [
+      {
+        "icon": "MousePointerClick",
+        "color": "#8B5CF6",
+        "title": { "id": "Drag Physics", "en": "Drag Physics" },
+        "desc": { "id": "Rubber-band resistance + spring-back dengan overshoot natural.", "en": "Rubber-band resistance + spring-back with natural overshoot." }
+      },
+      {
+        "icon": "Move",
+        "color": "#3B82F6",
+        "title": { "id": "Dynamic SVG Lanyard", "en": "Dynamic SVG Lanyard" },
+        "desc": { "id": "Tali SVG cubic bezier yang mengikuti pergerakan kartu secara real-time.", "en": "SVG cubic bezier rope that follows card movement in real-time." }
+      },
+      {
+        "icon": "Box",
+        "color": "#22C55E",
+        "title": { "id": "3D Perspective Tilt", "en": "3D Perspective Tilt" },
+        "desc": { "id": "Card tilt mengikuti velocity drag untuk efek 3D yang natural.", "en": "Card tilt follows drag velocity for natural 3D effect." }
+      },
+      {
+        "icon": "Sparkles",
+        "color": "#F59E0B",
+        "title": { "id": "Wobble Animation", "en": "Wobble Animation" },
+        "desc": { "id": "Getar overshoot setelah spring-back selesai — efek fisika realistis.", "en": "Overshoot wobble after spring-back completes — realistic physics effect." }
+      }
+    ],
+    "mainFeatures": [
+      {
+        "icon": "Package",
+        "color": "#8B5CF6",
+        "title": { "id": "Fully Reusable", "en": "Fully Reusable" },
+        "desc": { "id": "Copy-paste ke project Vue/Nuxt, pass props, selesai. Tanpa dependency.", "en": "Copy-paste into any Vue/Nuxt project, pass props, done. Zero dependencies." }
+      },
+      {
+        "icon": "Paintbrush",
+        "color": "#3B82F6",
+        "title": { "id": "Customizable via Props & Slots", "en": "Customizable via Props & Slots" },
+        "desc": { "id": "Props untuk data, slots untuk custom content di foto, facts, dan footer.", "en": "Props for data, slots for custom content in photo, facts, and footer." }
+      },
+      {
+        "icon": "Layers",
+        "color": "#22C55E",
+        "title": { "id": "Multi-Instance Safe", "en": "Multi-Instance Safe" },
+        "desc": { "id": "SVG gradient IDs di-uniquify via uid prop — aman kalau ada banyak kartu di satu halaman.", "en": "SVG gradient IDs are uniquified via uid prop — safe with multiple cards on one page." }
+      },
+      {
+        "icon": "Smartphone",
+        "color": "#F59E0B",
+        "title": { "id": "Touch Friendly", "en": "Touch Friendly" },
+        "desc": { "id": "Menggunakan Pointer Events API — works di desktop dan mobile.", "en": "Uses Pointer Events API — works on both desktop and mobile." }
+      },
+      {
+        "icon": "Sun",
+        "color": "#F43F5E",
+        "title": { "id": "Dark/Light Mode", "en": "Dark/Light Mode" },
+        "desc": { "id": "Auto-adaptif ke dark dan light mode via CSS custom properties.", "en": "Auto-adapts to dark and light mode via CSS custom properties." }
+      }
+    ],
+    "techStack": ["vue", "tailwind", "javascript"],
+    "process": [
+      {
+        "num": "01",
+        "icon": "Lightbulb",
+        "title": { "id": "Konsep Desain", "en": "Design Concept" },
+        "desc": { "id": "Merancang tampilan ID card modern dengan hook, lanyard, buckle, dan card body.", "en": "Designing a modern ID card layout with hook, lanyard, buckle, and card body." }
+      },
+      {
+        "num": "02",
+        "icon": "PenTool",
+        "title": { "id": "SVG Lanyard Paths", "en": "SVG Lanyard Paths" },
+        "desc": { "id": "Implementasi cubic bezier paths yang dinamis dengan control points proporsional.", "en": "Implementing dynamic cubic bezier paths with proportional control points." }
+      },
+      {
+        "num": "03",
+        "icon": "Gauge",
+        "title": { "id": "Physics Engine", "en": "Physics Engine" },
+        "desc": { "id": "Membangun drag handler, rubber-band resistance, spring-back, dan velocity tracking.", "en": "Building drag handler, rubber-band resistance, spring-back, and velocity tracking." }
+      },
+      {
+        "num": "04",
+        "icon": "Palette",
+        "title": { "id": "Visual Effects", "en": "Visual Effects" },
+        "desc": { "id": "Gradient overlay, glow border, shimmer stripe, weave pattern, dan wobble animation.", "en": "Gradient overlay, glow border, shimmer stripe, weave pattern, and wobble animation." }
+      },
+      {
+        "num": "05",
+        "icon": "Package",
+        "title": { "id": "Component API", "en": "Component API" },
+        "desc": { "id": "Refactoring ke reusable component dengan props, slots, dan unique SVG IDs.", "en": "Refactoring into reusable component with props, slots, and unique SVG IDs." }
+      }
+    ],
+    "challenges": [
+      {
+        "title": { "id": "SVG mask clipping", "en": "SVG mask clipping" },
+        "desc": { "id": "SVG <mask> element clips content ke viewBox bounds. Solusi: switch ke objectBoundingBox gradient tanpa mask.", "en": "SVG <mask> element clips content to viewBox bounds. Solution: switch to objectBoundingBox gradient without mask." }
+      },
+      {
+        "title": { "id": "Lanyard sync saat drag", "en": "Lanyard sync on drag" },
+        "desc": { "id": "Tali harus stay anchored di hook sementara buckle bergerak. Menggunakan userSpaceOnUse coordinates + dynamic path computation.", "en": "Rope must stay anchored at hook while buckle moves. Using userSpaceOnUse coordinates + dynamic path computation." }
+      },
+      {
+        "title": { "id": "60fps performance", "en": "60fps performance" },
+        "desc": { "id": "Update SVG paths + transform di setiap pointer move frame. Menggunakan requestAnimationFrame + will-change: transform.", "en": "Updating SVG paths + transform on every pointer move frame. Using requestAnimationFrame + will-change: transform." }
+      }
+    ],
+    "results": [
+      { "icon": "Zap", "value": { "id": "60fps", "en": "60fps" }, "label": { "id": "Performa Drag", "en": "Drag Performance" } },
+      { "icon": "FileCode", "value": { "id": "0", "en": "0" }, "label": { "id": "Dependencies", "en": "Dependencies" } },
+      { "icon": "Layers", "value": { "id": "3", "en": "3" }, "label": { "id": "Slots Tersedia", "en": "Available Slots" } },
+      { "icon": "Package", "value": { "id": "1", "en": "1" }, "label": { "id": "File Component", "en": "Component File" } }
+    ],
+    "gallery": []
+  }
+}

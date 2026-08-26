@@ -2,13 +2,14 @@ import cehavaStore from '../../content/projects/cehava-store.json'
 import devboard from '../../content/projects/devboard.json'
 import magerans from '../../content/projects/magerans.json'
 import nutechApi from '../../content/projects/nutech-api.json'
+import idCardLanyard from '../../content/projects/id-card-lanyard.json'
 import { createError } from 'h3'
 import { normalizeLS, normalizeLSArray } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
 const PROJECTS_KEY = 'content_projects'
 
-const bundledProjects: Record<string, unknown>[] = [cehavaStore, devboard, magerans, nutechApi]
+const bundledProjects: Record<string, unknown>[] = [cehavaStore, devboard, magerans, nutechApi, idCardLanyard]
 
 function isValidSlug(slug: string) {
   return /^[a-z0-9][a-z0-9-]*$/.test(slug)
