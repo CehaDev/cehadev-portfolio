@@ -1,0 +1,31 @@
+# Deploy ke VPS: seluruh layanan (web + bot + worker) dalam satu container.
+# DB file lokal disimpan di volume persisten 'chdev-data' (tetap aman saat restart).
+#
+# Penggunaan:
+#   cp .env.example .env        # lalu isi secret (NUXT_ADMIN_*, TELEGRAM_BOT_TOKEN, dst)
+#   docker compose up -d --build
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: chdev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"            # website Nitro
+    env_file:
+      - .env                   # secret dibaca dari .env HOST (tidak di-commit)
+    environment:
+      NODE_ENV: production
+      TURSO_DATABASE_URL: "file:/srv/data/db.sqlite"
+    volumes:
+      - chdev-data:/srv/data    # tempat DB file lokal persist
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  chdev-data:

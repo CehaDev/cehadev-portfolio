@@ -419,7 +419,7 @@ async function save() {
           <div class="grid gap-5 sm:grid-cols-2">
             <div>
               <label for="site-email" class="mb-1.5 block text-sm font-medium text-text">Email</label>
-              <input id="site-email" v-model="form.email" type="email" class="input-field" placeholder="hello@cehadev.id" />
+              <input id="site-email" v-model="form.email" type="email" class="input-field" placeholder="hello@chdev.online" />
             </div>
             <div>
               <label for="site-phone" class="mb-1.5 block text-sm font-medium text-text">Telepon</label>
@@ -431,7 +431,7 @@ async function save() {
             </div>
             <div>
               <label for="site-website" class="mb-1.5 block text-sm font-medium text-text">Website</label>
-              <input id="site-website" v-model="form.website" type="text" class="input-field" placeholder="cehadev.id" />
+              <input id="site-website" v-model="form.website" type="text" class="input-field" placeholder="chdev.online" />
             </div>
             <div>
               <label for="site-cv-url" class="mb-1.5 block text-sm font-medium text-text">URL CV</label>

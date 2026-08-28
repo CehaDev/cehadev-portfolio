@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const googleVerification = (process.env.NUXT_GOOGLE_VERIFICATION || '').trim()
-
 export default defineNuxtConfig({
   compatibilityDate: '2026-08-12',
   devtools: { enabled: false },
@@ -42,7 +40,7 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:title', content: 'CehaDev — Web Developer Portfolio' },
         { name: 'twitter:description', content: 'Portfolio CehaDev, Web Developer & Tech Enthusiast berbasis di Grobogan, Jawa Tengah.' },
-        ...(googleVerification ? [{ name: 'google-site-verification', content: googleVerification }] : [])
+        { name: 'google-site-verification', content: 'ryBJFInGf4nBSISD-29B-BtUqeuwkT-G1L_XHMDiuzU' }
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
@@ -76,7 +74,7 @@ export default defineNuxtConfig({
             '@type': 'WebSite',
             name: 'CehaDev',
             alternateName: ['CehaDev Portfolio', 'cehadev-portfolio'],
-            url: 'https://cehadev.id'
+            url: 'https://chdev.online'
           })
         },
         {
@@ -86,8 +84,8 @@ export default defineNuxtConfig({
             '@type': 'Person',
             name: 'CehaDev',
             jobTitle: 'Web Developer & Tech Enthusiast',
-            url: 'https://cehadev.id',
-            email: 'hello@cehadev.id',
+            url: 'https://chdev.online',
+            email: 'hello@chdev.online',
             address: { '@type': 'PostalAddress', addressLocality: 'Wirosari, Grobogan, Jawa Tengah', addressCountry: 'ID' },
             knowsAbout: ['Nuxt.js', 'Vue.js', 'Node.js', 'Tailwind CSS', 'JavaScript', 'TypeScript']
           })

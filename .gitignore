@@ -16,6 +16,8 @@ logs
 # Env
 .env
 .env.*
+!.env.openclaw.example
+!.env.example
 
 # Editor
 .vscode/*
@@ -35,3 +37,6 @@ test-results
 # User-uploaded assets (CV photo, dsb)
 public/uploads
 .env*
+
+# Template env untuk OpenClaw — wajib di-version-control
+!.env.openclaw.example

@@ -279,7 +279,7 @@ async function save() {
               </div>
               <div>
                 <label for="cv-email" class="mb-1.5 block text-sm font-medium text-text">Email</label>
-                <input id="cv-email" v-model="form.email" type="email" class="input-field" placeholder="hello@cehadev.id" />
+                <input id="cv-email" v-model="form.email" type="email" class="input-field" placeholder="hello@chdev.online" />
               </div>
               <div>
                 <label for="cv-phone" class="mb-1.5 block text-sm font-medium text-text">Telepon</label>
@@ -291,7 +291,7 @@ async function save() {
               </div>
               <div>
                 <label for="cv-website" class="mb-1.5 block text-sm font-medium text-text">Website</label>
-                <input id="cv-website" v-model="form.website" type="text" class="input-field" placeholder="cehadev.id" />
+                <input id="cv-website" v-model="form.website" type="text" class="input-field" placeholder="chdev.online" />
               </div>
               <div>
                 <label for="cv-linkedin" class="mb-1.5 block text-sm font-medium text-text">LinkedIn</label>

@@ -183,7 +183,7 @@ function techColor(name: string) {
             photo="/my.webp"
             photo-alt="Foto CehaDev"
             :facts="facts"
-            footer-text="cehadev.id"
+            footer-text="chdev.online"
             hint="Geser ID card ke mana saja"
           />
         </Reveal>

@@ -52,3 +52,47 @@ export async function rateLimitOrThrow(event: any, name: string, limit: number, 
     })
   }
 }
+
+/**
+ * Rate limiter in-memory (PRD Section 16) — window geser sederhana per key.
+ * CATATAN: state dalam memori per-instance serverless (best-effort). Untuk
+ * produksi ketat gunakan rateLimitOrThrow (persisten via KV) atau store
+ * terdistribusi. Digunakan pada middleware admin untuk pembatasan burst lokal.
+ */
+type Window = { count: number; resetAt: number }
+
+const buckets = new Map<string, Window>()
+
+export interface InMemoryRateOptions {
+  max: number
+  windowMs: number
+}
+
+const DEFAULTS: InMemoryRateOptions = { max: 30, windowMs: 60_000 }
+
+export function rateLimit(key: string, opts: Partial<InMemoryRateOptions> = {}): { ok: boolean; remaining: number; retryAfterMs: number } {
+  const { max, windowMs } = { ...DEFAULTS, ...opts }
+  const now = Date.now()
+  const cur = buckets.get(key)
+  if (!cur || cur.resetAt <= now) {
+    buckets.set(key, { count: 1, resetAt: now + windowMs })
+    return { ok: true, remaining: max - 1, retryAfterMs: 0 }
+  }
+  if (cur.count >= max) {
+    return { ok: false, remaining: 0, retryAfterMs: cur.resetAt - now }
+  }
+  cur.count += 1
+  return { ok: true, remaining: max - cur.count, retryAfterMs: 0 }
+}
+
+/** Bersihkan bucket kadaluwarsa agar tidak bocor memori. */
+export function pruneRateBuckets() {
+  const now = Date.now()
+  for (const [k, w] of buckets) {
+    if (w.resetAt <= now) buckets.delete(k)
+  }
+}
+
+export function resetRateLimiter() {
+  buckets.clear()
+}

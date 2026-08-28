@@ -8,7 +8,15 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "db:seed": "node scripts/seed.mjs"
+    "db:seed": "node scripts/seed.mjs",
+    "test": "node --test scripts/test/*.test.mjs",
+    "bot": "node scripts/telegram-bot.mjs",
+    "bot:v2": "node scripts/telegram-bot-v2.mjs",
+    "worker": "node scripts/worker.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "migrate:test": "node scripts/migrate-test.mjs",
+    "rollback": "node scripts/rollback.mjs",
+    "health": "node scripts/health-monitor.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

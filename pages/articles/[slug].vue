@@ -24,7 +24,7 @@ useSeoMeta({
 })
 useCanonical(`/articles/${route.params.slug}`)
 
-const pageUrl = computed(() => `https://cehadev-portfolio.vercel.app/articles/${route.params.slug}`)
+const pageUrl = computed(() => `https://chdev.online/articles/${route.params.slug}`)
 
 useHead({
   script: [
@@ -36,7 +36,7 @@ useHead({
         headline: a.value.seoTitle || a.value.title,
         description: a.value.seoDescription || a.value.excerpt,
         datePublished: a.value.datePublished,
-        author: { '@type': 'Person', name: 'CehaDev', url: 'https://cehadev.id' },
+        author: { '@type': 'Person', name: 'CehaDev', url: 'https://chdev.online' },
         publisher: { '@type': 'Person', name: 'CehaDev' },
         mainEntityOfPage: pageUrl.value,
         keywords: (a.value.tags ?? []).join(', ')

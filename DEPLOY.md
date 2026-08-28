@@ -130,6 +130,46 @@ NUXT_MAIL_FROM_NAME=CehaDev
 
 > SMTP Gmail wajib pakai **App Password** (aktifkan 2-Step Verification → https://myaccount.google.com/apppasswords). Bisa dikosongkan dulu jika belum mau.
 
+#### Opsional — Telegram Article Bot (buat artikel dari luar kota tanpa buka admin dashboard)
+
+Jika Anda ingin menulis artikel baru lewat Telegram padahal sedang jauh dari laptop, aktifkan bot berikut. Artikel yang dibuat otomatis tersimpan sebagai **draft** dan tinggal ditinjau/diterbitkan dari panel admin.
+
+Tambahkan ini ke `.env` di server:
+
+```env
+# 1) Token bot dari @BotFather
+TELEGRAM_BOT_TOKEN=
+# 2) Chat id Anda (bot -> /start lalu /myid -> isi di sini)
+TELEGRAM_ADMIN_CHAT_ID=
+# 3) Gemini API key gratis: https://aistudio.google.com/apikey
+GEMINI_API_KEY=
+```
+
+Cara mudah membuat bot & key:
+
+1. **Bot Telegram**: buka chat **@BotFather** → `/newbot` → pilih nama & username → dapat `TELEGRAM_BOT_TOKEN`.
+2. **Chat ID**: buka chat bot Anda → kirim `/start`, lalu `/myid` → salin angka yang muncul ke `TELEGRAM_ADMIN_CHAT_ID`.
+3. **Gemini key**: buka https://aistudio.google.com/apikey → *Create API key* (gratis, tanpa kartu kredit) → salin ke `GEMINI_API_KEY`.
+
+Jalankan bot (di server) sebagai process terpisah agar selalu hidup:
+
+```bash
+cd /srv/cehadev
+pm2 start scripts/telegram-bot.mjs --name telegram-bot --node-arg=--env-file=.env
+pm2 save
+```
+
+Cek log: `pm2 logs telegram-bot`.
+
+Cara pakai di Telegram:
+- `/artikel topik atau ide tulisan` → bot minta Gemini menulis draft dua bahasa (ID/EN), lalu menyimpannya sebagai **draft**.
+- `/list` → lihat semua artikel.
+- `/batal [slug]` → hapus artikel.
+- `/myid` → lihat chat id Anda.
+
+Kemudian tinjau & terbitkan dari dashboard admin (`/admin/articles`). Lokasi penyimpanan artikel sama dengan dashboard (KV/Turso), jadi tidak ada sinkronisasi tambahan.
+
+
 Tes dulu secara manual:
 
 ```bash
@@ -213,7 +253,7 @@ Cek `http://IP_ANDA/` — sudah bisa diakses publik tanpa port 3000.
 - **duckdns.org** (disarankan — nama lebih rapi): daftar gratis → buat subdomain mis. `cehadev.duckdns.org` → set IP ke IP server Anda → instal agen update otomatis (ikuti panduan di situs DuckDNS).
 
 **Opsi B — beli domain (disarankan untuk jangka panjang):**
-- Merek situs ini "cehadev.id" → sebaiknya beli `cehadev.id` (atau `.com`).
+- Merek situs ini "chdev" → sebaiknya beli `chdev.online` (sudah aktif).
 - Registrar lokal: Niagahoster, Domainesia, dll. Harga sekitar Rp130.000–200.000/tahun.
 - Set **A record** ke IP server Anda.
 
@@ -226,7 +266,7 @@ sudo certbot --nginx -d cehadev.duckdns.org
 
 Certbot otomatis memperbarui sertifikat (via systemd timer). Selanjutnya akses via `https://...` — otomatis diarahkan dari http.
 
-> Setelah online, perbarui URL situs di **panel admin → Site Settings** (mis. ubah `https://cehadev.id` → subdomain/domain aktif) agar link "Lihat Website" & SEO akurat.
+> Setelah online, perbarui URL situs di **panel admin → Site Settings** (mis. ubah `https://chdev.online` → subdomain/domain aktif) agar link "Lihat Website" & SEO akurat.
 
 ---
 

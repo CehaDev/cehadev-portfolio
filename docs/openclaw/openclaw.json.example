@@ -1,0 +1,44 @@
+// Contoh konfigurasi OpenClaw untuk CehaDev (di VM Oracle).
+// Simpan sebagai: ~/.openclaw/openclaw.json  (di server VM)
+// Ganti nilai sesuai kebutuhan sebelum dipakai.
+
+{
+  version: 1,
+
+  // Workspace = folder project CehaDev. Skill ada di:
+  //   <workspace>/skills/article-creator/SKILL.md
+  gateway: {
+    // host/bind default aman; biarkan kosong untuk loopback + channel Telegram
+  },
+
+  agents: {
+    entries: {
+      writer: {
+        // Agent penulis; hanya memuat skill article-creator
+        // (mencegah akses skill lain yang tidak perlu dari Telegram).
+        skills: ["article-creator"],
+      },
+    },
+  },
+
+  skills: {
+    entries: {
+      "article-creator": {
+        enabled: true,
+        // API key Gemini disuntik ke env agent saat turn berjalan.
+        // Jangan taruh di dalam prompt/log.
+        env: { GEMINI_API_KEY: "<GEMINI_API_KEY>" },
+      },
+    },
+  },
+
+  channels: {
+    telegram: {
+      enabled: true,
+      // Token dari @BotFather. Bisa juga via env TELEGRAM_BOT_TOKEN.
+      botToken: "<TELEGRAM_BOT_TOKEN>",
+      // "pairing" = Anda approve DM pertama (paling aman utk satu pemilik).
+      dmPolicy: "pairing",
+    },
+  },
+}
