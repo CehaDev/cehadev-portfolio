@@ -1,14 +1,18 @@
 import { mkdir, writeFile, readFile, stat, unlink } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
+import { put as blobPut, del as blobDel, head as blobHead, get as blobGet } from '@vercel/blob'
 
 /**
  * Storage abstraction — media harus lewat storage terkontrol (PRD Section 8).
  *
- * Saat ini memakai LocalProvider (filesystem `.data/media`), cocok untuk dev/test
- * dan cukup untuk jangka pendek. Untuk production serverless (Vercel) storage
- * bersifat ephemeral; pertukaran ke Vercel Blob / storage persisten dilakukan
- * pada saat audit deployment (Phase 8) sesuai PRD Section 17.
+ * Produser dipilih otomatis saat runtime:
+ *  - Vercel Blob dipakai bila BLOB_READ_WRITE_TOKEN tersedia (produksi di
+ *    Vercel) — persisten + CDN, tidak bergantung pada filesystem ephemeral.
+ *  - LocalProvider (filesystem `.data/media`) menjadi fallback untuk dev/test
+ *    dan lingkungan tanpa layanan blob.
+ *
+ * Untuk memaksa provider tertentu (mis. saat test), pakai setStorageProvider().
  */
 
 export interface StoredFile {
@@ -40,6 +44,10 @@ function safeKey(key: string): string {
   }
   return name
 }
+
+// ---------------------------------------------------------------------------
+// Local filesystem provider (dev/test)
+// ---------------------------------------------------------------------------
 
 export class LocalStorageProvider implements StorageProvider {
   async put(data: Buffer, key: string, mimeType: string): Promise<StoredFile> {
@@ -83,15 +91,73 @@ export class LocalStorageProvider implements StorageProvider {
   }
 }
 
-const provider: { current: StorageProvider | null } = { current: new LocalStorageProvider() }
+// ---------------------------------------------------------------------------
+// Vercel Blob provider (produksi serverless)
+// ---------------------------------------------------------------------------
 
-/** Pasang provider kustom (mis. Vercel Blob saat production). */
+export class VercelBlobStorageProvider implements StorageProvider {
+  constructor(private token: string) {}
+
+  async put(data: Buffer, key: string, mimeType: string): Promise<StoredFile> {
+    const res = await blobPut(key, data, {
+      access: 'public',
+      contentType: mimeType,
+      addRandomSuffix: false,
+      token: this.token
+    })
+    return {
+      key: res.pathname.replace(/^\//, ''),
+      url: res.url,
+      bytes: data,
+      mimeType,
+      size: data.length
+    }
+  }
+
+  async get(key: string): Promise<StoredFile | null> {
+    const safe = safeKey(key)
+    try {
+      const meta = await blobHead(safe, { token: this.token })
+      const res = await blobGet(meta.url, { access: 'public', token: this.token })
+      if (!res || !res.stream) return null
+      const arrayBuf = await new Response(res.stream).arrayBuffer()
+      return { key: safe, url: meta.url, bytes: Buffer.from(arrayBuf), mimeType: res.blob.contentType ?? '', size: arrayBuf.byteLength }
+    } catch {
+      return null
+    }
+  }
+
+  async delete(key: string): Promise<boolean> {
+    const safe = safeKey(key)
+    try {
+      await blobDel(safe, { token: this.token })
+      return true
+    } catch {
+      return false
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Provider selection
+// ---------------------------------------------------------------------------
+
+export function defaultStorageProvider(): StorageProvider {
+  const token = process.env.BLOB_READ_WRITE_TOKEN
+  if (token) return new VercelBlobStorageProvider(token)
+  return new LocalStorageProvider()
+}
+
+const provider: { current: StorageProvider | null } = { current: null }
+
+/** Pasang provider kustom (mis. stub untuk test). */
 export function setStorageProvider(p: StorageProvider | null) {
-  provider.current = p ?? new LocalStorageProvider()
+  provider.current = p
 }
 
 export function storage(): StorageProvider {
-  return provider.current!
+  if (!provider.current) provider.current = defaultStorageProvider()
+  return provider.current
 }
 
 /** Membuat storage key deterministik dari konten + ekstensi. */
