@@ -615,7 +615,7 @@ async function save() {
                     >
                       <FileCode2 :size="13" :stroke-width="1.75" class="shrink-0" :class="activeFileIndex === i ? 'text-primary' : 'text-text-muted'" aria-hidden="true" />
                       <span class="min-w-0 flex-1 truncate font-mono">{{ f.name || `file-${i + 1}` }}</span>
-                      <span class="hidden shrink-0 items-center gap-0.5 sm:flex">
+                      <span class="flex shrink-0 items-center gap-0.5">
                         <button
                           type="button"
                           class="rounded p-1 text-text-muted transition-colors hover:bg-bg-alt hover:text-text disabled:opacity-30"
@@ -1042,7 +1042,7 @@ async function save() {
           <p class="mb-3 text-xs text-text-muted">Upload gambar untuk ditampilkan di galeri project. Format: JPG, PNG, WEBP, atau AVIF (maks 10 MB).</p>
           <div class="space-y-3">
             <div v-for="(g, i) in detail.gallery" :key="i" class="rounded-xl border border-border/60 bg-bg-alt/50 p-4 transition-all hover:border-primary/20">
-              <div class="mb-3 flex items-start gap-4">
+              <div class="mb-3 flex flex-col items-stretch gap-4 sm:flex-row sm:items-start">
                 <!-- Image Preview / Upload Zone -->
                 <div class="group relative shrink-0">
                   <input

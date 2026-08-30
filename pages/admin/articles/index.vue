@@ -438,7 +438,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
     <!-- ===== LIST ARTIKEL ===== -->
     <div v-else class="card overflow-hidden p-0">
       <ul class="divide-y divide-border/60">
-        <li v-for="(a, i) in currentList" :key="a.slug" class="flex items-center gap-4 px-7 py-4 transition-colors hover:bg-card/40">
+        <li v-for="(a, i) in currentList" :key="a.slug" class="flex flex-wrap items-center gap-4 px-5 py-4 transition-colors hover:bg-card/40 sm:px-7">
           <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br text-sm font-extrabold text-white" :class="gradients[i % gradients.length]" aria-hidden="true">
             <img v-if="a.cover" :src="a.cover" alt="" class="h-full w-full object-cover" />
             <template v-else>{{ lsId(a.title).charAt(0).toUpperCase() || '?' }}</template>
@@ -475,7 +475,7 @@ const gradients = ['from-violet-500 to-indigo-600', 'from-cyan-500 to-blue-600',
             <FileEdit v-else :size="10" :stroke-width="2" />
             {{ a.status === 'published' ? 'Terbit' : 'Draft' }}
           </span>
-          <div class="flex shrink-0 items-center gap-3">
+          <div class="flex flex-wrap items-center gap-3">
             <button
               type="button"
               class="inline-flex items-center gap-1.5 rounded-btn border px-3.5 py-2 text-xs font-medium transition-colors"

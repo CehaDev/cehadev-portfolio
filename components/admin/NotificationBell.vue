@@ -52,7 +52,7 @@ function timeAgo(iso: string) {
     >
       <div
         v-if="open"
-        class="absolute right-0 top-full z-50 mt-3 w-80 overflow-hidden rounded-2xl border border-border bg-card shadow-btn-glow"
+        class="absolute right-0 top-full z-50 mt-3 w-80 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl border border-border bg-card shadow-btn-glow"
       >
         <div class="flex items-center justify-between border-b border-border px-5 py-3.5">
           <p class="text-sm font-bold text-text">Notifikasi</p>
