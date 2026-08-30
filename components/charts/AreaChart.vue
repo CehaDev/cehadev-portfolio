@@ -13,7 +13,9 @@ const secondaryColor = props.secondaryColor ?? '#38BDF8'
 const height = props.height ?? 240
 
 const container = ref<HTMLElement | null>(null)
-const width = ref(640)
+const width = ref(
+  process.client ? Math.min(640, Math.max(280, (window.innerWidth || 640) - 48)) : 640
+)
 const hover = ref<{ i: number; x: number; y: number } | null>(null)
 
 let gradCounter = 0

@@ -137,7 +137,7 @@ onMounted(() => {
       </div>
     </aside>
 
-    <div class="ml-0 flex-1 lg:ml-64">
+    <div class="ml-0 min-w-0 flex-1 lg:ml-64">
       <header class="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur-md">
         <div class="flex h-[76px] items-center justify-between gap-3 px-4 sm:px-8">
           <div class="flex min-w-0 items-center gap-3">
