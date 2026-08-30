@@ -103,6 +103,7 @@ export class VercelBlobStorageProvider implements StorageProvider {
       access: 'public',
       contentType: mimeType,
       addRandomSuffix: false,
+      allowOverwrite: true,
       token: this.token
     })
     return {

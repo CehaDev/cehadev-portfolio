@@ -61,7 +61,7 @@ function uid() {
   return `bak_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 }
 
-async function dumpToGz(): Promise<{ payload: { meta: BackupMeta; tables: Record<string, unknown[]> }; gz: Buffer; count: number }> {
+async function dumpToGz(): Promise<{ meta: BackupMeta; gz: Buffer }> {
   await ensureSchema()
   const c = conn()
   const dump: Record<string, unknown[]> = {}
@@ -73,12 +73,11 @@ async function dumpToGz(): Promise<{ payload: { meta: BackupMeta; tables: Record
       dump[table] = []
     }
   }
-  const created_at = new Date().toISOString()
-  const count = Object.keys(dump).length
-  const payload = { meta: { created_at, count, bytes: 0 }, tables: dump }
+  const payload = { meta: {}, tables: dump }
   const json = JSON.stringify(payload)
   const gz = gzipSync(Buffer.from(json, 'utf-8'))
-  return { payload: { meta: { created_at, count, bytes: gz.length }, tables: dump }, gz, count }
+  const created_at = new Date().toISOString()
+  return { meta: { created_at, count: Object.keys(dump).length, bytes: gz.length }, gz }
 }
 
 // ---------------------------------------------------------------------------
@@ -86,7 +85,7 @@ async function dumpToGz(): Promise<{ payload: { meta: BackupMeta; tables: Record
 // ---------------------------------------------------------------------------
 
 export async function createBackup(): Promise<{ file: string; meta: BackupMeta }> {
-  const { meta, gz, count } = await dumpToGz()
+  const { meta, gz } = await dumpToGz()
   if (isUsingTurso()) {
     const name = fileName(meta.created_at)
     const c = conn()
@@ -94,14 +93,14 @@ export async function createBackup(): Promise<{ file: string; meta: BackupMeta }
       sql: 'INSERT INTO backups (id, name, created_at, bytes, data) VALUES (?, ?, ?, ?, ?)',
       args: [uid(), name, meta.created_at, meta.bytes, new Uint8Array(gz)]
     })
-    return { file: name, meta: { created_at: meta.created_at, count, bytes: meta.bytes } }
+    return { file: name, meta }
   }
 
   const dir = backupDir()
   await mkdir(dir, { recursive: true })
   const file = path.join(dir, fileName(meta.created_at))
   await writeFile(file, gz)
-  return { file, meta: { created_at: meta.created_at, count, bytes: meta.bytes } }
+  return { file, meta }
 }
 
 export interface BackupRecord {
