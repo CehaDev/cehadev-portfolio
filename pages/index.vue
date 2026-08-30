@@ -218,23 +218,36 @@ const avatarButtons = computed(() => [
     </section>
 
     <!-- FEATURED PROJECTS -->
-    <section class="container-site py-20 md:py-24">
-      <Reveal class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" :parallax="10">
-        <div>
-          <span class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.featuredWork ?? 'Featured Work' }}</span>
-          <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+    <section class="relative container-site py-20 md:py-28">
+      <div
+        class="pointer-events-none absolute left-1/2 top-8 -z-10 h-[420px] w-[720px] max-w-full -translate-x-1/2 rounded-full bg-glow-circle opacity-25 blur-3xl"
+        aria-hidden="true"
+      />
+
+      <Reveal class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between" :parallax="10">
+        <div class="max-w-2xl">
+          <div class="flex items-center gap-4">
+            <span class="section-label"><span class="dot" aria-hidden="true" /> {{ headings.featuredWork ?? 'Karya Unggulan' }}</span>
+            <span class="h-px max-w-[120px] flex-1 bg-gradient-to-r from-primary/40 to-transparent" aria-hidden="true" />
+          </div>
+          <h2 class="mt-5 text-4xl font-extrabold tracking-tight md:text-5xl">
             {{ headings.selectedHead1 ?? 'Selected' }} <span class="bg-gradient-brand bg-clip-text text-transparent">{{ headings.selectedHead2 ?? 'Projects' }}</span>
           </h2>
-          <p class="mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
+          <p class="mt-5 max-w-xl text-base leading-relaxed text-text-secondary">
             {{ headings.featuredDesc ?? 'Beberapa project yang saya bangun dengan fokus pada kualitas, performa, dan pengalaman pengguna.' }}
           </p>
         </div>
         <NuxtLink
           to="/projects"
-          class="group inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary-violet"
+          class="group inline-flex shrink-0 items-center gap-3 self-start rounded-full border border-border bg-card py-2.5 pl-5 pr-2.5 text-sm font-semibold text-text-secondary shadow-card transition-all duration-300 hover:border-primary/50 hover:text-primary md:self-auto"
         >
           {{ headings.viewAllProjects ?? 'View All Projects' }}
-          <ArrowUpRight :size="17" :stroke-width="2" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <span
+            class="grid h-8 w-8 place-items-center rounded-full bg-gradient-brand text-white shadow-btn-glow transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            <ArrowUpRight :size="16" :stroke-width="2" />
+          </span>
         </NuxtLink>
       </Reveal>
 

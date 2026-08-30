@@ -46,7 +46,7 @@
     "en": "2 Months"
   },
   "featured": true,
-  "archived": true,
+  "archived": false,
   "liveUrl": "https://devboard.example.com",
   "githubUrl": "https://github.com/cehadev/devboard",
   "demo": {
