@@ -14,10 +14,10 @@ import { createClient } from '@libsql/client'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const { DDL } = await import(path.join(__dirname, 'lib', 'ddl.mjs'))
+const { DDL } = await import(pathToFileURL(path.join(__dirname, 'lib', 'ddl.mjs')).href)
 
 const EXPECTED_TABLES = [
   'articles', 'article_ideas', 'article_revisions', 'activity_logs',

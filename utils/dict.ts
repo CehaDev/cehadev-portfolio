@@ -12,6 +12,7 @@ export const dict = {
   'nav.about': { id: 'Tentang', en: 'About' },
   'nav.projects': { id: 'Proyek', en: 'Projects' },
   'nav.articles': { id: 'Artikel', en: 'Articles' },
+  'nav.cvBuilder': { id: 'Buat CV Otomatis', en: 'Create CV Automatically' },
   'nav.contact': { id: 'Kontak', en: 'Contact' },
   'nav.switchLang': { id: 'Ganti bahasa', en: 'Switch language' },
   'nav.downloadCv': { id: 'Unduh CV', en: 'Download CV' },
