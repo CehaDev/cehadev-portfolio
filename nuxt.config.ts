@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     // Konten publik jarang berubah — cache di edge CDN agar navigasi antar halaman instan
     '/api/content/site': { swr: 600 },
-    '/api/content/articles': { swr: 600 },
+    '/api/content/articles': { headers: { 'cache-control': 'no-store' } },
     '/api/content/projects': { swr: 600 },
     '/api/content/skills': { swr: 600 },
     '/api/content/cv': { swr: 600 }
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
         { name: 'google-site-verification', content: 'ryBJFInGf4nBSISD-29B-BtUqeuwkT-G1L_XHMDiuzU' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/ch.png' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
         { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

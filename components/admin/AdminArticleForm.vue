@@ -72,7 +72,10 @@ async function uploadCover(file: File) {
     const fd = new FormData()
     fd.append('image', file)
     const res = await $fetch<{ ok: boolean; url: string }>('/api/admin/articles/cover', { method: 'POST', body: fd })
-    if (res.ok) form.cover = res.url
+    if (res.ok) {
+      form.cover = res.url
+      await save()
+    }
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     error.value = err.data?.statusMessage ?? 'Gagal mengunggah cover'
