@@ -8,6 +8,7 @@ import deployNuxtVercel from '../../content/articles/deploy-nuxt-vercel.json'
 import javascriptKeTypescript from '../../content/articles/dari-javascript-ke-typescript.json'
 import manajemenWaktu from '../../content/articles/manajemen-waktu-developer.json'
 import desainPortofolio from '../../content/articles/desain-portofolio-menarik.json'
+import tutorialInstalasiOpenCode from '../../content/articles/tutorial-instalasi-opencode-windows-vibe-coding.json'
 import { normalizeLS } from './ls'
 import { kvGetJson, kvSetJson } from './db'
 
@@ -22,7 +23,8 @@ const bundledArticles: Record<string, unknown>[] = [
   deployNuxtVercel,
   javascriptKeTypescript,
   manajemenWaktu,
-  desainPortofolio
+  desainPortofolio,
+  tutorialInstalasiOpenCode
 ]
 
 function isValidSlug(slug: string) {
