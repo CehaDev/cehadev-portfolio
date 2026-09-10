@@ -27,15 +27,26 @@ const bundledArticles: Record<string, unknown>[] = [
   tutorialInstalasiOpenCode
 ]
 
+async function getArticles() {
+  const stored = await kvGetJson<Array<Record<string, unknown>>>(ARTICLES_KEY, [])
+  if (!stored.length) return bundledArticles
+
+  const articles = new Map<string, Record<string, unknown>>()
+  for (const article of bundledArticles) {
+    if (typeof article.slug === 'string') articles.set(article.slug, article)
+  }
+  for (const article of stored) {
+    if (typeof article.slug === 'string') articles.set(article.slug, article)
+  }
+  return Array.from(articles.values())
+}
+
 function isValidSlug(slug: string) {
   return /^[a-z0-9][a-z0-9-]*$/.test(slug)
 }
 
 export async function listArticleFiles() {
-  let articles = await kvGetJson<Array<{ slug?: string }>>(ARTICLES_KEY, [])
-  if (!articles.length) {
-    articles = bundledArticles
-  }
+  const articles = await getArticles()
   return articles
     .map((a) => a.slug)
     .filter((s): s is string => typeof s === 'string')
@@ -45,8 +56,7 @@ export async function listArticleFiles() {
 export async function readArticleFile(slug: string) {
   if (!isValidSlug(slug)) throw createError({ statusCode: 400, statusMessage: 'Slug tidak valid' })
 
-  let articles = await kvGetJson<Array<Record<string, unknown>>>(ARTICLES_KEY, [])
-  if (!articles.length) articles = bundledArticles
+  const articles = await getArticles()
 
   const article = articles.find((a) => a.slug === slug)
   if (!article) throw createError({ statusCode: 404, statusMessage: 'Artikel tidak ditemukan' })
@@ -55,7 +65,7 @@ export async function readArticleFile(slug: string) {
 
 export async function writeArticleFile(slug: string, data: unknown) {
   if (!isValidSlug(slug)) throw createError({ statusCode: 400, statusMessage: 'Slug tidak valid' })
-  const articles = await kvGetJson<Array<Record<string, unknown>>>(ARTICLES_KEY, [])
+  const articles = await getArticles()
   const idx = articles.findIndex((a) => a.slug === slug)
   if (idx >= 0) articles[idx] = data as Record<string, unknown>
   else articles.push(data as Record<string, unknown>)
@@ -64,7 +74,7 @@ export async function writeArticleFile(slug: string, data: unknown) {
 
 export async function deleteArticleFile(slug: string) {
   if (!isValidSlug(slug)) throw createError({ statusCode: 400, statusMessage: 'Slug tidak valid' })
-  const articles = await kvGetJson<Array<Record<string, unknown>>>(ARTICLES_KEY, [])
+  const articles = await getArticles()
   const idx = articles.findIndex((a) => a.slug === slug)
   if (idx < 0) throw createError({ statusCode: 404, statusMessage: 'Artikel tidak ditemukan' })
   articles.splice(idx, 1)
