@@ -43,7 +43,7 @@ export default defineNuxtConfig({
         { name: 'google-site-verification', content: 'ryBJFInGf4nBSISD-29B-BtUqeuwkT-G1L_XHMDiuzU' }
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/png', href: '/ch.png' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
         { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
