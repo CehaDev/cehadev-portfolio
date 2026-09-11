@@ -74,7 +74,7 @@ async function uploadCover(file: File) {
     const res = await $fetch<{ ok: boolean; url: string }>('/api/admin/articles/cover', { method: 'POST', body: fd })
     if (res.ok) {
       form.cover = res.url
-      await save()
+      if (props.initial?.slug) await save()
     }
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
